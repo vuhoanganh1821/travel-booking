@@ -8,7 +8,7 @@ import Head from 'next/head'
 // import { FeatureFlag } from 'react-unleash-flags'
 // import { PLATFORM } from 'API/constants'
 // import { CMSLayoutContext } from './cmsLayout.context'
-// import SideBar from 'components/Sidebar'
+import SideBar from 'components/SideBar'
 import TopBar from 'components/TopBar'
 import { LocalStorageKeyEnum } from 'enums/common'
 
@@ -23,7 +23,6 @@ const CMSLayout = (props: ICMSLayoutProps) => {
   // const { authStore } = useStores()
 
   const [isCollapsed, setIsCollapsedState] = useState<boolean>(false)
-  const sideBarRef: RefObject<HTMLDivElement> = useRef<HTMLDivElement>(null)
 
   function setIsCollapsed(newIsCollapsed: boolean): void {
     setIsCollapsedState(newIsCollapsed)
@@ -48,11 +47,10 @@ const CMSLayout = (props: ICMSLayoutProps) => {
       <main>
         {/* <CMSLayoutContext.Provider value={{ isSidebarCollapsed: isCollapsed, sideBarRef }}> */}
           <Flex backgroundColor="gray.100" minHeight="100vh">
-            {/* <SideBar sideBarRef={sideBarRef} isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} /> */}
+            <SideBar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
             <Box flex={1} flexDirection="column" backgroundColor="gray.100">
               <TopBar title={topBarTitle} isCollapsedSidebar={isCollapsed} setIsCollapsedSidebar={setIsCollapsed} />
               <Box
-                //* TODO: Fix case mobile later
                 marginTop={{ base: -2, md: '72px' }}
                 marginLeft={{ md: '80px', lg: isCollapsed ? '80px' : '320px' }}
                 marginBottom={{ base: 6, lg: 8 }}

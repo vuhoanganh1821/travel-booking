@@ -1,4 +1,5 @@
 'use client'
+import { useState } from 'react'
 import {
   Box,
   Button,
@@ -16,9 +17,15 @@ import {
   Stack,
   Text,
 } from '@chakra-ui/react'
+import FormInput from 'components/FormInput'
 import PasswordField from 'components/PasswordField'
 import Icon from 'components/Icon'
+import { PLATFORM } from 'enums/common'
 import { useStores } from 'hooks/useStores'
+import { ILoginForm } from 'interfaces/auth'
+import get from 'lodash/get'
+import { useForm, FormProvider } from 'react-hook-form'
+import { toast } from 'react-toastify'
 
 interface ILoginModalProps {
   isOpen: boolean
@@ -28,10 +35,23 @@ interface ILoginModalProps {
 const LoginModal = (props: ILoginModalProps) => {
   const { isOpen, onClose } = props
   const { authStore } = useStores()
+  const methods = useForm<ILoginForm>()
+  const { handleSubmit, register } = methods
+  const [isLoading, setIsLoading] = useState<boolean>(false)
 
-  function handleLogin() {
-    authStore.login()
-    onClose()
+  async function onSubmit(data: ILoginForm): Promise<void> {
+    try {
+      setIsLoading(true)
+      await authStore.login({ ...data, isRemember: true}, PLATFORM.WEBSITE)
+      setIsLoading(false)
+      onClose()
+      toast.success('Login successfully')
+    } catch (error) {
+      setIsLoading(false)
+      console.error('errorMessage', error)
+      const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+      toast.error(errorMessage)
+    }
   }
 
   return (
@@ -47,48 +67,49 @@ const LoginModal = (props: ILoginModalProps) => {
               </Text>
             </Stack>
           </Stack>
-          <Box bg={{ base: 'transparent', sm: 'bg.surface' }} borderRadius={{ base: 'none', sm: 'xl' }}>
-            <Stack spacing={6}>
-              <Stack spacing="5">
-                <FormControl>
-                  <FormLabel htmlFor="email">Email</FormLabel>
-                  <Input id="email" type="email" />
-                </FormControl>
-                <PasswordField />
-              </Stack>
-              <HStack justify="space-between">
-                <Checkbox defaultChecked>
-                  Remember me
-                </Checkbox>
-                <Button variant="text" size="sm">
-                  Forgot password?
-                </Button>
-              </HStack>
-              <Stack spacing={6}>
-                <Button colorScheme="blue" onClick={handleLogin}>
-                  Sign in
-                </Button>
-                <HStack>
-                  <Divider borderColor="gray.300" />
-                  <Text fontSize="sm" whiteSpace="nowrap" color="fg.muted">
-                    OR
-                  </Text>
-                  <Divider borderColor="gray.300" />
-                </HStack>
-                <Button
-                  fontSize="sm"
-                  fontWeight={500}
-                  background="none"
-                  border="1px solid #CBD5E0"
-                >
-                  <Icon iconName="google.svg" size={20} />
-                  <Text marginLeft={2} color="gray.700" lineHeight={6}>
-                    Continue with Google
-                  </Text>
-                </Button>
-              </Stack>
-            </Stack>
-          </Box>
+          <FormProvider {...methods}>
+            <form onSubmit={handleSubmit(onSubmit)}>
+              <Box bg={{ base: 'transparent', sm: 'bg.surface' }} borderRadius={{ base: 'none', sm: 'xl' }}>
+                <Stack spacing={6}>
+                  <Stack spacing="5">
+                    <FormInput name="email" label="Email" autoComplete="off" />
+                    <PasswordField />
+                  </Stack>
+                  <HStack justify="space-between">
+                    <Checkbox defaultChecked>
+                      Remember me
+                    </Checkbox>
+                    <Button variant="text" size="sm">
+                      Forgot password?
+                    </Button>
+                  </HStack>
+                  <Stack spacing={6}>
+                    <Button type="submit" colorScheme="blue" isLoading={isLoading}>
+                      Sign in
+                    </Button>
+                    <HStack>
+                      <Divider borderColor="gray.300" />
+                      <Text fontSize="sm" whiteSpace="nowrap" color="fg.muted">
+                        OR
+                      </Text>
+                      <Divider borderColor="gray.300" />
+                    </HStack>
+                    <Button
+                      fontSize="sm"
+                      fontWeight={500}
+                      background="none"
+                      border="1px solid #CBD5E0"
+                    >
+                      <Icon iconName="google.svg" size={20} />
+                      <Text marginLeft={2} color="gray.700" lineHeight={6}>
+                        Continue with Google
+                      </Text>
+                    </Button>
+                  </Stack>
+                </Stack>
+              </Box>
+            </form>
+          </FormProvider>
         </Stack>
       </ModalContent>
     </Modal>

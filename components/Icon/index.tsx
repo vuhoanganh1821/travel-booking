@@ -1,5 +1,6 @@
 import { SyntheticEvent } from 'react'
 import Image from 'next/image'
+
 export interface IIconProps {
   iconName: string
   size?: number
@@ -13,9 +14,8 @@ export interface IIconProps {
 }
 
 const Icon = (props: IIconProps) => {
-  const { iconName, size, alt, width, height, className, onClick, onMouseEnter, onMouseLeave } = props
-  const defaultSize: number = 32
-  const iconSize: number = size ? size : defaultSize
+  const { iconName, size, alt, onClick, onMouseEnter, onMouseLeave } = props
+  const iconSize: number = size ?? 32
 
   return (
     <Image

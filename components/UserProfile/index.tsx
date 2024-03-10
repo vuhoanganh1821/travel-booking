@@ -1,12 +1,11 @@
 'use client'
 import { Flex, HStack, Avatar, Text, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react'
+import { PLATFORM } from 'enums/common'
 import { useStores } from 'hooks/useStores'
 import truncate from 'lodash/truncate'
 import { observer } from 'mobx-react'
 import { useRouter } from 'next/navigation'
 import routes from 'routes'
-// import { PLATFORM } from 'API/constants'
-// import IconWithText from 'components/IconWithText'
 
 interface IUserProfileProps {
   openLoginModal: () => void
@@ -16,7 +15,6 @@ const UserProfile = (props: IUserProfileProps) => {
   const { openLoginModal } = props
   const { authStore } = useStores()
   const { user, isLogin } = authStore
-  const { name, email, avatarUrl } = user
   const router = useRouter()
 
   function gotoProfilePage(): void {
@@ -24,7 +22,7 @@ const UserProfile = (props: IUserProfileProps) => {
   }
 
   function handleLogout() {
-    authStore.logout()
+    authStore.logout(PLATFORM.WEBSITE)
   }
 
   return (
@@ -37,13 +35,13 @@ const UserProfile = (props: IUserProfileProps) => {
       >
         {isLogin ? (
           <HStack spacing={3} order={{ base: 1, md: 2 }} flex="1">
-            <Avatar size="sm" name={name} src={avatarUrl} />
+            <Avatar size="sm" name={user?.username} src={'avatarUrl'} />
             <Flex flexDirection="column" display={{ base: 'none', md: 'flex' }} alignItems="flex-start">
               <Text fontSize="sm" fontWeight="500" lineHeight="5" marginBottom={1}>
-                {truncate(name)}
+                {truncate(user?.username)}
               </Text>
               <Text fontSize="xs" lineHeight="4" color="text.grey.500">
-                {email}
+                {user?.email}
               </Text>
             </Flex>
           </HStack>

@@ -1,7 +1,10 @@
 'use client'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { VStack } from '@chakra-ui/react'
 import Header from 'components/Header'
+import { PLATFORM } from 'enums/common'
+import { useStores } from 'hooks/useStores'
+import { observer } from 'mobx-react'
 import LoginModal from './LoginModal'
 
 interface IMainLayoutProps {
@@ -10,7 +13,12 @@ interface IMainLayoutProps {
 
 const MainLayout = (props: IMainLayoutProps) => {
   const { children } = props
+  const { authStore } = useStores()
   const [isOpenLoginModal, setIsOpenLoginModal] = useState<boolean>(false)
+
+  useEffect(() => {
+    authStore.getMyUser(PLATFORM.WEBSITE)
+  }, [])
 
   return (
     <VStack width="full" position="relative">
@@ -21,4 +29,4 @@ const MainLayout = (props: IMainLayoutProps) => {
   )
 }
 
-export default MainLayout
+export default observer(MainLayout)

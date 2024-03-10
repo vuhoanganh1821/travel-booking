@@ -1,10 +1,18 @@
+import { login } from 'API/auth'
+import { ILoginForm, ILoginRequest } from 'interfaces/auth'
+import { IUser } from 'interfaces/user'
 import { makeAutoObservable } from 'mobx'
+import omit from 'lodash/omit'
 import RootStore from 'stores'
+import { getUserById } from 'API/user'
+import { PLATFORM } from 'enums/common'
+import router from 'next/router'
+import routes from 'routes'
 
 export default class AuthStore {
   rootStore: RootStore
-  token = ''
-  user = { name: 'Dan Abramov', email: 'dan-abramov@gmail.com', avatarUrl: 'https://bit.ly/dan-abramov' }
+  token: string = ''
+  user: IUser = {} as IUser
   isLogin: boolean = false
 
   constructor(rootStore: RootStore) {
@@ -12,15 +20,42 @@ export default class AuthStore {
     this.rootStore = rootStore
   }
 
-  login(): void {
-    // TODO: Integrate later
-    // this.authProfile = {}
-    console.log('login')
-    console.log('isLogin', this.isLogin)
-    this.isLogin = true
+  async getMyUser(platform: PLATFORM): Promise<void> {
+    const userId = localStorage.getItem(`${platform}UserId`) ?? sessionStorage.getItem(`${platform}UserId`)
+    if (userId) {
+      const user = await getUserById(userId)
+      this.user = user
+      this.isLogin = true
+    }
   }
 
-  logout(): void {
+  async login(data: ILoginForm, platform: PLATFORM): Promise<void> {
+    const { accessToken, user } = await login(omit(data, 'isRemember'))
+    if (accessToken) {
+      if (data?.isRemember) {
+        localStorage.setItem(`${platform}UserId`, user?._id)
+        localStorage.setItem(`${platform}Token`, accessToken)
+      } else {
+        sessionStorage.setItem(`${platform}UserId`, user?._id)
+        sessionStorage.setItem(`${platform}Token`, accessToken)
+      }
+      this.getMyUser(platform)
+      this.token = accessToken
+    }
+  }
+
+  logout(platform: PLATFORM): void {
     this.isLogin = false
+    this.token = ''
+    this.user = {} as IUser
+    localStorage.removeItem(`${platform}Token`)
+    localStorage.removeItem(`${platform}UserId`)
+    sessionStorage.removeItem(`${platform}Token`)
+    sessionStorage.removeItem(`${platform}UserId`)
+    if (platform === PLATFORM.CMS) {
+      router.replace(routes.cms.login.value)
+    } else {
+      this.isLogin = false
+    }
   }
 }

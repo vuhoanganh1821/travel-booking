@@ -2,10 +2,12 @@
 import { useRef } from 'react'
 import { FormControl, FormLabel, IconButton, Input, InputGroup, InputRightElement, useDisclosure, } from '@chakra-ui/react'
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
+import { useFormContext } from 'react-hook-form'
 
 const PasswordField = () => {
   const { isOpen, onToggle } = useDisclosure()
   const inputRef = useRef<HTMLInputElement>(null)
+  const { register } = useFormContext()
 
   function onClickReveal(): void {
     onToggle()
@@ -28,10 +30,10 @@ const PasswordField = () => {
         </InputRightElement>
         <Input
           id="password"
-          name="password"
           type={isOpen ? 'text' : 'password'}
           autoComplete="current-password"
           required
+          {...register('password', { required: 'Password is required' })}
         />
       </InputGroup>
     </FormControl>
