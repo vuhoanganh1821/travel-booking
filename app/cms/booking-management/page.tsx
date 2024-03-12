@@ -3,7 +3,7 @@ import BookingManagement from 'pages/CMS/BookingManagement'
 
 const BookingManagementPage = () => {
   return (
-    <CMSLayout title="Booking Management" topBarTitle="Bookings">
+    <CMSLayout title="Booking Management" topBarTitle="Booking Management">
       <BookingManagement />
     </CMSLayout>
   );

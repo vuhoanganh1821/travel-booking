@@ -6,23 +6,30 @@ import truncate from 'lodash/truncate'
 import { observer } from 'mobx-react'
 import { useRouter } from 'next/navigation'
 import routes from 'routes'
+import { getAccessToken } from 'utils/common'
 
 interface IUserProfileProps {
-  openLoginModal: () => void
+  platform: PLATFORM
+  openLoginModal?: () => void
 }
 
 const UserProfile = (props: IUserProfileProps) => {
-  const { openLoginModal } = props
+  const { platform, openLoginModal } = props
   const { authStore } = useStores()
-  const { user, isLogin } = authStore
+  const { user } = authStore
   const router = useRouter()
+  const accessToken: string = getAccessToken(platform)
+  const isLogin: boolean = !!accessToken
 
   function gotoProfilePage(): void {
     router.push(routes.myProfile.value)
   }
 
   function handleLogout() {
-    authStore.logout(PLATFORM.WEBSITE)
+    authStore.logout(platform)
+    if (platform === PLATFORM.CMS) {
+      router.push(routes.cms.login.value)
+    }
   }
 
   return (

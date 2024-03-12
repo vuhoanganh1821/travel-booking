@@ -8,3 +8,8 @@ export interface IUser {
   lastSignInAt: Date
   role: string
 }
+
+export interface IUserPagination {
+  users: IUser[]
+  result: number
+}

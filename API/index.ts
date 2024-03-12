@@ -1,18 +1,11 @@
 import axios from 'axios'
+import { PLATFORM } from 'enums/common'
 import { IHeader } from './constants'
 
 const API_URL = 'http://localhost:4001'
 
 const api = axios.create({
   baseURL: API_URL
-})
-
-api.interceptors.request.use(function (config) {
-  const accessToken = localStorage.getItem('accessToken')
-  if (accessToken && !config.headers.Authorization) {
-    config.headers = { ...config.headers, Authorization: `Bearer ${accessToken}` }
-  }
-  return config
 })
 
 api.interceptors.response.use(
@@ -24,12 +17,12 @@ api.interceptors.response.use(
   }
 )
 
-export function auth(): IHeader {
+export function auth(platform: PLATFORM): IHeader {
   if (typeof window === 'undefined') {
     return {}
   }
-  const accessToken = localStorage.getItem('token') ?? (sessionStorage.getItem('token') || '')
-  return { Authorization: `Bearer ${accessToken}` }
+  const token = localStorage.getItem(`${platform}Token`) ?? sessionStorage.getItem(`${platform}Token`) ?? ''
+  return { Authorization: `Bearer ${token}` }
 }
 
 export function handleError(error: Error, filePath: string, functionName: string) {

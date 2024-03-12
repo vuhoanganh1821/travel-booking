@@ -16,6 +16,9 @@ const cmsRoutes = {
     bookingManagement: {
       value: '/cms/booking-management',
     },
+    tourManagement: {
+      value: '/cms/tour-management',
+    },
   }
 }
 

@@ -18,7 +18,7 @@ const MainLayout = (props: IMainLayoutProps) => {
 
   useEffect(() => {
     authStore.getMyUser(PLATFORM.WEBSITE)
-  }, [])
+  }, [authStore])
 
   return (
     <VStack width="full" position="relative">

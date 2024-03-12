@@ -1,6 +1,7 @@
 import { HamburgerIcon } from '@chakra-ui/icons'
 import { HStack, IconButton, Text } from '@chakra-ui/react'
 import UserProfile from 'components/UserProfile'
+import { PLATFORM } from 'enums/common'
 
 interface ITopBarProps {
   title: string
@@ -20,10 +21,10 @@ const TopBar = (props: ITopBarProps) => {
       height="72px"
       background="white"
       justify="space-between"
-      paddingX={3}
+      paddingX={6}
       boxShadow="base"
       position={{ base: 'static', md: 'fixed' }}
-      left={isCollapsedSidebar ? '80px' : '320px'}
+      left={80}
       right={0}
       zIndex={1000}
     >
@@ -41,7 +42,7 @@ const TopBar = (props: ITopBarProps) => {
           {title}
         </Text>
       </HStack>
-      <UserProfile />
+      <UserProfile platform={PLATFORM.CMS} />
     </HStack>
   )
 }

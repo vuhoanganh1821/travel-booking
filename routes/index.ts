@@ -11,7 +11,7 @@ const routes = {
     value: '/404'
   },
   detail: {
-    value: (tourId: number) => `/tour-detail/${tourId}`,
+    value: (tourId: string) => `/tour-detail/${tourId}`,
   },
   myProfile: {
     value: '/my-profile'

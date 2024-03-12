@@ -1,6 +1,7 @@
 import { Center, HStack, Img } from '@chakra-ui/react'
 import SearchInput from 'components/SearchInput'
 import UserProfile from 'components/UserProfile'
+import { PLATFORM } from 'enums/common'
 
 interface IHeaderProps {
   openLoginModal: () => void
@@ -16,7 +17,7 @@ const Header = (props: IHeaderProps) => {
           <Img src="assets/images/logo.jpg" alt="logo" boxSize={10} cursor="pointer" />
           <SearchInput width="500px" placeholder="Search tours by name" />
         </HStack>
-        <UserProfile openLoginModal={openLoginModal} />
+        <UserProfile platform={PLATFORM.WEBSITE} openLoginModal={openLoginModal} />
       </HStack>
     </Center>
   )
