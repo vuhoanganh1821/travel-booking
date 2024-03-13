@@ -19,6 +19,12 @@ const cmsRoutes = {
     tourManagement: {
       value: '/cms/tour-management',
     },
+    accountManagement: {
+      value: '/cms/account-management',
+    },
+    generalSettings: {
+      value: '/cms/general-settings',
+    }
   }
 }
 

@@ -1,16 +1,11 @@
-"use client"
+'use client'
 import React, { ReactNode, RefObject, useEffect, useRef, useState } from 'react'
 import { Box, Flex } from '@chakra-ui/react'
-// import { LocalStorageKeyEnum } from 'enums/common'
-// import EFeatureFlags from 'enums/featureFlags'
 import { useStores } from 'hooks/useStores'
-import Head from 'next/head'
-// import { FeatureFlag } from 'react-unleash-flags'
-// import { PLATFORM } from 'API/constants'
-// import { CMSLayoutContext } from './cmsLayout.context'
-import SideBar from 'components/SideBar'
-import TopBar from 'components/TopBar'
 import { PLATFORM } from 'enums/common'
+import Head from 'next/head'
+import SideBar from './SideBar'
+import TopBar from './TopBar'
 
 interface ICMSLayoutProps {
   title: string
@@ -39,20 +34,18 @@ const CMSLayout = (props: ICMSLayoutProps) => {
         <link rel="icon" href="/favicon_black.png" />
       </Head>
       <main>
-        {/* <CMSLayoutContext.Provider value={{ isSidebarCollapsed: isCollapsed, sideBarRef }}> */}
-          <Flex backgroundColor="gray.100" minHeight="100vh">
-            <SideBar isCollapsed={isCollapsed} setIsCollapsed={setIsCollapsed} />
-            <Box flex={1} flexDirection="column" backgroundColor="gray.100">
-              <TopBar title={topBarTitle} isCollapsedSidebar={isCollapsed} setIsCollapsedSidebar={setIsCollapsed} />
-              <Box
-                marginTop={{ base: -2, md: '72px' }}
-                marginBottom={{ base: 6, lg: 8 }}
-              >
-                {children}
-              </Box>
+        <Flex backgroundColor="gray.100" minHeight="100vh">
+          <SideBar />
+          <Box flex={1} flexDirection="column" backgroundColor="gray.100">
+            <TopBar title={topBarTitle} isCollapsedSidebar={isCollapsed} setIsCollapsedSidebar={setIsCollapsed} />
+            <Box
+              marginTop={{ base: -2, md: '72px' }}
+              marginBottom={{ base: 6, lg: 8 }}
+            >
+              {children}
             </Box>
-          </Flex>
-        {/* </CMSLayoutContext.Provider> */}
+          </Box>
+        </Flex>
       </main>
     </>
   )

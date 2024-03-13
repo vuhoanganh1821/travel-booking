@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Box, HStack, Input, InputGroup, InputLeftElement, Tag, TagLabel } from '@chakra-ui/react'
+import { Box, Button, HStack, Input, InputGroup, InputLeftElement, Tag, TagLabel } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
 import Icon from 'components/Icon'
 import Table, { IPagination } from 'components/Table'
@@ -41,7 +41,6 @@ const AccountManagement = () => {
       )
     }
   })
-  console.log('dataInTable', dataInTable)
 
   function gotoPage(page: number): void {}
 
@@ -51,7 +50,7 @@ const AccountManagement = () => {
 
   return (
     <Box paddingX={{ base: 6, lg: 8 }} paddingY={6}>
-      <HStack spacing={4} marginBottom={6}>
+      <HStack justify="space-between" spacing={4} marginBottom={6}>
         <InputGroup borderRadius="6px" maxWidth="400px" background="white">
           <InputLeftElement pointerEvents="none">
             <Search2Icon color="gray.400" />
@@ -62,6 +61,9 @@ const AccountManagement = () => {
             // onChange={changeName}
           />
         </InputGroup>
+        <Button colorScheme="teal">
+          Create account
+        </Button>
       </HStack>
       <Table
         headerList={getHeaderList()}
