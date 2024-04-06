@@ -11,8 +11,7 @@ const NavLink = (props: INavLinkProps) => {
   const { label, icon, route } = props
   const router = useRouter()
   const pathname = usePathname()
-  const isActive = pathname === route
-  console.log(pathname, isActive, route)
+  const isActive = pathname?.includes(route)
 
   return (
     <HStack 

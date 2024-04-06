@@ -1,48 +1,99 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Box, Button, HStack, Input, InputGroup, InputLeftElement, Tag, TagLabel } from '@chakra-ui/react'
+import { Box, Button, HStack, Input, InputGroup, InputLeftElement, Tag, TagLabel, Text, useDisclosure } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
+import { deleteUser } from 'API/user'
+import ConfirmModal from 'components/ConfirmModal'
 import Icon from 'components/Icon'
 import Table, { IPagination } from 'components/Table'
-import { useStores } from 'hooks/useStores'
-import capitalize from 'lodash/capitalize'
-import { getValidArray } from 'utils/common'
-import { getHeaderList } from './utils'
-import { observer } from 'mobx-react'
 import dayjs from 'dayjs'
+import { ERole } from 'enums/user'
+import { useStores } from 'hooks/useStores'
+import { IUser } from 'interfaces/user'
+import { observer } from 'mobx-react'
+import { useRouter } from 'next/navigation'
+import { getValidArray } from 'utils/common'
+import AccountForm from './AccountForm'
+import { getHeaderList } from './utils'
+import { toast } from 'react-toastify'
+import routes from 'routes'
 
 const AccountManagement = () => {
   const { userStore } = useStores()
   const { users } = userStore
+  const router = useRouter()
   const pageIndex: number = 1
   const [pageSize, setPageSize] = useState<number>(10)
+  const [selectedUser, setSelectedUser] = useState<IUser>()
+  const { isOpen: isConfirming, onOpen: onConfirm, onClose: closeConfirm } = useDisclosure()
+  const { isOpen: isOpenAccountForm, onOpen: onOpenAccountForm, onClose: closeAccountForm } = useDisclosure()
 
   const pagination: IPagination = { pageIndex, tableLength: 10, gotoPage }
 
   const dataInTable = getValidArray(users).map(user => {
+    function gotoAccountDetail(): void {
+      router.push(`${routes.cms.accountManagement.value}/${user._id}`)
+    }
+
     return {
       ...user,
-      role: capitalize(user?.role),
       lastLogin: user?.lastSignInAt ? dayjs(user?.lastSignInAt).format('DD/MM/YYYY') : '',
+      role: user?.role === ERole.ADMIN ? (
+        <Tag variant="outline" colorScheme="orange" background="orange.50">
+          <TagLabel>Admin</TagLabel>
+        </Tag>
+      ) : (
+        <Tag variant="outline" colorScheme="blue" background="blue.50">
+          <TagLabel>User</TagLabel>
+        </Tag>
+      ),
       status: user?.isActive ? (
-        <Tag size="md" variant="outline" colorScheme="green" backgroundColor="green.50">
+        <Tag variant="outline" colorScheme="green" backgroundColor="green.50">
           <TagLabel>Active</TagLabel>
         </Tag>
       ) : (
-        <Tag size="md" variant="outline" colorScheme="yellow" backgroundColor="yellow.50">
+        <Tag variant="outline" colorScheme="yellow" backgroundColor="yellow.50">
           <TagLabel>Inactive</TagLabel>
         </Tag>
       ),
       actions: (
         <HStack width="86px" cursor="pointer" marginLeft="auto">
-          <Icon iconName="edit.svg" size={32} />
-          <Icon iconName="trash.svg" size={32} />
+          <Icon iconName="edit.svg" size={32} onClick={gotoAccountDetail} />
+          <Icon iconName="trash.svg" size={32} onClick={() => onClickDeleteAccount(user)} />
         </HStack>
       )
     }
   })
 
   function gotoPage(page: number): void {}
+
+  function setAccountForm(isOpen: boolean, user?: IUser): void {
+    setSelectedUser(user)
+    if (isOpen) {
+      onOpenAccountForm()
+    } else {
+      closeAccountForm()
+    }
+  }
+
+  function onClickDeleteAccount(user: IUser): void {
+    setSelectedUser(user)
+    onConfirm()
+  }
+
+  async function handleDeleteAccount(): Promise<void> {
+    try {
+      if (selectedUser?._id) {
+        await deleteUser(selectedUser?._id)
+        await userStore.fetchAllUsers()
+        closeConfirm()
+        toast.success('Delete account successfully')
+      }
+    } catch (error) {
+      closeConfirm()
+      toast.error('Delete account failed')
+    }
+  }
 
   useEffect(() => {
     userStore.fetchAllUsers()
@@ -61,7 +112,7 @@ const AccountManagement = () => {
             // onChange={changeName}
           />
         </InputGroup>
-        <Button colorScheme="teal">
+        <Button colorScheme="teal" onClick={() => setAccountForm(true)}>
           Create account
         </Button>
       </HStack>
@@ -75,6 +126,20 @@ const AccountManagement = () => {
         // setSort={setSort}
         // setOrderBy={setOrderBy}
         // subComponent={getSubComponent(getHeaderList(false), 2)}
+      />
+      <AccountForm
+        user={selectedUser}
+        isOpen={isOpenAccountForm}
+        onClose={() => setAccountForm(false)}
+      />
+      <ConfirmModal
+        titleText="Delete Account"
+        bodyText={<Text>Are you sure to delete this account?{<br />}This action can not be undo</Text>}
+        cancelButtonText="No, keep this account"
+        confirmButtonText="Yes, delete"
+        isOpen={isConfirming}
+        onClose={closeConfirm}
+        onClickAccept={handleDeleteAccount}
       />
     </Box>
   )

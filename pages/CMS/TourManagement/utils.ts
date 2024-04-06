@@ -21,6 +21,10 @@ export function getHeaderList(): ITableHeader[] {
     {
       Header: 'STATUS',
       accessor: 'status',
+    },
+    {
+      Header: '',
+      accessor: 'actions',
     }
   ]
 }

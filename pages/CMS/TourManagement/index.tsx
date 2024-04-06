@@ -1,12 +1,13 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Box, HStack, Input, InputGroup, InputLeftElement, Link } from '@chakra-ui/react'
+import { Box, HStack, Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
+import Icon from 'components/Icon'
 import Table, { IPagination } from 'components/Table'
 import { useStores } from 'hooks/useStores'
 import get from 'lodash/get'
 import { observer } from 'mobx-react'
-// import { useRouter } from 'next/router'
+import { useRouter } from 'next/navigation'
 import routes from 'routes'
 import { getValidArray } from 'utils/common'
 import { getHeaderList } from './utils'
@@ -14,24 +15,37 @@ import { getHeaderList } from './utils'
 const TourManagement = () => {
   const { tourStore } = useStores()
   const { tours } = tourStore
-  // const router = useRouter()
+  const router = useRouter()
   const pageIndex: number = 1
   const [pageSize, setPageSize] = useState<number>(10)
 
   const pagination: IPagination = { pageIndex, tableLength: 10, gotoPage }
 
-  console.log('tours', tours)
   const dataInTable = getValidArray(tours).map(tour => {
+    function gotoEditTourDetail(): void {
+      router.push(routes.cms.tourManagement.detail.value(tour?._id))
+    }
+
     return {
       ...tour,
       address: get(tour, 'startLocation.address', ''),
       status: tour?.isActive ? 'Active' : 'Inactive',
+      actions: (
+        <HStack width="86px" cursor="pointer" marginLeft="auto">
+          <Icon iconName="edit.svg" size={32} onClick={gotoEditTourDetail} />
+          <Icon iconName="trash.svg" size={32} />
+        </HStack>
+      )
     }
   
   })
 
   function gotoPage(page: number): void {
     // router.push(`${routes.cms.tourManagement.value}?page=${page}`)
+  }
+
+  async function handleDeleteTour(tourId: string): Promise<void> {
+
   }
 
   useEffect(() => {

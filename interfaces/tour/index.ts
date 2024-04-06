@@ -9,6 +9,8 @@ export interface ITour {
   category: string
   interest: string
   startLocation: any
+  numOfRating: number
+  priceOptions: ITourPriceOption[]
 
   regularPrice: number
   currency: string
@@ -18,4 +20,16 @@ export interface ITour {
 export interface ITourPagination {
   tours: ITour[]
   result: number
+}
+
+export interface ITourPriceOption {
+  title?: string
+  value?: number
+  currency?: string
+  participantsCategoryIdentifier?: string
+}
+
+export interface IUploadTourImage {
+  thumbnailURL: string
+  imagesURL: string[]
 }

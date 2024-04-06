@@ -1,3 +1,11 @@
 {
-  "extends": "next/core-web-vitals"
+  "plugins": ["@typescript-eslint", "unused-imports", "react-hooks", "prettier"],
+  "extends": "next/core-web-vitals",
+  "rules": {
+    "react-hooks/exhaustive-deps": "off",
+    "array-callback-return": "error",
+    "consistent-return": "error",
+    "no-else-return": ["error", { "allowElseIf": false }],
+    "no-return-assign": ["error", "always"]
+  }
 }

@@ -1,14 +1,10 @@
 import { Box, Center, Heading, VStack } from '@chakra-ui/react'
 import NavLink from './NavLink'
-import { usePathname, useRouter } from 'next/navigation'
 import routes from 'routes'
 
 const SideBar = () => {
-  const pathname = usePathname()
-  const router = useRouter()
-
   return (
-    <Box width="320px" background="teal.900">
+    <Box minWidth="320px" height="100vh" background="teal.900" position="fixed" zIndex={1000}>
       <Center height="72px" borderBottom="1px" borderBottomColor="whiteAlpha.300">
         <Heading color="white" fontSize="2xl">TRAVEL BOOKING</Heading>
       </Center>

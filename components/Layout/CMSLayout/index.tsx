@@ -39,6 +39,7 @@ const CMSLayout = (props: ICMSLayoutProps) => {
           <Box flex={1} flexDirection="column" backgroundColor="gray.100">
             <TopBar title={topBarTitle} isCollapsedSidebar={isCollapsed} setIsCollapsedSidebar={setIsCollapsed} />
             <Box
+              marginLeft="320px"
               marginTop={{ base: -2, md: '72px' }}
               marginBottom={{ base: 6, lg: 8 }}
             >

@@ -30,10 +30,8 @@ export default class AuthStore {
   }
 
   async login(data: ILoginForm, platform: PLATFORM): Promise<void> {
-    console.log('data', data)
     const { accessToken, user } = await login(omit(data, 'isRemember'))
     if (accessToken) {
-      console.log('accessToken', accessToken)
       if (true) {
         localStorage.setItem(`${platform}UserId`, user?._id)
         localStorage.setItem(`${platform}Token`, accessToken)

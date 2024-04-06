@@ -1,31 +1,42 @@
 'use client'
+import { useEffect } from 'react'
 import { Button, Heading, HStack, Img, Text, VStack } from '@chakra-ui/react'
 import Icon from 'components/Icon'
 import MainLayout from 'components/Layout/MainLayout'
+import { useStores } from 'hooks/useStores'
+import { observer } from 'mobx-react'
+import { usePathname } from 'next/navigation'
 
 const TourDetailPage = () => {
-  const src = 'https://cdn.getyourguide.com/img/tour/bc741f5d1499ff7e.jpeg/132.jpg'
+  const { tourStore } = useStores()
+  const { tourDetail } = tourStore
+  const pathname = usePathname()
+  const tourId = pathname?.split('/').pop()
+
+  useEffect(() => {
+    if (tourId) {
+      tourStore.fetchTourDetail(tourId)
+    }
+  }, [tourId])
 
   return (
     <MainLayout>
       <VStack maxWidth="1300px" width="full" align="flex-start" spacing={4} padding={8}>
         <Heading color="gray.800" fontWeight={700} lineHeight={10}>
-          Berlin: 1-Hour City Tour by Boat with Guaranteed Seating
+          {tourDetail?.title}
         </Heading>
         <HStack spacing={4}>
-          <HStack marginBottom={1}>
-            <Icon iconName="yellow-star.svg" size={20} />
-            <Icon iconName="yellow-star.svg" size={20} />
-            <Icon iconName="yellow-star.svg" size={20} />
-            <Icon iconName="yellow-star.svg" size={20} />
-            <Icon iconName="yellow-star.svg" size={20} />
+          <HStack marginBottom={1} hidden={tourDetail?.numOfRating === 0}>
+            {Array.from({ length: Math.round(tourDetail?.numOfRating ?? 5) }).map((_, index) => (
+              <Icon key={index} iconName="yellow-star.svg" size={20} />
+            ))}
           </HStack>
           <Text>
-            4.9 / 5
+            {`${tourDetail?.numOfRating} / 5`}
           </Text>
           <Text fontSize="sm" textDecoration="underline">3456 reviews</Text>
         </HStack>
-        <Img width="full" height="500px" src={src} borderRadius={8} />
+        <Img width="full" height="500px" src={tourDetail?.thumbnail} borderRadius={8} />
         <HStack width="full" justify="space-between">
           <VStack>
             <Text fontSize="sm">Price</Text>
@@ -36,7 +47,7 @@ const TourDetailPage = () => {
             <Text>From</Text>
             <HStack width="full" justify="space-between">
               <Text fontSize="2xl" fontWeight={700}>$1000</Text>
-              <Button colorScheme="blue" borderRadius="80px">
+              <Button colorScheme="teal" borderRadius="80px">
                 Check availability
               </Button>
             </HStack>
@@ -52,4 +63,4 @@ const TourDetailPage = () => {
   )
 }
 
-export default TourDetailPage
+export default observer(TourDetailPage)

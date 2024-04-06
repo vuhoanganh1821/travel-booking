@@ -16,6 +16,7 @@
     "@emotion/styled": "^11.11.0",
     "axios": "0.21.4",
     "dayjs": "^1.11.10",
+    "eslint-plugin-react-hooks": "^5.1.0-canary-e3ebcd54b-20240405",
     "framer-motion": "^10.18.0",
     "lodash": "^4.17.21",
     "mobx": "^6.12.0",

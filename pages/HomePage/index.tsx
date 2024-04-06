@@ -18,7 +18,7 @@ const HomePage = () => {
     <MainLayout>
       <SimpleGrid maxWidth="1200px" columns={{ base: 1, sm: 2, md: 4 }} gap={6} padding={8}>
         {tours.map((tour) => (
-          <TourCard key={tour._id} tour={tour} />
+          <TourCard key={tour?._id} tour={tour} />
         ))}
       </SimpleGrid>
     </MainLayout>
