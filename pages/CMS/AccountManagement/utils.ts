@@ -3,6 +3,10 @@ import { ITableHeader } from 'components/Table'
 export function getHeaderList(): ITableHeader[] {
   return [
     {
+      Header: '',
+      accessor: 'avatar',
+    },
+    {
       Header: 'NAME',
       accessor: 'username',
     },

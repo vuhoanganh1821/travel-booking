@@ -38,7 +38,7 @@ const BookingManagement = () => {
           </InputLeftElement>
           <Input
             type="search"
-            placeholder="Search account by name or email"
+            placeholder="Search booking by name or email"
             // onChange={changeName}
           />
         </InputGroup>

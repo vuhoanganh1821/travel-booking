@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Box, Button, HStack, Input, InputGroup, InputLeftElement, Tag, TagLabel, Text, useDisclosure } from '@chakra-ui/react'
+import { Avatar, Box, Button, HStack, Input, InputGroup, InputLeftElement, Tag, TagLabel, Text, useDisclosure } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
 import { deleteUser } from 'API/user'
 import ConfirmModal from 'components/ConfirmModal'
@@ -37,6 +37,9 @@ const AccountManagement = () => {
 
     return {
       ...user,
+      avatar: (
+        <Avatar boxSize={10} name={user?.username} src={user?.profilePicture} borderWidth={1} />
+      ),
       lastLogin: user?.lastSignInAt ? dayjs(user?.lastSignInAt).format('DD/MM/YYYY') : '',
       role: user?.role === ERole.ADMIN ? (
         <Tag variant="outline" colorScheme="orange" background="orange.50">

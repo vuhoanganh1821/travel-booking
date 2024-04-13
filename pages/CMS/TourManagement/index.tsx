@@ -1,13 +1,15 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Box, HStack, Input, InputGroup, InputLeftElement } from '@chakra-ui/react'
+import { Box, HStack, Img, Input, InputGroup, InputLeftElement, Tag, TagLabel, Text, useDisclosure } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
+import { deleteTour } from 'API/tour'
+import ConfirmModal from 'components/ConfirmModal'
 import Icon from 'components/Icon'
 import Table, { IPagination } from 'components/Table'
 import { useStores } from 'hooks/useStores'
-import get from 'lodash/get'
 import { observer } from 'mobx-react'
 import { useRouter } from 'next/navigation'
+import { toast } from 'react-toastify'
 import routes from 'routes'
 import { getValidArray } from 'utils/common'
 import { getHeaderList } from './utils'
@@ -18,6 +20,8 @@ const TourManagement = () => {
   const router = useRouter()
   const pageIndex: number = 1
   const [pageSize, setPageSize] = useState<number>(10)
+  const [selectedTourId, setSelectedTourId] = useState<string>()
+  const { isOpen: isConfirming, onOpen: onConfirm, onClose: closeConfirm } = useDisclosure()
 
   const pagination: IPagination = { pageIndex, tableLength: 10, gotoPage }
 
@@ -28,12 +32,22 @@ const TourManagement = () => {
 
     return {
       ...tour,
-      address: get(tour, 'startLocation.address', ''),
-      status: tour?.isActive ? 'Active' : 'Inactive',
+      thumbnail: (
+        <Img boxSize={10} src={tour?.thumbnail} borderRadius={8} />
+      ),
+      status: tour?.isActive ? (
+        <Tag variant="outline" colorScheme="green" backgroundColor="green.50">
+          <TagLabel>Active</TagLabel>
+        </Tag>
+      ) : (
+        <Tag variant="outline" colorScheme="yellow" backgroundColor="yellow.50">
+          <TagLabel>Inactive</TagLabel>
+        </Tag>
+      ),
       actions: (
         <HStack width="86px" cursor="pointer" marginLeft="auto">
           <Icon iconName="edit.svg" size={32} onClick={gotoEditTourDetail} />
-          <Icon iconName="trash.svg" size={32} />
+          <Icon iconName="trash.svg" size={32} onClick={() => onClickDeleteTour(tour?._id)} />
         </HStack>
       )
     }
@@ -44,8 +58,23 @@ const TourManagement = () => {
     // router.push(`${routes.cms.tourManagement.value}?page=${page}`)
   }
 
-  async function handleDeleteTour(tourId: string): Promise<void> {
+  function onClickDeleteTour(tourId: string): void {
+    setSelectedTourId(tourId)
+    onConfirm()
+  }
 
+  async function handleDeleteTour(): Promise<void> {
+    try {
+      if (selectedTourId) {
+        await deleteTour(selectedTourId)
+        await tourStore.fetchAllTours()
+        closeConfirm()
+        toast.success('Delete tour successfully')
+      }
+    } catch (error) {
+      closeConfirm()
+      toast.error('Delete tour failed')
+    }
   }
 
   useEffect(() => {
@@ -86,6 +115,15 @@ const TourManagement = () => {
         // setSort={setSort}
         // setOrderBy={setOrderBy}
         // subComponent={getSubComponent(getHeaderList(false), 2)}
+      />
+      <ConfirmModal
+        titleText="Delete Tour"
+        bodyText={<Text>Are you sure to delete this tour?{<br />}This action can not be undo</Text>}
+        cancelButtonText="No, keep this tour"
+        confirmButtonText="Yes, delete"
+        isOpen={isConfirming}
+        onClose={closeConfirm}
+        onClickAccept={handleDeleteTour}
       />
     </Box>
   )

@@ -134,7 +134,16 @@ const UpdateAccountDetail = () => {
                 </FormControl>
               </SimpleGrid>
             </Box>
-            <VStack width={300} background="white" padding={8} borderRadius={8} borderWidth={1} boxShadow="sm" spacing={6}>
+            <VStack
+              maxWidth={300}
+              width="full"
+              background="white"
+              padding={8}
+              borderRadius={8}
+              borderWidth={1}
+              boxShadow="sm"
+              spacing={6}
+            >
               <Avatar size="2xl" src={profilePicture} background="gray.400" borderWidth={1} />
               <Button
                 width="full"

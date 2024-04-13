@@ -38,9 +38,21 @@ export async function getTourDetail(tourId: string): Promise<ITour> {
   }
 }
 
+export async function createTour(data: ITour): Promise<ITour> {
+  try {
+    const response = await api.post(TOUR_URL, data, {
+      headers: auth(PLATFORM.CMS)
+    })
+    return response.data.metadata
+  } catch (error) {
+    handleError(error as Error, 'API/tour', 'createTour')
+    const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+    throw new Error(errorMessage)
+  }
+}
+
 export async function updateTourDetail(tourId: string, data: ITour): Promise<ITour> {
   try {
-    console.log('data', data)
     const response = await api.post(`${TOUR_URL}/${tourId}`, data, {
       headers: auth(PLATFORM.CMS)
     })
@@ -54,7 +66,9 @@ export async function updateTourDetail(tourId: string, data: ITour): Promise<ITo
 
 export async function deleteTour(tourId: string): Promise<void> {
   try {
-    await api.delete(`${TOUR_URL}/${tourId}`)
+    await api.delete(`${TOUR_URL}/${tourId}`, {
+      headers: auth(PLATFORM.CMS)
+    })
   } catch (error) {
     handleError(error as Error, 'API/tour', 'deleteTour')
     const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
