@@ -34,6 +34,12 @@ const cmsRoutes = {
         value: (discountId: string) => `/cms/discount-management/${discountId}`
       }
     },
+    locationManagement: {
+      value: '/cms/location-management',
+      detail: {
+        value: (locationId: string) => `/cms/location-management/${locationId}`
+      }
+    },
     generalSettings: {
       value: '/cms/general-settings',
     }
