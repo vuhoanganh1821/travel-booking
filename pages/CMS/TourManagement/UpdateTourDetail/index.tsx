@@ -118,10 +118,10 @@ const UpdateTourDetail = () => {
                 <FormInput name="details" label="Details" />
                 <FormInput name="inclusions" label="Inclusions" />
                 <FormInput name="exclusions" label="Exclusions" />
-                <FormInput name="regularPrice" label="Regular Price" />
-                <FormInput name="discountPrice" label="Discount Price" />
-                <FormInput name="discountPercentage" label="Discount Percentage" />
-                <FormInput name="duration" label="Duration" />
+                <FormInput name="regularPrice" label="Regular Price"  type="number" min={0} />
+                <FormInput name="discountPrice" label="Discount Price"  type="number" min={0} />
+                <FormInput name="discountPercentage" label="Discount Percentage"  type="number" min={0} />
+                <FormInput name="duration" label="Duration"  type="number" min={0} />
                 <FormInput name="title" label="Title" />
                 <FormInput name="priceOptions" label="Price Options">
                   <Text

@@ -104,7 +104,7 @@ const ManagePriceOptions = (props: IManagePriceOptionsProps) => {
         <ModalBody border="1px solid #E2E8F0" padding={6}>
           <VStack width="full" align="flex-start" spacing={4}>
             <FormInput name="newPriceOptionTitle" label="Price Option Title" />
-            <FormInput name="newPriceOptionValue" label="Price Option Value" />
+            <FormInput name="newPriceOptionValue" label="Price Option Value" type="number" min={0} />
             <Button width="full" colorScheme="teal" onClick={handleAddNewPriceOption}>
               Add New Price Option
             </Button>

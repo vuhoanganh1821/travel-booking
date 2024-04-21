@@ -1,5 +1,6 @@
 import AuthStore from './authStore'
 import BookingStore from './bookingStore'
+import CategoryStore from './categoryStore'
 import DiscountStore from './discountStore'
 import LocationStore from './locationStore'
 import SpinnerStore from './spinnerStore'
@@ -13,6 +14,7 @@ export default class RootStore {
   userStore: UserStore
   bookingStore: BookingStore
   spinnerStore: SpinnerStore
+  categoryStore: CategoryStore
   discountStore: DiscountStore
   locationStore: LocationStore
   transportationStore: TransportationStore
@@ -23,6 +25,7 @@ export default class RootStore {
     this.userStore = new UserStore(this)
     this.bookingStore = new BookingStore(this)
     this.spinnerStore = new SpinnerStore(this)
+    this.categoryStore = new CategoryStore(this)
     this.discountStore = new DiscountStore(this)
     this.locationStore = new LocationStore(this)
     this.transportationStore = new TransportationStore(this)
