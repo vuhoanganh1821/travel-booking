@@ -12,7 +12,7 @@ export async function getAllDiscounts(): Promise<IDiscountPagination> {
     })
     return response.data.metadata
   } catch (error) {
-    handleError(error as Error, 'API/discount', 'getAlDiscountgs')
+    handleError(error as Error, 'API/discount', 'getAllDiscounts')
     const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
     throw new Error(errorMessage)
   }

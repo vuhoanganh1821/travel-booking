@@ -35,6 +35,11 @@ const SideBar = () => {
           route={routes.cms.locationManagement.value}
         />
         <NavLink
+          label="Transportation Management"
+          icon=""
+          route={routes.cms.transportationManagement.value}
+        />
+        <NavLink
           label="General Settings"
           icon=""
           route={routes.cms.generalSettings.value}

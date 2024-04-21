@@ -40,6 +40,12 @@ const cmsRoutes = {
         value: (locationId: string) => `/cms/location-management/${locationId}`
       }
     },
+    transportationManagement: {
+      value: '/cms/transportation-management',
+      detail: {
+        value: (transportationId: string) => `/cms/transportation-management/${transportationId}`
+      }
+    },
     generalSettings: {
       value: '/cms/general-settings',
     }
