@@ -15,6 +15,9 @@ const cmsRoutes = {
     },
     bookingManagement: {
       value: '/cms/booking-management',
+      detail: {
+        value: (bookingId: string) => `/cms/booking-management/${bookingId}`
+      }
     },
     tourManagement: {
       value: '/cms/tour-management',
@@ -24,6 +27,12 @@ const cmsRoutes = {
     },
     accountManagement: {
       value: '/cms/account-management',
+    },
+    discountManagement: {
+      value: '/cms/discount-management',
+      detail: {
+        value: (discountId: string) => `/cms/discount-management/${discountId}`
+      }
     },
     generalSettings: {
       value: '/cms/general-settings',

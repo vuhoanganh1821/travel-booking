@@ -42,10 +42,10 @@ const UserProfile = (props: IUserProfileProps) => {
       >
         {isLogin ? (
           <HStack spacing={3} order={{ base: 1, md: 2 }} flex="1">
-            <Avatar size="sm" name={user?.username} src={user?.profilePicture} background="gray.400" />
+            <Avatar size="sm" name={user?.fullname} src={user?.profilePicture} background="gray.400" />
             <Flex flexDirection="column" display={{ base: 'none', md: 'flex' }} alignItems="flex-start">
               <Text fontSize="sm" fontWeight="500" lineHeight="5" marginBottom={1}>
-                {truncate(user?.username)}
+                {truncate(user?.fullname)}
               </Text>
               <Text fontSize="xs" lineHeight="4" color="text.grey.500">
                 {user?.email}

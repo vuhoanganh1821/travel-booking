@@ -27,7 +27,7 @@ import { observer } from 'mobx-react'
 const LoginPage = () => {
   const { authStore } = useStores()
   const methods = useForm<ILoginForm>()
-  const { handleSubmit } = methods
+  const { handleSubmit, register } = methods
   const router = useRouter()
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
@@ -64,7 +64,7 @@ const LoginPage = () => {
                   <PasswordField />
                 </Stack>
                 <HStack justify="space-between">
-                  <Checkbox defaultChecked>
+                  <Checkbox defaultChecked {...register('isRemember')}>
                     Remember me
                   </Checkbox>
                   <Button variant="text" size="sm">

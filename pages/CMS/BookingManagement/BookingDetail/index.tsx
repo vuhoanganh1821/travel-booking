@@ -9,7 +9,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import routes from 'routes'
-import FormLabelValue from './FormLabelValue'
+import FormLabelValue from '../../../../components/FormLabelValue'
 import { EBookingStatus } from 'enums/booking'
 
 interface IBookingDetailForm {

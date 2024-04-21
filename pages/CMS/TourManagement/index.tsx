@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Box, HStack, Img, Input, InputGroup, InputLeftElement, Tag, TagLabel, Text, useDisclosure } from '@chakra-ui/react'
+import { Box, Button, HStack, Img, Input, InputGroup, InputLeftElement, Tag, TagLabel, Text, useDisclosure } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
 import { deleteTour } from 'API/tour'
 import ConfirmModal from 'components/ConfirmModal'
@@ -26,10 +26,6 @@ const TourManagement = () => {
   const pagination: IPagination = { pageIndex, tableLength: 10, gotoPage }
 
   const dataInTable = getValidArray(tours).map(tour => {
-    function gotoEditTourDetail(): void {
-      router.push(routes.cms.tourManagement.detail.value(tour?._id))
-    }
-
     return {
       ...tour,
       thumbnail: (
@@ -46,13 +42,17 @@ const TourManagement = () => {
       ),
       actions: (
         <HStack width="86px" cursor="pointer" marginLeft="auto">
-          <Icon iconName="edit.svg" size={32} onClick={gotoEditTourDetail} />
-          <Icon iconName="trash.svg" size={32} onClick={() => onClickDeleteTour(tour?._id)} />
+          <Icon iconName="edit.svg" size={32} onClick={() => gotoTourDetailPage(tour?._id ?? '')} />
+          <Icon iconName="trash.svg" size={32} onClick={() => onClickDeleteTour(tour?._id ?? '')} />
         </HStack>
       )
     }
   
   })
+
+  function gotoTourDetailPage(tourId: string): void {
+    router.push(routes.cms.tourManagement.detail.value(tourId))
+  }
 
   function gotoPage(page: number): void {
     // router.push(`${routes.cms.tourManagement.value}?page=${page}`)
@@ -83,7 +83,7 @@ const TourManagement = () => {
 
   return (
     <Box paddingX={{ base: 6, lg: 8 }} paddingY={6}>
-      <HStack spacing={4} marginBottom={6}>
+      <HStack justify="space-between" spacing={4} marginBottom={6}>
         <InputGroup borderRadius="6px" maxWidth="400px" background="white">
           <InputLeftElement pointerEvents="none">
             <Search2Icon color="gray.400" />
@@ -94,16 +94,9 @@ const TourManagement = () => {
             // onChange={changeName}
           />
         </InputGroup>
-        {/* <Box borderRadius="6px" background="white">
-          <ButtonWithIcon
-            label={filterText}
-            iconName={numberFiltered > 0 ? 'filter_teal500.png' : 'filter.svg'}
-            size={16}
-            border={numberFiltered > 0 ? '1px solid #319795 !important' : '1px solid #E2E8F0'}
-            onClick={openFilterModal}
-            color={numberFiltered > 0 ? '#319795 !important' : 'gray.800'}
-          />
-        </Box> */}
+        <Button colorScheme="teal" onClick={() => gotoTourDetailPage('create')}>
+          Create New Tour
+        </Button>
       </HStack>
       <Table
         headerList={getHeaderList()}

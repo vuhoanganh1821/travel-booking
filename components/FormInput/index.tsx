@@ -73,9 +73,9 @@ const FormItem = (props: IFormItemProps) => {
       pattern = { value: EMAIL_PATTERN, message: 'Please enter a valid email' }
       break
     case 'dateOfBirth':
-      //*INFO: validate (MM/DD/YYYY), with a year between 1900 and 2099
+      //INFO: validate (DD/MM/YYYY), with a year between 1900 and 2099
       pattern = {
-        value: /^(0[1-9]|1[012])[- /.](0[1-9]|[12][0-9]|3[01])[- /.](19|20)\d\d$/,
+        value: /^(0[1-9]|[12][0-9]|3[01])[- /.](0[1-9]|1[012])[- /.](19|20)\d\d$/,
         message: 'Please enter a valid date'
       }
       break

@@ -1,6 +1,6 @@
 'use client'
 import { ChangeEvent, useEffect, useRef, useState } from 'react'
-import { Box, Button, HStack, Img, SimpleGrid, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, HStack, Img, Input, InputGroup, InputLeftAddon, InputRightAddon, SimpleGrid, Text, VStack } from '@chakra-ui/react'
 import { createTour, updateTourDetail } from 'API/tour'
 import { uploadTourImage } from 'API/upload'
 import FormInput from 'components/FormInput'
@@ -13,6 +13,7 @@ import { toast } from 'react-toastify'
 import routes from 'routes'
 import { getValidArray } from 'utils/common'
 import { formatFormData } from '../utils'
+import ManagePriceOptions from './ManagePriceOptions'
 
 export interface IUpdateTourForm extends ITour {}
 
@@ -25,9 +26,10 @@ const UpdateTourDetail = () => {
   const tourId = pathname?.split('/').pop() ?? ''
   const isEditMode = tourId !== 'create'
   const methods = useForm<IUpdateTourForm>()
-  const { control, handleSubmit, reset, setValue } = methods
+  const { control, handleSubmit, register, reset, setValue } = methods
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isImageLoading, setIsImageLoading] = useState<boolean>(false)
+  const [isManagePriceOptions, setIsManagePriceOptions] = useState<boolean>(false)
   const thumbnail = useWatch({ control, name: 'thumbnail' })
   const images = useWatch({ control, name: 'images' })
 
@@ -76,20 +78,13 @@ const UpdateTourDetail = () => {
 
   useEffect(() => {
     if (tourId && isEditMode) {
-      console.log('isEditMode', isEditMode)
       tourStore.fetchTourDetail(tourId)
     }
   }, [tourId])
 
   useEffect(() => {
     if (tourDetail?._id && isEditMode) {
-      reset({
-        title: tourDetail?.title,
-        code: tourDetail?.code,
-        images: tourDetail?.images,
-        thumbnail: tourDetail?.thumbnail,
-        regularPrice: tourDetail?.regularPrice,
-      })
+      reset(tourDetail)
     }
   }, [tourDetail])
 
@@ -115,7 +110,30 @@ const UpdateTourDetail = () => {
               <SimpleGrid width="full" maxWidth="1200px" columns={{ base: 1, md: 2 }} gap={6}>
                 <FormInput name="code" label="Code" />
                 <FormInput name="title" label="Title" />
+                <FormInput name="type" label="Type" />
+                <FormInput name="summary" label="Summary" />
+                <FormInput name="description" label="Description" />
+                <FormInput name="category" label="Category" />
+                <FormInput name="interest" label="Interest" />
+                <FormInput name="details" label="Details" />
+                <FormInput name="inclusions" label="Inclusions" />
+                <FormInput name="exclusions" label="Exclusions" />
                 <FormInput name="regularPrice" label="Regular Price" />
+                <FormInput name="discountPrice" label="Discount Price" />
+                <FormInput name="discountPercentage" label="Discount Percentage" />
+                <FormInput name="duration" label="Duration" />
+                <FormInput name="title" label="Title" />
+                <FormInput name="priceOptions" label="Price Options">
+                  <Text
+                    fontSize="lg"
+                    color="teal"
+                    fontWeight={600}
+                    cursor="pointer"
+                    onClick={() => setIsManagePriceOptions(true)}
+                  >
+                    Manage Price Options
+                  </Text>
+                </FormInput>
               </SimpleGrid>
               <VStack width="full" align="flex-start" spacing={0}>
                 <Text color="gray.700" fontWeight={500} lineHeight={6} marginBottom={2}>
@@ -124,6 +142,15 @@ const UpdateTourDetail = () => {
                 {getValidArray(images).map((image: string) => (
                   <Img key={image} width="215px" height="130px" src={image} borderRadius={8} />
                 ))}
+                <Button
+                  marginTop={4}
+                  background="white"
+                  borderWidth={1}
+                  isLoading={isImageLoading}
+                  onClick={() => fileInputRef?.current?.click()}
+                >
+                  Upload Tour Images
+                </Button>
               </VStack>
               <VStack width="full" align="flex-start" spacing={0}>
                 <Text color="gray.700" fontWeight={500} lineHeight={6} marginBottom={2}>
@@ -144,6 +171,12 @@ const UpdateTourDetail = () => {
               </VStack>
             </VStack>
           </Box>
+          <ManagePriceOptions
+            tourId={tourId}
+            methods={methods}
+            isOpen={isManagePriceOptions}
+            onClose={() => setIsManagePriceOptions(false)}
+          />
         </form>
       </FormProvider>
     </Box>

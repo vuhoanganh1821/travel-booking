@@ -1,11 +1,9 @@
 import React, { useEffect, useState } from 'react'
 import {
-  Box,
   Button,
   FormControl,
   FormLabel,
-  Input,
-  InputGroup,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -15,40 +13,41 @@ import {
   ModalOverlay,
   Radio,
   RadioGroup,
-  Stack,
-  HStack
+  SimpleGrid
 } from '@chakra-ui/react'
+import FormInput from 'components/FormInput'
 import { ERole } from 'enums/user'
 import { IUser } from 'interfaces/user'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 
-interface IAccountForm extends IUser {}
+interface ICreateAccount extends IUser {}
 
-interface IAccountFormProps {
+interface ICreateAccountProps {
   isOpen: boolean
   onClose: () => void
   user?: IUser
 }
 
-const AccountForm = (props: IAccountFormProps) => {
+const CreateAccount = (props: ICreateAccountProps) => {
   const { isOpen, onClose, user } = props
-  const methods = useForm<IAccountForm>()
+  const methods = useForm<ICreateAccount>()
   const {
     handleSubmit,
     register,
-    setValue,
     formState: { isSubmitting },
     control,
     reset
   } = methods
-  const role: string = useWatch({ control, name: 'role' })
+  const role: string = useWatch({ control, name: 'role' }) ?? ''
 
   function handleOnClose(): void {
     reset()
     onClose()
   }
 
-  async function onSubmit(data: IAccountForm): Promise<void> {}
+  async function onSubmit(data: ICreateAccount): Promise<void> {
+    console.log(data)
+  }
 
   useEffect(() => {
     if (isOpen && user?._id) {
@@ -59,28 +58,20 @@ const AccountForm = (props: IAccountFormProps) => {
   return (
     <Modal size="xl" isOpen={isOpen} onClose={handleOnClose}>
       <ModalOverlay />
-      <ModalContent borderRadius={8} marginTop={0} containerProps={{ alignItems: 'center' }}>
+      <ModalContent borderRadius={8}>
         <ModalHeader  color="gray.800"fontSize="18px" fontWeight={500} lineHeight={7}>
-          {user?._id ? 'Edit Account' : 'Create New Account'}
+          Create New Account
         </ModalHeader>
         <ModalCloseButton />
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody border="1px solid #E2E8F0" padding={6}>
-              <Box display="flex" gridGap={6} marginBottom={6}>
-                <FormControl id="email" width={252}>
-                  <FormLabel marginBottom={2} color="gray.700">
-                    Email Address
-                  </FormLabel>
-                  <Input type="email" placeholder="Enter Email Address" {...register('email')} />
-                </FormControl>
-                <FormControl id="name" width={252}>
-                  <FormLabel marginBottom={2} color="gray.700">
-                    Full Name
-                  </FormLabel>
-                  <Input type="text" placeholder="Enter Full Name" {...register('username')} />
-                </FormControl>
-              </Box>
+              <SimpleGrid columns={{ base: 1, md: 2 }} gap={6} marginBottom={6}>
+                <FormInput name="fullname" label="Full Name" placeholder="Enter Full Name" />
+                <FormInput name="username" label="Username" placeholder="Enter Username" />
+                <FormInput name="email" label="Email Address" placeholder="Enter Email Address" />
+                <FormInput name="password" label="Password" type="password" placeholder="Enter Password" />
+              </SimpleGrid>
               <FormControl id="role" marginBottom={6}>
                 <FormLabel marginBottom={4} color="gray.700">
                   Account Role
@@ -90,22 +81,10 @@ const AccountForm = (props: IAccountFormProps) => {
                     <Radio colorScheme="teal" {...register('role')} value={ERole.ADMIN}>
                       Admin
                     </Radio>
-                    <Radio colorScheme="teal" {...register('role')} value={ERole.USER}>
-                      User
+                    <Radio colorScheme="teal" {...register('role')} value={ERole.GUIDE}>
+                      Guide
                     </Radio>
                   </HStack>
-                </RadioGroup>
-              </FormControl>
-              <FormControl id="role">
-                <FormLabel marginBottom={2} color="gray.700">
-                  Account Role
-                </FormLabel>
-                <RadioGroup defaultValue="god">
-                  <Stack flexDirection="row">
-                    <Radio value="god" {...register('role')} isDisabled>
-                      God Mode
-                    </Radio>
-                  </Stack>
                 </RadioGroup>
               </FormControl>
             </ModalBody>
@@ -140,4 +119,4 @@ const AccountForm = (props: IAccountFormProps) => {
   )
 }
 
-export default AccountForm
+export default CreateAccount

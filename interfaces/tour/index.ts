@@ -1,30 +1,30 @@
 export interface ITour {
-  _id: string
-  code: string
-  title: string
-  highlights: string[]
-  description: string
-  thumbnail: string
-  images: string[]
-  category: string
-  interest: string
-  startLocation: ITourLocation
-  details: {
-    title: string
-    description: string
+  _id?: string
+  code?: string
+  title?: string
+  highlights?: string[]
+  description?: string
+  thumbnail?: string
+  images?: string[]
+  category?: string
+  interest?: string
+  startLocation?: ITourLocation
+  details?: {
+    title?: string
+    description?: string
   }[]
-  inclusions: string[]
-  exclusions: string[]
-  itinerary: ITourItinerary
-  duration: number
-  discountPrice: number
-  discountPercentage: number
-  ratingAverage: number
-  numOfRating: number
-  priceOptions: ITourPriceOption[]
-  regularPrice: number
-  currency: string
-  isActive: boolean
+  inclusions?: string[]
+  exclusions?: string[]
+  itinerary?: ITourItinerary
+  duration?: number
+  discountPrice?: number
+  discountPercentage?: number
+  ratingAverage?: number
+  numOfRating?: number
+  priceOptions?: ITourPriceOption[]
+  regularPrice?: number
+  currency?: string
+  isActive?: boolean
 }
 
 export interface ITourPagination {
@@ -33,6 +33,7 @@ export interface ITourPagination {
 }
 
 export interface ITourPriceOption {
+  _id?: string
   title?: string
   value?: number
   currency?: string

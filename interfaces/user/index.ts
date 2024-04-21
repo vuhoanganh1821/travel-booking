@@ -1,5 +1,6 @@
 export interface IUser {
   _id?: string
+  fullname?: string
   username?: string
   email?: string
   emailVerificationToken?: string
@@ -19,6 +20,8 @@ export interface IUser {
   dateOfExpirationPassport?: string
   googleId?: string
   typeAuth?: string
+  createdAt?: Date
+  updatedAt?: Date
 }
 
 export interface IUserPagination {

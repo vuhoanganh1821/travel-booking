@@ -6,8 +6,6 @@ import omit from 'lodash/omit'
 import RootStore from 'stores'
 import { getUserById } from 'API/user'
 import { PLATFORM } from 'enums/common'
-import router from 'next/router'
-import routes from 'routes'
 
 export default class AuthStore {
   rootStore: RootStore
@@ -31,8 +29,8 @@ export default class AuthStore {
 
   async login(data: ILoginForm, platform: PLATFORM): Promise<void> {
     const { accessToken, user } = await login(omit(data, 'isRemember'))
-    if (accessToken) {
-      if (true) {
+    if (accessToken && user?._id) {
+      if (data?.isRemember) {
         localStorage.setItem(`${platform}UserId`, user?._id)
         localStorage.setItem(`${platform}Token`, accessToken)
       } else {

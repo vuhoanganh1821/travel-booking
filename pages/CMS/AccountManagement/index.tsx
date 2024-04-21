@@ -10,6 +10,7 @@ import dayjs from 'dayjs'
 import { ERole } from 'enums/user'
 import { useStores } from 'hooks/useStores'
 import { IUser } from 'interfaces/user'
+import capitalize from 'lodash/capitalize'
 import { observer } from 'mobx-react'
 import { useRouter } from 'next/navigation'
 import { getValidArray } from 'utils/common'
@@ -31,6 +32,8 @@ const AccountManagement = () => {
   const pagination: IPagination = { pageIndex, tableLength: 10, gotoPage }
 
   const dataInTable = getValidArray(users).map(user => {
+    const statusTagColor = user?.role === ERole.ADMIN ? 'orange' : user?.role === ERole.GUIDE ? 'yellow' : 'blue'
+
     function gotoAccountDetail(): void {
       router.push(`${routes.cms.accountManagement.value}/${user._id}`)
     }
@@ -41,13 +44,9 @@ const AccountManagement = () => {
         <Avatar boxSize={10} name={user?.username} src={user?.profilePicture} borderWidth={1} />
       ),
       lastLogin: user?.lastSignInAt ? dayjs(user?.lastSignInAt).format('DD/MM/YYYY') : '',
-      role: user?.role === ERole.ADMIN ? (
-        <Tag variant="outline" colorScheme="orange" background="orange.50">
-          <TagLabel>Admin</TagLabel>
-        </Tag>
-      ) : (
-        <Tag variant="outline" colorScheme="blue" background="blue.50">
-          <TagLabel>User</TagLabel>
+      role: (
+        <Tag variant="outline" colorScheme={statusTagColor} background={`${statusTagColor}.50`}>
+          <TagLabel>{capitalize(user?.role)}</TagLabel>
         </Tag>
       ),
       status: user?.isActive ? (
@@ -55,8 +54,8 @@ const AccountManagement = () => {
           <TagLabel>Active</TagLabel>
         </Tag>
       ) : (
-        <Tag variant="outline" colorScheme="yellow" backgroundColor="yellow.50">
-          <TagLabel>Inactive</TagLabel>
+        <Tag variant="outline" colorScheme="gray" backgroundColor="gray.50">
+          <TagLabel>Disable</TagLabel>
         </Tag>
       ),
       actions: (
@@ -116,7 +115,7 @@ const AccountManagement = () => {
           />
         </InputGroup>
         <Button colorScheme="teal" onClick={() => setAccountForm(true)}>
-          Create account
+          Create New Account
         </Button>
       </HStack>
       <Table
@@ -126,9 +125,6 @@ const AccountManagement = () => {
         pageSize={pageSize}
         setPageSize={setPageSize}
         isManualSort
-        // setSort={setSort}
-        // setOrderBy={setOrderBy}
-        // subComponent={getSubComponent(getHeaderList(false), 2)}
       />
       <AccountForm
         user={selectedUser}

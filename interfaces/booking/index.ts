@@ -8,7 +8,7 @@ export interface IBooking {
   totalAmount: number
   paidAmount: number
   paymentStatus: string
-  bookingStatus: string
+  status: string
   createdAt: Date
   updatedAt: Date
 }

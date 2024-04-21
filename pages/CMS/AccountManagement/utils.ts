@@ -7,8 +7,8 @@ export function getHeaderList(): ITableHeader[] {
       accessor: 'avatar',
     },
     {
-      Header: 'NAME',
-      accessor: 'username',
+      Header: 'FULL NAME',
+      accessor: 'fullname',
     },
     {
       Header: 'EMAIL',
