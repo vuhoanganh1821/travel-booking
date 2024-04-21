@@ -29,19 +29,16 @@ const cmsRoutes = {
       value: '/cms/account-management',
     },
     discountManagement: {
-      value: '/cms/discount-management',
       detail: {
         value: (discountId: string) => `/cms/discount-management/${discountId}`
       }
     },
     locationManagement: {
-      value: '/cms/location-management',
       detail: {
         value: (locationId: string) => `/cms/location-management/${locationId}`
       }
     },
     transportationManagement: {
-      value: '/cms/transportation-management',
       detail: {
         value: (transportationId: string) => `/cms/transportation-management/${transportationId}`
       }
