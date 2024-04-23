@@ -1,6 +1,10 @@
 export function getHeaderList() {
   return [
     {
+      Header: 'IMAGE',
+      accessor: 'image',
+    },
+    {
       Header: 'NAME',
       accessor: 'name',
     },

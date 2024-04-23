@@ -10,7 +10,7 @@ import debounce from 'lodash/debounce'
 import { observer } from 'mobx-react'
 import { useRouter } from 'next/navigation'
 import { getValidArray } from 'utils/common'
-// import CategoryForm from './CategoryForm'
+import CategoryForm from './CategoryForm'
 import { getHeaderList } from './utils'
 
 const CategoryManagement = () => {
@@ -19,7 +19,7 @@ const CategoryManagement = () => {
   const router = useRouter()
   const pageIndex: number = 1
   const [pageSize, setPageSize] = useState<number>(10)
-  const [categoryId, setCategoryId] = useState<string>('')
+  const [category, setCategory] = useState<ICategory>()
   const [searchText, setSearchText] = useState<string>('')
   const [isOpenCategoryForm, setIsOpenCategoryForm] = useState<boolean>(false)
 
@@ -29,8 +29,8 @@ const CategoryManagement = () => {
     const statusTagColor = category?.isActive ? 'green' : 'red'
 
     function onClickEditCategory(): void {
+      setCategory(category)
       setIsOpenCategoryForm(true)
-      setCategoryId(category?._id ?? '')
     }
 
     return {
@@ -71,14 +71,14 @@ const CategoryManagement = () => {
           </InputLeftElement>
           <Input
             type="search"
-            placeholder="Search category by title"
+            placeholder="Search category by name"
             onChange={(event) => debounceSearch(event?.target?.value)}
           />
         </InputGroup>
         <Button
           colorScheme="teal"
           onClick={() => {
-            setCategoryId('')
+            setCategory(undefined)
             setIsOpenCategoryForm(true)
           }}
         >
@@ -93,7 +93,7 @@ const CategoryManagement = () => {
         setPageSize={setPageSize}
         isManualSort
       />
-      {/* <CategoryForm categoryId={categoryId} isOpen={isOpenCategoryForm} onClose={() => setIsOpenCategoryForm(false)} /> */}
+      <CategoryForm category={category} isOpen={isOpenCategoryForm} onClose={() => setIsOpenCategoryForm(false)} />
     </Box>
   )
 }

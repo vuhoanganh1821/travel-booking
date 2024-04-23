@@ -5,42 +5,37 @@ import { Search2Icon } from '@chakra-ui/icons'
 import Icon from 'components/Icon'
 import Table from 'components/Table'
 import { useStores } from 'hooks/useStores'
-import { ITransportation } from 'interfaces/transportation'
+import { IHotel } from 'interfaces/hotel'
+import debounce from 'lodash/debounce'
 import { observer } from 'mobx-react'
 import { useRouter } from 'next/navigation'
 import { getValidArray } from 'utils/common'
-import TransportationForm from './TransportationForm'
+// import HotelForm from './HotelForm'
 import { getHeaderList } from './utils'
 
-const TransportationManagement = () => {
-  const { transportationStore } = useStores()
-  const { transportations } = transportationStore
+const HotelManagement = () => {
+  const { hotelStore } = useStores()
+  const { hotels } = hotelStore
   const router = useRouter()
   const pageIndex: number = 1
   const [pageSize, setPageSize] = useState<number>(10)
-  const [transportation, setTransportation] = useState<ITransportation>()
-  const [isOpenTransportationForm, setIsOpenTransportationForm] = useState<boolean>(false)
+  const [hotelId, setHotelId] = useState<string>('')
+  const [searchText, setSearchText] = useState<string>('')
+  const [isOpenHotelForm, setIsOpenHotelForm] = useState<boolean>(false)
 
   const pagination = { pageIndex, tableLength: 10, gotoPage }
 
-  const dataInTable = getValidArray(transportations).map(transportation => {
-    const statusTagColor = transportation?.isActive ? 'green' : 'red'
-
-    function onClickEditTransportation(): void {
-      setIsOpenTransportationForm(true)
-      setTransportation(transportation)
+  const dataInTable = getValidArray(hotels).map(hotel => {
+    function onClickEditHotel(): void {
+      setIsOpenHotelForm(true)
+      setHotelId(hotel?._id ?? '')
     }
 
     return {
-      ...transportation,
-      status: (
-        <Tag variant="outline" colorScheme={statusTagColor} background={`${statusTagColor}.50`}>
-          <TagLabel>{transportation?.isActive ? 'Active' : 'Disable'}</TagLabel>
-        </Tag>
-      ),
+      ...hotel,
       actions: (
         <HStack width="86px" cursor="pointer" marginLeft="auto">
-          <Icon iconName="edit.svg" size={32} onClick={onClickEditTransportation} />
+          <Icon iconName="edit.svg" size={32} onClick={onClickEditHotel} />
           <Icon iconName="trash.svg" size={32} />
         </HStack>
       )
@@ -50,8 +45,16 @@ const TransportationManagement = () => {
   function gotoPage(page: number): void {}
 
   useEffect(() => {
-    transportationStore.fetchAllTransportations()
-  }, [])
+    if (searchText) {
+      hotelStore.fetchSearchHotels(searchText)
+    } else {
+      hotelStore.fetchAllHotels()
+    }
+  }, [searchText])
+
+  const debounceSearch = debounce((searchKeyword: string) => {
+    setSearchText(searchKeyword)
+  }, 500)
 
   return (
     <Box paddingX={{ base: 6, lg: 8 }} paddingY={6}>
@@ -62,18 +65,18 @@ const TransportationManagement = () => {
           </InputLeftElement>
           <Input
             type="search"
-            placeholder="Search transportation by name"
-            // onChange={changeName}
+            placeholder="Search hotel by title"
+            onChange={(event) => debounceSearch(event?.target?.value)}
           />
         </InputGroup>
         <Button
           colorScheme="teal"
           onClick={() => {
-            setTransportation(undefined)
-            setIsOpenTransportationForm(true)
+            setHotelId('')
+            setIsOpenHotelForm(true)
           }}
         >
-          Create New Transportation
+          Create New Hotel
         </Button>
       </HStack>
       <Table
@@ -84,13 +87,9 @@ const TransportationManagement = () => {
         setPageSize={setPageSize}
         isManualSort
       />
-      <TransportationForm
-        transportation={transportation}
-        isOpen={isOpenTransportationForm}
-        onClose={() => setIsOpenTransportationForm(false)}
-      />
+      {/* <HotelForm hotelId={hotelId} isOpen={isOpenHotelForm} onClose={() => setIsOpenHotelForm(false)} /> */}
     </Box>
   )
 }
 
-export default observer(TransportationManagement)
+export default observer(HotelManagement)

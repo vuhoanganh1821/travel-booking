@@ -2,6 +2,7 @@ import { Tabs, TabList, TabPanels, Tab, TabPanel } from '@chakra-ui/react'
 import CMSLayout from 'components/Layout/CMSLayout'
 import CategoryManagement from 'pages/CMS/CategoryManagement'
 import DiscountManagement from 'pages/CMS/DiscountManagement'
+import HotelManagement from 'pages/CMS/HotelManagement'
 import LocationManagement from 'pages/CMS/LocationManagement'
 import TransportationManagement from 'pages/CMS/TransportationManagement'
 
@@ -14,6 +15,7 @@ const GeneralSettingsPage = () => {
           <Tab fontWeight={500}>Location</Tab>
           <Tab fontWeight={500}>Transportation</Tab>
           <Tab fontWeight={500}>Category</Tab>
+          <Tab fontWeight={500}>Hotel</Tab>
         </TabList>
         <TabPanels>
           <TabPanel padding={0}>
@@ -27,6 +29,9 @@ const GeneralSettingsPage = () => {
           </TabPanel>
           <TabPanel padding={0}>
             <CategoryManagement />
+          </TabPanel>
+          <TabPanel padding={0}>
+            <HotelManagement />
           </TabPanel>
         </TabPanels>
       </Tabs>

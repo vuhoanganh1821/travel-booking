@@ -1,5 +1,7 @@
 import axios from 'axios'
 import { PLATFORM } from 'enums/common'
+import { toast } from 'react-toastify'
+import routes from 'routes'
 import { IHeader } from './constants'
 
 const API_URL = 'http://localhost:4001'
@@ -13,6 +15,10 @@ api.interceptors.response.use(
     return response
   },
   function (error) {
+    if (error?.response?.data?.code === 401) {
+      handleUnauthorized()
+      toast.error(error?.response?.data?.message)
+    }
     console.error('API', 'error', error)
   }
 )
@@ -23,6 +29,16 @@ export function auth(platform: PLATFORM): IHeader {
   }
   const token = localStorage.getItem(`${platform}Token`) ?? sessionStorage.getItem(`${platform}Token`) ?? ''
   return { Authorization: `Bearer ${token}` }
+}
+
+export function handleUnauthorized(): void {
+  if (window.location.href.includes(PLATFORM.CMS)) {
+    localStorage.removeItem('cmsToken')
+    localStorage.removeItem('cmsUserId')
+    setTimeout(() => {
+      window.location.href = routes.cms.login.value
+    }, 3000)
+  }
 }
 
 export function handleError(error: Error, filePath: string, functionName: string) {

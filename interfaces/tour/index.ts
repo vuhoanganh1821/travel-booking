@@ -1,3 +1,5 @@
+import { IPriceOption } from 'interfaces/common'
+
 export interface ITour {
   _id?: string
   code?: string
@@ -21,23 +23,18 @@ export interface ITour {
   discountPercentage?: number
   ratingAverage?: number
   numOfRating?: number
-  priceOptions?: ITourPriceOption[]
+  priceOptions?: IPriceOption[]
   regularPrice?: number
   currency?: string
   isActive?: boolean
+  hotels?: string[]
+  locations?: string[]
+  transports?: string[]
 }
 
 export interface ITourPagination {
   tours: ITour[]
   result: number
-}
-
-export interface ITourPriceOption {
-  _id?: string
-  title?: string
-  value?: number
-  currency?: string
-  participantsCategoryIdentifier?: string
 }
 
 export interface ITourLocation {
