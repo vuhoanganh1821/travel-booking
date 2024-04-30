@@ -14,6 +14,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import routes from 'routes'
+import { PLATFORM } from 'enums/common'
 
 interface IUpdateAccountForm extends IUser {
   status: string
@@ -64,7 +65,7 @@ const UpdateAccountDetail = () => {
         isActive: data?.status === 'Active'
       }
       await updateUser(userId, userData)
-      await userStore.fetchUserDetail(userId)
+      await userStore.fetchUserDetail(userId, PLATFORM.CMS)
       toast.success('Update account successfully')
     } catch (error) {
       setIsLoading(false)
@@ -76,7 +77,7 @@ const UpdateAccountDetail = () => {
 
   useEffect(() => {
     if (userId) {
-      userStore.fetchUserDetail(userId)
+      userStore.fetchUserDetail(userId, PLATFORM.CMS)
     }
   }, [userId])
 

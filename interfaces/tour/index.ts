@@ -10,7 +10,7 @@ export interface ITour {
   images?: string[]
   category?: string
   interest?: string
-  startLocation?: ITourLocation
+  startLocation?: IStartLocation
   details?: {
     title?: string
     description?: string
@@ -37,7 +37,7 @@ export interface ITourPagination {
   result: number
 }
 
-export interface ITourLocation {
+export interface IStartLocation {
   type?: string
   coordinates: number[]
   description: string
@@ -50,7 +50,23 @@ export interface ITourItinerary {
   address: string
   duration: number
   icon: string
-  location: ITourLocation
+  location: IStartLocation
+}
+
+export interface ISuggesttion {
+  _id: string
+  title: string
+  type: string
+  thumbnail: string
+  loc: {
+    type: string
+    coordinates: [number, number]
+  }
+}
+
+export interface ISearch {
+  suggestions: ISuggesttion[]
+  result: number
 }
 
 export interface IUploadTourImage {

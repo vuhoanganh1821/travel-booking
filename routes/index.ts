@@ -16,6 +16,14 @@ const routes = {
   myProfile: {
     value: '/my-profile'
   },
+  cart: {
+    value: '/cart'
+  },
+  booking: {
+    activity: '/booking/activity',
+    contact: '/booking/contact',
+    payment: '/booking/payment'
+  },
   ...cmsRoutes
 }
 

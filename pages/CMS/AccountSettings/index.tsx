@@ -13,6 +13,7 @@ import { usePathname, useRouter } from 'next/navigation'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import routes from 'routes'
+import { PLATFORM } from 'enums/common'
 
 interface IAccountSettingsForm extends IUser {}
 
@@ -54,7 +55,7 @@ const AccountSettings = () => {
     setIsLoading(true)
     try {
       await updateUser(userId, omit(data, ['dateOfIssuePassport', 'dateOfExpirationPassport']))
-      await userStore.fetchUserDetail(userId)
+      await userStore.fetchUserDetail(userId, PLATFORM.CMS)
       toast.success('Update account successfully')
     } catch (error) {
       setIsLoading(false)
@@ -66,7 +67,7 @@ const AccountSettings = () => {
 
   useEffect(() => {
     if (userId) {
-      userStore.fetchUserDetail(userId)
+      userStore.fetchUserDetail(userId, PLATFORM.CMS)
     }
   }, [userId])
 

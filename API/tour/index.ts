@@ -1,6 +1,6 @@
 import api, { auth, handleError } from 'API'
 import { PLATFORM } from 'enums/common'
-import { ITour, ITourPagination } from 'interfaces/tour'
+import { ITourPagination, ISearch, ITour } from 'interfaces/tour'
 import get from 'lodash/get'
 
 const TOUR_URL = '/api/v1/tours'
@@ -19,6 +19,17 @@ export async function getAllTours(): Promise<ITourPagination> {
 export async function getActiveTours(): Promise<ITourPagination> {
   try {
     const response = await api.get(`${TOUR_URL}/active-tours/all`)
+    return response.data.metadata
+  } catch (error) {
+    handleError(error as Error, 'API/tour', 'getActiveTours')
+    const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+    throw new Error(errorMessage)
+  }
+}
+
+export async function searchTour(inputValue: string): Promise<ISearch> {
+  try {
+    const response = await api.get(`${TOUR_URL}/search/${inputValue}?limit=5`)
     return response.data.metadata
   } catch (error) {
     handleError(error as Error, 'API/tour', 'getActiveTours')

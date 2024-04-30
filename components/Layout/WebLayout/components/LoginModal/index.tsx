@@ -5,11 +5,8 @@ import {
   Button,
   Checkbox,
   Divider,
-  FormControl,
-  FormLabel,
   Heading,
   HStack,
-  Input,
   Link,
   Modal,
   ModalOverlay,
@@ -36,7 +33,7 @@ const LoginModal = (props: ILoginModalProps) => {
   const { isOpen, onClose } = props
   const { authStore } = useStores()
   const methods = useForm<ILoginForm>()
-  const { handleSubmit, register } = methods
+  const { handleSubmit } = methods
   const [isLoading, setIsLoading] = useState<boolean>(false)
 
   async function onSubmit(data: ILoginForm): Promise<void> {

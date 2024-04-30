@@ -18,10 +18,10 @@ export async function getAllUsers(filter = ''): Promise<IUserPagination> {
   }
 }
 
-export async function getUserById(userId: string): Promise<IUser> {
+export async function getUserById(userId: string, platform: PLATFORM): Promise<IUser> {
   try {
     const response = await api.get(`${USER_URL}/${userId}`, {
-      headers: auth(PLATFORM.CMS)
+      headers: auth(platform)
     })
     return response.data.metadata.user
   } catch (error) {

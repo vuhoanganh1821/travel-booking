@@ -1,4 +1,5 @@
 import { getAllUsers, getUserById } from 'API/user'
+import { PLATFORM } from 'enums/common'
 import { IUser } from 'interfaces/user'
 import { makeAutoObservable } from 'mobx'
 import RootStore from 'stores'
@@ -22,8 +23,8 @@ class UserStore {
     this.totalCount = result
   }
 
-  async fetchUserDetail(userId: string): Promise<void> {
-    const user = await getUserById(userId)
+  async fetchUserDetail(userId: string, platform: PLATFORM): Promise<void> {
+    const user = await getUserById(userId, platform)
     this.userDetail = user
   }
 }

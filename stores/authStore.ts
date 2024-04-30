@@ -1,17 +1,18 @@
 import { login } from 'API/auth'
-import { ILoginForm, ILoginRequest } from 'interfaces/auth'
+import { ILoginForm } from 'interfaces/auth'
 import { IUser } from 'interfaces/user'
 import { makeAutoObservable } from 'mobx'
 import omit from 'lodash/omit'
 import RootStore from 'stores'
 import { getUserById } from 'API/user'
 import { PLATFORM } from 'enums/common'
+import { getAccessToken } from 'utils/common'
 
 export default class AuthStore {
   rootStore: RootStore
   token: string = ''
   user: IUser = {} as IUser
-  isLogin: boolean = false
+  isLogin: boolean = !!getAccessToken(PLATFORM.WEBSITE)
 
   constructor(rootStore: RootStore) {
     makeAutoObservable(this, { rootStore: false, token: false })
@@ -21,7 +22,7 @@ export default class AuthStore {
   async getMyUser(platform: PLATFORM): Promise<void> {
     const userId = localStorage.getItem(`${platform}UserId`) ?? sessionStorage.getItem(`${platform}UserId`)
     if (userId) {
-      const user = await getUserById(userId)
+      const user = await getUserById(userId, platform)
       this.user = user
       this.isLogin = true
     }

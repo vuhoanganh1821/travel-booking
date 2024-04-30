@@ -1,9 +1,9 @@
 'use client'
 import { useEffect } from 'react'
-import { SimpleGrid } from '@chakra-ui/react'
+import { SimpleGrid, Text } from '@chakra-ui/react'
 import TourCard from 'components/TourCard'
-import MainLayout from 'components/Layout/MainLayout'
-import { useStores } from 'hooks/useStores'
+import HomeLayout from 'components/Layout/WebLayout/HomeLayout'
+import { useStores } from 'hooks'
 import { observer } from 'mobx-react'
 
 const HomePage = () => {
@@ -15,13 +15,29 @@ const HomePage = () => {
   }, [])
 
   return (
-    <MainLayout>
-      <SimpleGrid maxWidth="1200px" columns={{ base: 1, sm: 2, md: 4 }} gap={6} padding={8}>
+    <HomeLayout>
+      <Text
+        margin="0px 253px"
+        padding="0px 98px"
+        fontSize="3xl"
+        fontWeight="600"
+        alignSelf="flex-start"
+        mt="32px"
+      >
+        Unforgettable tours experiences
+      </Text>
+      <SimpleGrid
+        maxWidth="1200px"
+        columns={{ base: 1, sm: 2, md: 4 }}
+        gap={8}
+        padding={1}
+        mt="8px"
+      >
         {tours.map((tour) => (
           <TourCard key={tour?._id} tour={tour} />
         ))}
       </SimpleGrid>
-    </MainLayout>
+    </HomeLayout>
   )
 }
 

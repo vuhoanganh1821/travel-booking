@@ -11,6 +11,7 @@ import { toast } from 'react-toastify'
 import routes from 'routes'
 import FormLabelValue from '../../../../components/FormLabelValue'
 import { EBookingStatus } from 'enums/booking'
+import { PLATFORM } from 'enums/common'
 
 interface IBookingDetailForm {
   status: EBookingStatus
@@ -45,7 +46,7 @@ const BookingDetail = () => {
 
   useEffect(() => {
     if (userId) {
-      userStore.fetchUserDetail(userId)
+      userStore.fetchUserDetail(userId, PLATFORM.WEBSITE)
     }
   }, [userId])
 
