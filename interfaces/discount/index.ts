@@ -11,6 +11,7 @@ export interface IDiscount {
   minOrder?: number
   isActive?: boolean
   appliesTo?: string
+  tours?: string[]
   createdAt?: Date
   updatedAt?: Date
 }

@@ -102,6 +102,7 @@ const DiscountForm = (props: IDiscountFormProps) => {
     if (isOpen && discountId) {
       reset({
         ...discountDetail,
+        tourValue: tourOptions.find(option => option?.value === discountDetail?.tours?.[0]),
         typeValue: discountTypeOptions.find(option => option?.value === discountDetail?.type),
         appliesToValue: discountAppliesToOptions.find(option => option?.value === discountDetail?.appliesTo)
       })
