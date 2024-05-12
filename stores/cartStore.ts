@@ -26,12 +26,12 @@ class CartStrores {
   }
 
   unSetSelectedCart(tour: string): void {
-    this.selectedCart = this.selectedCart.filter((item) => item.tour !== tour)
+    this.selectedCart = this.selectedCart.filter((item) => item?.tour !== tour)
   }
 
   async fetchCartCount(): Promise<void> {
     const { cart } = await getListCart()
-    this.cartCount = cart.tours.length
+    this.cartCount = cart?.tours?.length
     this.listCart = cart
   }
 
@@ -47,7 +47,6 @@ class CartStrores {
 
   async updateCart(data: IUpdateToCart): Promise<void> {
     const { updatedCart } = await updateCart(data)
-    console.log(updatedCart)
     this.listCart = updatedCart
   }
 

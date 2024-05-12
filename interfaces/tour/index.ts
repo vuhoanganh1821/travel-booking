@@ -5,6 +5,8 @@ export interface ITour {
   code?: string
   title?: string
   highlights?: string[]
+  type?: string
+  summary?: string
   description?: string
   thumbnail?: string
   images?: string[]

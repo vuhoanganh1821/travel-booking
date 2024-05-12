@@ -25,6 +25,9 @@ const cmsRoutes = {
         value: (tourId: string) => `/cms/tour-management/${tourId}`
       }
     },
+    reviewManagement: {
+      value: '/cms/review-management',
+    },
     accountManagement: {
       value: '/cms/account-management',
     },

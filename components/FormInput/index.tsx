@@ -35,6 +35,7 @@ export interface IFormItemProps {
   min?: number
   width?: string
   height?: string
+  gridColumn?: string
   inputColor?: string
   autoComplete?: string
   hideErrorMessage?: boolean
@@ -57,6 +58,7 @@ const FormItem = (props: IFormItemProps) => {
     min,
     width,
     height,
+    gridColumn,
     autoComplete,
     hideErrorMessage
   } = props
@@ -103,6 +105,7 @@ const FormItem = (props: IFormItemProps) => {
     <FormControl
       isInvalid={!!get(errors, name, false)}
       alignSelf={!label || hideLabel ? 'flex-end' : undefined}
+      gridColumn={gridColumn}
       className={className}
       width={width}
     >
@@ -141,6 +144,7 @@ const FormItem = (props: IFormItemProps) => {
           name={name}
           control={control}
           rules={{ required: true }}
+          isInvalid={!!errors[name]}
           render={({ field }) => (
             <NumberInput focusBorderColor="teal.500" {...field} min={min}>
               <NumberInputField />

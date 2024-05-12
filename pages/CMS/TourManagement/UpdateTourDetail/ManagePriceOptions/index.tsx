@@ -20,7 +20,7 @@ import FormInput from 'components/FormInput'
 import { IUser } from 'interfaces/user'
 import { useWatch } from 'react-hook-form'
 import { getValidArray } from 'utils/common'
-import { ITourPriceOption } from 'interfaces/tour'
+import { IPriceOption } from 'interfaces/common'
 import { toast } from 'react-toastify'
 import { updateTourDetail } from 'API/tour'
 import Icon from 'components/Icon'
@@ -42,8 +42,8 @@ const ManagePriceOptions = (props: IManagePriceOptionsProps) => {
     setValue
   } = methods
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-  const [existingOptions, setExistingOptions] = useState<ITourPriceOption[]>([])
-  const priceOptions: ITourPriceOption[] = useWatch({ control, name: 'priceOptions' })
+  const [existingOptions, setExistingOptions] = useState<IPriceOption[]>([])
+  const priceOptions: IPriceOption[] = useWatch({ control, name: 'priceOptions' })
 
   function handleOnClose(): void {
     reset()
@@ -72,8 +72,8 @@ const ManagePriceOptions = (props: IManagePriceOptionsProps) => {
 
   async function onSubmit(): Promise<void> {
     setIsSubmitting(true)
-    const data: ITourPriceOption[] = getValues('priceOptions')
-    const priceOptionsData: ITourPriceOption[] = getValidArray(data).map(option => {
+    const data: IPriceOption[] = getValues('priceOptions')
+    const priceOptionsData: IPriceOption[] = getValidArray(data).map(option => {
       return {
         title: option?.title,
         value: Number(option?.value),

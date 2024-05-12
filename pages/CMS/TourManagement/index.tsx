@@ -16,14 +16,14 @@ import { getHeaderList } from './utils'
 
 const TourManagement = () => {
   const { tourStore } = useStores()
-  const { tours } = tourStore
+  const { tours, totalCount } = tourStore
   const router = useRouter()
-  const pageIndex: number = 1
+  const [pageIndex, setPageIndex] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(10)
   const [selectedTourId, setSelectedTourId] = useState<string>()
   const { isOpen: isConfirming, onOpen: onConfirm, onClose: closeConfirm } = useDisclosure()
 
-  const pagination: IPagination = { pageIndex, tableLength: 10, gotoPage }
+  const pagination: IPagination = { pageIndex, tableLength: totalCount, gotoPage: setPageIndex }
 
   const dataInTable = getValidArray(tours).map(tour => {
     return {
@@ -54,10 +54,6 @@ const TourManagement = () => {
     router.push(routes.cms.tourManagement.detail.value(tourId))
   }
 
-  function gotoPage(page: number): void {
-    // router.push(`${routes.cms.tourManagement.value}?page=${page}`)
-  }
-
   function onClickDeleteTour(tourId: string): void {
     setSelectedTourId(tourId)
     onConfirm()
@@ -67,7 +63,7 @@ const TourManagement = () => {
     try {
       if (selectedTourId) {
         await deleteTour(selectedTourId)
-        await tourStore.fetchAllTours()
+        await fetchData()
         closeConfirm()
         toast.success('Delete tour successfully')
       }
@@ -77,9 +73,16 @@ const TourManagement = () => {
     }
   }
 
+  async function fetchData(): Promise<void> {
+    await Promise.all([
+      tourStore.fetchTotalCount(),
+      tourStore.fetchAllTours(pageIndex)
+    ])
+  }
+
   useEffect(() => {
-    tourStore.fetchAllTours()
-  }, [tourStore])
+    fetchData()
+  }, [pageIndex])
 
   return (
     <Box paddingX={{ base: 6, lg: 8 }} paddingY={6}>

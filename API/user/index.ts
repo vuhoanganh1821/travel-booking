@@ -7,7 +7,7 @@ const USER_URL = '/api/v1/users'
 
 export async function getAllUsers(filter = ''): Promise<IUserPagination> {
   try {
-    const response = await api.get(`${USER_URL}?${filter}`, {
+    const response = await api.get(`${USER_URL}${filter}`, {
       headers: auth(PLATFORM.CMS)
     })
     return response.data.metadata

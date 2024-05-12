@@ -39,7 +39,9 @@ const ConfirmModal = (props: IConfirmModalProps) => {
       setIsLoading(true)
       await onClickAccept()
       setIsLoading(false)
+      onClose()
     } catch (error) {
+      onClose()
       setIsLoading(false)
       toast.error('Something wrong happened')
     }
@@ -79,9 +81,9 @@ const ConfirmModal = (props: IConfirmModalProps) => {
             paddingY={2}
             onClick={onsubmit}
             isLoading={isLoading}
-            backgroundColor="red.600"
-            _hover={{ background: 'red.700' }}
-            _active={{ background: 'red.800' }}
+            backgroundColor={confirmButtonText?.includes('delete') ? 'red.600' : 'teal.500' }
+            _hover={{ background: confirmButtonText?.includes('delete') ? 'red.700' : 'teal.600' }}
+            _active={{ background: confirmButtonText?.includes('delete') ? 'red.800' : 'teal.700' }}
           >
             {confirmButtonText}
           </Button>

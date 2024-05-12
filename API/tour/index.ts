@@ -5,9 +5,9 @@ import get from 'lodash/get'
 
 const TOUR_URL = '/api/v1/tours'
 
-export async function getAllTours(): Promise<ITourPagination> {
+export async function getAllTours(filter = ''): Promise<ITourPagination> {
   try {
-    const response = await api.get(`${TOUR_URL}/all`)
+    const response = await api.get(`${TOUR_URL}/all${filter}`)
     return response.data.metadata
   } catch (error) {
     handleError(error as Error, 'API/tour', 'getAllTours')
@@ -29,7 +29,7 @@ export async function getActiveTours(): Promise<ITourPagination> {
 
 export async function searchTour(inputValue: string): Promise<ISearch> {
   try {
-    const response = await api.get(`${TOUR_URL}/search/${inputValue}?limit=5`)
+    const response = await api.get(`/api/v1/search/${inputValue}?limit=5`)
     return response.data.metadata
   } catch (error) {
     handleError(error as Error, 'API/tour', 'getActiveTours')

@@ -1,7 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Box, Button, HStack, Input, InputGroup, InputLeftElement, Tag, TagLabel } from '@chakra-ui/react'
+import { Box, Button, HStack, Img, Input, InputGroup, InputLeftElement, Tag, TagLabel, Text } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
+import { deleteLocation } from 'API/location'
+import ConfirmModal from 'components/ConfirmModal'
 import Icon from 'components/Icon'
 import Table from 'components/Table'
 import { useStores } from 'hooks/useStores'
@@ -9,19 +11,19 @@ import { ILocation } from 'interfaces/location'
 import capitalize from 'lodash/capitalize'
 import debounce from 'lodash/debounce'
 import { observer } from 'mobx-react'
-import { useRouter } from 'next/navigation'
 import { getValidArray } from 'utils/common'
-// import LocationForm from './LocationForm'
+import LocationForm from './LocationForm'
 import { getHeaderList } from './utils'
+import { toast } from 'react-toastify'
 
 const LocationManagement = () => {
   const { locationStore } = useStores()
   const { locations } = locationStore
-  const router = useRouter()
   const pageIndex: number = 1
   const [pageSize, setPageSize] = useState<number>(10)
-  const [locationId, setLocationId] = useState<string>('')
+  const [location, setLocation] = useState<ILocation>()
   const [searchText, setSearchText] = useState<string>('')
+  const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [isOpenLocationForm, setIsOpenLocationForm] = useState<boolean>(false)
 
   const pagination = { pageIndex, tableLength: 10, gotoPage }
@@ -31,26 +33,46 @@ const LocationManagement = () => {
 
     function onClickEditLocation(): void {
       setIsOpenLocationForm(true)
-      setLocationId(location?._id ?? '')
+      setLocation(location)
+    }
+
+    function onClickDeleteLocation(): void {
+      setIsDeleting(true)
+      setLocation(location)
     }
 
     return {
       ...location,
+      longitude: location?.loc?.coordinates[0],
+      latitude: location?.loc?.coordinates[1],
       type: (
         <Tag variant="outline" colorScheme={statusTagColor} background={`${statusTagColor}.50`}>
           <TagLabel>{capitalize(location?.type)}</TagLabel>
         </Tag>
       ),
+      thumbnail: location?.thumbnail && <Img boxSize={10} src={location?.thumbnail} borderRadius={8} />,
       actions: (
         <HStack width="86px" cursor="pointer" marginLeft="auto">
           <Icon iconName="edit.svg" size={32} onClick={onClickEditLocation} />
-          <Icon iconName="trash.svg" size={32} />
+          <Icon iconName="trash.svg" size={32} onClick={onClickDeleteLocation} />
         </HStack>
       )
     }
   })
 
   function gotoPage(page: number): void {}
+
+  async function handleDeleteLocation(): Promise<void> {
+    try {
+      if (location?._id) {
+        await deleteLocation(location?._id)
+        await locationStore.fetchAllLocations()
+        toast.success('Delete location successfully')
+      }
+    } catch (error) {
+      toast.error('Delete location failed')
+    }
+  }
 
   useEffect(() => {
     if (searchText) {
@@ -80,7 +102,7 @@ const LocationManagement = () => {
         <Button
           colorScheme="teal"
           onClick={() => {
-            setLocationId('')
+            setLocation(undefined)
             setIsOpenLocationForm(true)
           }}
         >
@@ -95,7 +117,16 @@ const LocationManagement = () => {
         setPageSize={setPageSize}
         isManualSort
       />
-      {/* <LocationForm locationId={locationId} isOpen={isOpenLocationForm} onClose={() => setIsOpenLocationForm(false)} /> */}
+      <LocationForm location={location} isOpen={isOpenLocationForm} onClose={() => setIsOpenLocationForm(false)} />
+      <ConfirmModal
+        titleText="Delete Location"
+        bodyText={<Text>Are you sure to delete this location?{<br />}This action can not be undo</Text>}
+        cancelButtonText="No, keep this location"
+        confirmButtonText="Yes, delete"
+        isOpen={isDeleting}
+        onClose={() => setIsDeleting(false)}
+        onClickAccept={handleDeleteLocation}
+      />
     </Box>
   )
 }

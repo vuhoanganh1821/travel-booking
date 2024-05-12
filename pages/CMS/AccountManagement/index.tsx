@@ -18,18 +18,20 @@ import AccountForm from './AccountForm'
 import { getHeaderList } from './utils'
 import { toast } from 'react-toastify'
 import routes from 'routes'
+import AccountFilter from './AccountFilter'
 
 const AccountManagement = () => {
   const { userStore } = useStores()
-  const { users } = userStore
+  const { users, totalCount } = userStore
   const router = useRouter()
-  const pageIndex: number = 1
+  const [pageIndex, setPageIndex] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(10)
   const [selectedUser, setSelectedUser] = useState<IUser>()
   const { isOpen: isConfirming, onOpen: onConfirm, onClose: closeConfirm } = useDisclosure()
+  const { isOpen: isOpenFilterForm, onOpen: onOpenFilterForm, onClose: closeFilterForm } = useDisclosure()
   const { isOpen: isOpenAccountForm, onOpen: onOpenAccountForm, onClose: closeAccountForm } = useDisclosure()
 
-  const pagination: IPagination = { pageIndex, tableLength: 10, gotoPage }
+  const pagination: IPagination = { pageIndex, tableLength: totalCount, gotoPage: setPageIndex }
 
   const dataInTable = getValidArray(users).map(user => {
     const statusTagColor = user?.role === ERole.ADMIN ? 'orange' : user?.role === ERole.GUIDE ? 'yellow' : 'blue'
@@ -98,22 +100,33 @@ const AccountManagement = () => {
   }
 
   useEffect(() => {
-    userStore.fetchAllUsers()
-  }, [userStore])
+    userStore.fetchTotalCount()
+    userStore.fetchAllUsers('', pageIndex)
+  }, [pageIndex])
 
   return (
     <Box paddingX={{ base: 6, lg: 8 }} paddingY={6}>
-      <HStack justify="space-between" spacing={4} marginBottom={6}>
-        <InputGroup borderRadius="6px" maxWidth="400px" background="white">
-          <InputLeftElement pointerEvents="none">
-            <Search2Icon color="gray.400" />
-          </InputLeftElement>
-          <Input
-            type="search"
-            placeholder="Search account by name or email"
-            // onChange={changeName}
-          />
-        </InputGroup>
+      <HStack justify="space-between" marginBottom={6}>
+        <HStack width="50%" spacing={4}>
+          <InputGroup borderRadius="6px" maxWidth="400px" background="white">
+            <InputLeftElement pointerEvents="none">
+              <Search2Icon color="gray.400" />
+            </InputLeftElement>
+            <Input
+              type="search"
+              placeholder="Search account by name or email"
+              // onChange={changeName}
+            />
+          </InputGroup>
+          <Button
+            background="white"
+            borderWidth={1}
+            onClick={onOpenFilterForm}
+            leftIcon={<Icon iconName="filter.svg" size={16} />}
+          >
+            Filter
+          </Button>
+        </HStack>
         <Button colorScheme="teal" onClick={() => setAccountForm(true)}>
           Create New Account
         </Button>
@@ -131,6 +144,7 @@ const AccountManagement = () => {
         isOpen={isOpenAccountForm}
         onClose={() => setAccountForm(false)}
       />
+      <AccountFilter isOpen={isOpenFilterForm} onClose={closeFilterForm} />
       <ConfirmModal
         titleText="Delete Account"
         bodyText={<Text>Are you sure to delete this account?{<br />}This action can not be undo</Text>}

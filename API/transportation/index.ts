@@ -55,3 +55,15 @@ export async function updateTransportation(transportationId: string, transportat
     throw new Error(errorMessage)
   }
 }
+
+export async function deleteTransportation(transportationId: string): Promise<void> {
+  try {
+    await api.delete(`${TRANSPORTATION_URL}/${transportationId}`, {
+      headers: auth(PLATFORM.CMS)
+    })
+  } catch (error) {
+    handleError(error as Error, 'API/transportation', 'deleteTransportation')
+    const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+    throw new Error(errorMessage)
+  }
+}

@@ -42,3 +42,27 @@ export async function createCategory(category: ICategory): Promise<void> {
     throw new Error(errorMessage)
   }
 }
+
+export async function updateCategory(categoryId: string, category: ICategory): Promise<void> {
+  try {
+    await api.post(`${CATEGORY_URL}/${categoryId}`, category, {
+      headers: auth(PLATFORM.CMS)
+    })
+  } catch (error) {
+    handleError(error as Error, 'API/category', 'updateCategory')
+    const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+    throw new Error(errorMessage)
+  }
+}
+
+export async function deleteCategory(categoryId: string): Promise<void> {
+  try {
+    await api.delete(`${CATEGORY_URL}/${categoryId}`, {
+      headers: auth(PLATFORM.CMS)
+    })
+  } catch (error) {
+    handleError(error as Error, 'API/category', 'deleteCategory')
+    const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+    throw new Error(errorMessage)
+  }
+}

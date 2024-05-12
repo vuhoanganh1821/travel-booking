@@ -5,6 +5,19 @@ import get from 'lodash/get'
 
 const DISCOUNT_URL = '/api/v1/discounts'
 
+export async function searchDiscounts(code: string): Promise<IDiscountPagination> {
+  try {
+    const response = await api.get(`${DISCOUNT_URL}/search/${code}`, {
+      headers: auth(PLATFORM.CMS)
+    })
+    return response.data.metadata
+  } catch (error) {
+    handleError(error as Error, 'API/discount', 'searchDiscounts')
+    const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+    throw new Error(errorMessage)
+  }
+}
+
 export async function getAllDiscounts(): Promise<IDiscountPagination> {
   try {
     const response = await api.get(DISCOUNT_URL, {
@@ -51,6 +64,18 @@ export async function updateDiscount(discountId: string, discount: IDiscount): P
     })
   } catch (error) {
     handleError(error as Error, 'API/discount', 'updateDiscount')
+    const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+    throw new Error(errorMessage)
+  }
+}
+
+export async function deleteDiscount(discountId: string): Promise<void> {
+  try {
+    await api.delete(`${DISCOUNT_URL}/${discountId}`, {
+      headers: auth(PLATFORM.CMS)
+    })
+  } catch (error) {
+    handleError(error as Error, 'API/discount', 'deleteDiscount')
     const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
     throw new Error(errorMessage)
   }

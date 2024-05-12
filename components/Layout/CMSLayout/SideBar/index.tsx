@@ -25,6 +25,11 @@ const SideBar = () => {
           route={routes.cms.accountManagement.value}
         />
         <NavLink
+          label="Review Management"
+          icon=""
+          route={routes.cms.reviewManagement.value}
+        />
+        <NavLink
           label="General Settings"
           icon=""
           route={routes.cms.generalSettings.value}

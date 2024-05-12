@@ -21,10 +21,14 @@ class TourStore {
   priceOptions?: IPriceOption[] = []
   startLocation?: IStartLocation
 
-  async fetchAllTours(): Promise<void> {
-    const { tours, result } = await getAllTours()
-    this.tours = tours
+  async fetchTotalCount(): Promise<void> {
+    const { result } = await getAllTours()
     this.totalCount = result
+  }
+
+  async fetchAllTours(page = 1): Promise<void> {
+    const { tours } = await getAllTours(`?page=${page}&limit=10`)
+    this.tours = tours
   }
 
   async fetchActiveTours(): Promise<void> {

@@ -1,7 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Box, Button, HStack, Input, InputGroup, InputLeftElement, Tag, TagLabel } from '@chakra-ui/react'
+import { Box, Button, HStack, Img, Input, InputGroup, InputLeftElement, Text } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
+import { deleteHotel } from 'API/hotel'
+import ConfirmModal from 'components/ConfirmModal'
 import Icon from 'components/Icon'
 import Table from 'components/Table'
 import { useStores } from 'hooks/useStores'
@@ -10,8 +12,9 @@ import debounce from 'lodash/debounce'
 import { observer } from 'mobx-react'
 import { useRouter } from 'next/navigation'
 import { getValidArray } from 'utils/common'
-// import HotelForm from './HotelForm'
+import HotelForm from './HotelForm'
 import { getHeaderList } from './utils'
+import { toast } from 'react-toastify'
 
 const HotelManagement = () => {
   const { hotelStore } = useStores()
@@ -19,30 +22,49 @@ const HotelManagement = () => {
   const router = useRouter()
   const pageIndex: number = 1
   const [pageSize, setPageSize] = useState<number>(10)
-  const [hotelId, setHotelId] = useState<string>('')
+  const [hotel, setHotel] = useState<IHotel>()
   const [searchText, setSearchText] = useState<string>('')
+  const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [isOpenHotelForm, setIsOpenHotelForm] = useState<boolean>(false)
 
   const pagination = { pageIndex, tableLength: 10, gotoPage }
 
   const dataInTable = getValidArray(hotels).map(hotel => {
     function onClickEditHotel(): void {
+      setHotel(hotel)
       setIsOpenHotelForm(true)
-      setHotelId(hotel?._id ?? '')
+    }
+
+    function onClickDeleteHotel(): void {
+      setHotel(hotel)
+      setIsDeleting(true)
     }
 
     return {
       ...hotel,
+      thumbnail: hotel?.thumbnail && <Img boxSize={10} src={hotel?.thumbnail} borderRadius={8} />,
       actions: (
         <HStack width="86px" cursor="pointer" marginLeft="auto">
           <Icon iconName="edit.svg" size={32} onClick={onClickEditHotel} />
-          <Icon iconName="trash.svg" size={32} />
+          <Icon iconName="trash.svg" size={32} onClick={onClickDeleteHotel} />
         </HStack>
       )
     }
   })
 
   function gotoPage(page: number): void {}
+
+  async function handleDeleteHotel(): Promise<void> {
+    try {
+      if (hotel?._id) {
+        await deleteHotel(hotel?._id)
+        await hotelStore.fetchAllHotels()
+        toast.success('Delete hotel successfully')
+      }
+    } catch (error) {
+      toast.error('Delete hotel failed')
+    }
+  }
 
   useEffect(() => {
     if (searchText) {
@@ -65,14 +87,14 @@ const HotelManagement = () => {
           </InputLeftElement>
           <Input
             type="search"
-            placeholder="Search hotel by title"
+            placeholder="Search hotel by name"
             onChange={(event) => debounceSearch(event?.target?.value)}
           />
         </InputGroup>
         <Button
           colorScheme="teal"
           onClick={() => {
-            setHotelId('')
+            setHotel(undefined)
             setIsOpenHotelForm(true)
           }}
         >
@@ -87,7 +109,16 @@ const HotelManagement = () => {
         setPageSize={setPageSize}
         isManualSort
       />
-      {/* <HotelForm hotelId={hotelId} isOpen={isOpenHotelForm} onClose={() => setIsOpenHotelForm(false)} /> */}
+      <HotelForm hotel={hotel} isOpen={isOpenHotelForm} onClose={() => setIsOpenHotelForm(false)} />
+      <ConfirmModal
+        titleText="Delete Hotel"
+        bodyText={<Text>Are you sure to delete this hotel?{<br />}This action can not be undo</Text>}
+        cancelButtonText="No, keep this hotel"
+        confirmButtonText="Yes, delete"
+        isOpen={isDeleting}
+        onClose={() => setIsDeleting(false)}
+        onClickAccept={handleDeleteHotel}
+      />
     </Box>
   )
 }

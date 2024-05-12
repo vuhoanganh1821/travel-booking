@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { createElement, forwardRef, useEffect } from 'react'
 import {
   Button,
   Modal,
@@ -11,13 +11,19 @@ import {
   SimpleGrid
 } from '@chakra-ui/react'
 import { createDiscount, updateDiscount } from 'API/discount'
+import DateInput from 'components/DateInput'
+import Dropdown, { IOption } from 'components/Dropdown'
 import FormInput from 'components/FormInput'
+import { discountAppliesToOptions, discountTypeOptions } from 'constants/common'
 import dayjs from 'dayjs'
+import { EDiscountAppliesTo } from 'enums/discount'
 import { useStores } from 'hooks/useStores'
 import { IDiscount } from 'interfaces/discount'
 import { observer } from 'mobx-react'
+import DatePicker from 'react-datepicker'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { getValidArray } from 'utils/common'
 
 interface IDiscountForm {
   name: string
@@ -26,8 +32,12 @@ interface IDiscountForm {
   type: string
   minOrder: number
   appliesTo: string
-  startDate: string
-  endDate: string
+  tours: string[]
+  startDate: Date
+  endDate: Date
+  typeValue: IOption
+  appliesToValue: IOption
+  tourValue: IOption
 }
 
 interface IDiscountFormProps {
@@ -37,15 +47,24 @@ interface IDiscountFormProps {
 }
 
 const DiscountForm = (props: IDiscountFormProps) => {
-  const { discountStore } = useStores()
+  const { discountStore, tourStore } = useStores()
+  const { tours } = tourStore
   const { discountDetail } = discountStore
   const { isOpen, onClose, discountId } = props
   const methods = useForm<IDiscountForm>()
   const {
+    control,
     handleSubmit,
     formState: { isSubmitting },
-    reset
+    register,
+    reset,
+    setValue
   } = methods
+  const startDate: Date = dayjs(useWatch({ control, name: 'startDate' }) || new Date()).toDate()
+  const endDate: Date = dayjs(useWatch({ control, name: 'endDate' }) || new Date()).toDate()
+  const appliesToValue = useWatch({ control, name: 'appliesToValue' })
+  const tourOptions = getValidArray(tours).map(tour => ({ label: tour?.title ?? '', value: tour?._id ?? '' }))
+  const isSpecific = appliesToValue?.value === EDiscountAppliesTo.SPECIFIC
 
   function handleOnClose(): void {
     reset()
@@ -53,15 +72,14 @@ const DiscountForm = (props: IDiscountFormProps) => {
   }
 
   async function onSubmit(data: IDiscountForm): Promise<void> {
-    console.log(data)
-    console.log(dayjs(data?.startDate).format('MM/DD/YYYY'))
     const discount = {
       name: data?.name,
       code: data?.code,
       value: data?.value,
-      type: data?.type,
+      type: data?.typeValue?.value,
       minOrder: data?.minOrder,
-      appliesTo: data?.appliesTo,
+      appliesTo: data?.appliesToValue?.value,
+      tours: isSpecific ? [data?.tourValue?.value] : undefined,
       startDate: dayjs(data?.startDate).toDate(),
       endDate: dayjs(data?.endDate).toDate(),
     }
@@ -84,8 +102,8 @@ const DiscountForm = (props: IDiscountFormProps) => {
     if (isOpen && discountId) {
       reset({
         ...discountDetail,
-        startDate: dayjs(discountDetail?.startDate).format('DD/MM/YYYY'),
-        endDate: dayjs(discountDetail?.endDate).format('DD/MM/YYYY'),
+        typeValue: discountTypeOptions.find(option => option?.value === discountDetail?.type),
+        appliesToValue: discountAppliesToOptions.find(option => option?.value === discountDetail?.appliesTo)
       })
     } else {
       reset({})
@@ -109,15 +127,50 @@ const DiscountForm = (props: IDiscountFormProps) => {
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody border="1px solid #E2E8F0" padding={6}>
-              <SimpleGrid columns={{ base: 1, md: 2 }} gap={6} marginBottom={6}>
+              <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
+                <FormInput name="startDate" label="Start Date">
+                  <DatePicker
+                    {...register('startDate')}
+                    selected={startDate}
+                    dateFormat="MM/dd/yyyy"
+                    onChange={(date: Date) => setValue('startDate', dayjs(date).toDate(), { shouldDirty: true })}
+                    customInput={createElement(forwardRef(DateInput))}
+                  />
+                </FormInput>
+                <FormInput name="endDate" label="End Date">
+                  <DatePicker
+                    {...register('endDate')}
+                    selected={endDate}
+                    dateFormat="MM/dd/yyyy"
+                    onChange={(date: Date) => setValue('endDate', dayjs(date).toDate(), { shouldDirty: true })}
+                    customInput={createElement(forwardRef(DateInput))}
+                  />
+                </FormInput>
                 <FormInput name="code" label="Code" placeholder="Enter Code" />
                 <FormInput name="name" label="Name" placeholder="Enter Name" />
                 <FormInput name="value" label="Value" placeholder="Enter Value" />
-                <FormInput name="type" label="Type" placeholder="Enter Type" />
+                <Dropdown
+                  name="typeValue"
+                  label="Type"
+                  options={discountTypeOptions}
+                  setValue={setValue}
+                />
                 <FormInput name="minOrder" label="Min Order" placeholder="Enter Min Order" />
-                <FormInput name="appliesTo" label="Applies To" placeholder="Enter Applies To" />
-                <FormInput name="startDate" label="Start Date" placeholder="MM/DD/YYYY" />
-                <FormInput name="endDate" label="End Date" placeholder="MM/DD/YYYY" />
+                <Dropdown
+                  name="appliesToValue"
+                  label="Applies To"
+                  options={discountAppliesToOptions}
+                  setValue={setValue}
+                />
+                {isSpecific && (
+                  <Dropdown
+                    name="tourValue"
+                    label="Applies To Tour"
+                    gridColumn="span 2"
+                    options={tourOptions}
+                    setValue={setValue}
+                  />
+                )}
               </SimpleGrid>
             </ModalBody>
             <ModalFooter>
@@ -130,6 +183,7 @@ const DiscountForm = (props: IDiscountFormProps) => {
                 paddingY={2}
                 marginRight={4}
                 onClick={handleOnClose}
+                isLoading={isSubmitting}
               >
                 Cancel
               </Button>

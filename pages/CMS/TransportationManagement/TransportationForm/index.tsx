@@ -1,6 +1,7 @@
-import React, { useEffect } from 'react'
+import React, { ChangeEvent, useEffect, useRef, useState } from 'react'
 import {
   Button,
+  Img,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,8 +15,9 @@ import { createTransportation, updateTransportation } from 'API/transportation'
 import FormInput from 'components/FormInput'
 import { useStores } from 'hooks/useStores'
 import { ITransportation } from 'interfaces/transportation'
-import { FormProvider, useForm } from 'react-hook-form'
+import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'react-toastify'
+import { uploadImage } from 'API/upload'
 
 interface ITransportationForm extends ITransportation {}
 
@@ -28,16 +30,39 @@ interface ITransportationFormProps {
 const TransportationForm = (props: ITransportationFormProps) => {
   const { isOpen, onClose, transportation } = props
   const { transportationStore } = useStores()
+  const fileInputRef = useRef<any>(null)
   const methods = useForm<ITransportationForm>()
   const {
+    control,
     handleSubmit,
     formState: { isSubmitting },
-    reset
+    reset,
+    setValue
   } = methods
+  const [isUploading, setIsUploading] = useState<boolean>(false)
+  const image = useWatch({ control, name: 'image' }) ?? ''
 
   function handleOnClose(): void {
     reset({})
     onClose()
+  }
+
+  async function handleUploadImage(event: ChangeEvent<HTMLInputElement>) {
+    setIsUploading(true)
+    if (!event.target.files || event.target.files.length === 0) {
+      return
+    }
+    try { 
+      const formData = new FormData()
+      formData.append('image', event.target.files[0])
+      const imageUrl: string = await uploadImage('transportation', formData)
+      setValue('image', imageUrl)
+    } catch (error) {
+      setIsUploading(false)
+      toast.error('Upload image failed')
+    } finally {
+      setIsUploading(false)
+    }
   }
 
   async function onSubmit(data: ITransportationForm): Promise<void> {
@@ -64,6 +89,8 @@ const TransportationForm = (props: ITransportationFormProps) => {
         capacity: transportation?.capacity,
         image: transportation?.image
       })
+    } else {
+      reset({})
     }
   }, [isOpen])
 
@@ -78,11 +105,25 @@ const TransportationForm = (props: ITransportationFormProps) => {
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody border="1px solid #E2E8F0" padding={6}>
-              <SimpleGrid columns={{ base: 1, md: 2 }} gap={6} marginBottom={6}>
+              <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
                 <FormInput name="name" label="Name" placeholder="Enter Name" />
                 <FormInput name="brand" label="Brand" placeholder="Enter Brand" />
+                <FormInput name="image" label="Image">
+                  {image && (
+                    <Img width="full" height="180px" src={image} borderRadius={8} marginBottom={4} />
+                  )}
+                  <Button
+                    width="full"
+                    background="white"
+                    borderWidth={1}
+                    isLoading={isUploading}
+                    onClick={() => fileInputRef?.current?.click()}
+                  >
+                    Change Image
+                  </Button>
+                  <input type="file" ref={fileInputRef} onChange={handleUploadImage} style={{ display: 'none' }} />
+                </FormInput>
                 <FormInput name="capacity" label="Capacity" placeholder="Enter Capacity" />
-                {/* <FormInput name="image" label="Image" placeholder="Enter Image" /> */}
               </SimpleGrid>
             </ModalBody>
             <ModalFooter>

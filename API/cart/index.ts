@@ -30,8 +30,6 @@ export async function getListCart(): Promise<ICart> {
     const response = await api.get(`${CART_URL}`, {
       headers: auth(PLATFORM.WEBSITE),
     })
-    console.log(response.data.metadata)
-
     return response.data.metadata
   } catch (error) {
     handleError(error as Error, 'API/cart', 'getListCart')
@@ -46,8 +44,6 @@ export async function updateCart(data: IUpdateToCart): Promise<IUpdatedCart> {
     const response = await api.post(`${CART_URL}/update`, data, {
       headers: auth(PLATFORM.WEBSITE),
     })
-    console.log('updateCart', response.data.metadata)
-
     return response.data.metadata
   } catch (error) {
     handleError(error as Error, 'API/cart', 'updateCart')

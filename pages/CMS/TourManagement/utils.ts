@@ -34,8 +34,21 @@ export function getHeaderList(): ITableHeader[] {
 
 export function formatFormData(formData: IUpdateTourForm): ITour {
   return {
-    ...formData,
+    code: formData?.code,
+    title: formData?.title,
+    summary: formData?.summary,
+    // interest: formData?.interest,
+    // type: formData?.typeValue?.value,
+    description: formData?.description,
+    category: formData?.categoryValue?.value,
+    currency: formData?.currencyValue?.value,
+    regularPrice: Number(formData?.regularPrice ?? 1),
+    discountPrice: Number(formData?.discountPrice ?? 1),
+    discountPercentage: Number(formData?.discountPercentage ?? 1),
+    duration: Number(formData?.duration ?? 1),
+    inclusions: formData?.inclusions,
+    exclusions: formData?.exclusions,
+    thumbnail: formData?.thumbnail,
     images: getValidArray(formData?.images),
-    regularPrice: Number(formData?.regularPrice),
   }
 }

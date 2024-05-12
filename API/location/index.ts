@@ -68,3 +68,15 @@ export async function updateLocation(locationId: string, location: ILocation): P
     throw new Error(errorMessage)
   }
 }
+
+export async function deleteLocation(locationId: string): Promise<void> {
+  try {
+    await api.delete(`${LOCATION_URL}/${locationId}`, {
+      headers: auth(PLATFORM.CMS)
+    })
+  } catch (error) {
+    handleError(error as Error, 'API/location', 'deleteLocation')
+    const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+    throw new Error(errorMessage)
+  }
+}

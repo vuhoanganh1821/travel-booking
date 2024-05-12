@@ -8,44 +8,49 @@ import { useStores } from 'hooks/useStores'
 import capitalize from 'lodash/capitalize'
 import { observer } from 'mobx-react'
 import { getValidArray } from 'utils/common'
-import { getHeaderList } from './utils'
+import { getHeaderList, getStatusColor } from './utils'
 import { useRouter } from 'next/navigation'
 import routes from 'routes'
 
 const BookingManagement = () => {
   const { bookingStore } = useStores()
-  const { bookings } = bookingStore
+  const { bookings, totalCount } = bookingStore
   const router = useRouter()
-  const pageIndex: number = 1
+  const [pageIndex, setPageIndex] = useState<number>(1)
   const [pageSize, setPageSize] = useState<number>(10)
 
-  const pagination: IPagination = { pageIndex, tableLength: 10, gotoPage }
+  const pagination: IPagination = { 
+    pageIndex, 
+    tableLength: totalCount, 
+    gotoPage: setPageIndex
+  }
 
   const dataInTable = getValidArray(bookings).map(booking => {
+    const tagColor = getStatusColor(booking?.status ?? '')
+
     function gotoBookingDetailPage(): void {
       router.push(routes.cms.bookingManagement.detail.value(booking?._id ?? ''))
     }
+
     return {
       ...booking,
       status: (
-        <Tag variant="outline" colorScheme="yellow" backgroundColor="yellow.50">
+        <Tag variant="outline" colorScheme={tagColor} backgroundColor={`${tagColor}.50`}>
           <TagLabel>{capitalize(booking?.status)}</TagLabel>
         </Tag>
       ),
       actions: (
         <HStack width="86px" cursor="pointer" marginLeft="auto">
           <Icon iconName="edit.svg" size={32} onClick={gotoBookingDetailPage} />
-          <Icon iconName="vertical-dots.svg" size={20} />
         </HStack>
       )
     }
   })
 
-  function gotoPage(page: number): void {}
-
   useEffect(() => {
-    bookingStore.fetchAllBookings()
-  }, [bookingStore])
+    bookingStore.fetchTotalCount()
+    bookingStore.fetchAllBookings(pageIndex)
+  }, [pageIndex])
 
   return (
     <Box paddingX={{ base: 6, lg: 8 }} paddingY={6}>
@@ -68,9 +73,6 @@ const BookingManagement = () => {
         pageSize={pageSize}
         setPageSize={setPageSize}
         isManualSort
-        // setSort={setSort}
-        // setOrderBy={setOrderBy}
-        // subComponent={getSubComponent(getHeaderList(false), 2)}
       />
     </Box>
   )

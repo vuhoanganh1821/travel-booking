@@ -5,9 +5,9 @@ import get from 'lodash/get'
 
 const BOOKING_URL = '/api/v1/booking'
 
-export async function getAllBookings(): Promise<IBookingPagination> {
+export async function getAllBookings(filter = ''): Promise<IBookingPagination> {
   try {
-    const response = await api.get(BOOKING_URL, {
+    const response = await api.get(`${BOOKING_URL}${filter}`, {
       headers: auth(PLATFORM.CMS)
     })
     return response.data.metadata

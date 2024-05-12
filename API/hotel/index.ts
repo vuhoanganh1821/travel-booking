@@ -68,3 +68,15 @@ export async function updateHotel(hotelId: string, hotel: IHotel): Promise<void>
     throw new Error(errorMessage)
   }
 }
+
+export async function deleteHotel(hotelId: string): Promise<void> {
+  try {
+    await api.delete(`${HOTEL_URL}/${hotelId}`, {
+      headers: auth(PLATFORM.CMS)
+    })
+  } catch (error) {
+    handleError(error as Error, 'API/hotel', 'deleteHotel')
+    const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+    throw new Error(errorMessage)
+  }
+}

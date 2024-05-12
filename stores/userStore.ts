@@ -16,11 +16,14 @@ class UserStore {
 
   userDetail: IUser | null = null
 
-  async fetchAllUsers(): Promise<void> {
-    const filter = 'sort=-lastSignInAt'
-    const { users, result } = await getAllUsers(filter)
-    this.users = users
+  async fetchTotalCount(): Promise<void> {
+    const { result } = await getAllUsers()
     this.totalCount = result
+  }
+
+  async fetchAllUsers(query = '', page = 1): Promise<void> {
+    const { users } = await getAllUsers(`?sort=-lastSignInAt${query}&page=${page}&limit=10`)
+    this.users = users
   }
 
   async fetchUserDetail(userId: string, platform: PLATFORM): Promise<void> {

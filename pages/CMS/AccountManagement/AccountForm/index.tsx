@@ -66,13 +66,13 @@ const CreateAccount = (props: ICreateAccountProps) => {
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody border="1px solid #E2E8F0" padding={6}>
-              <SimpleGrid columns={{ base: 1, md: 2 }} gap={6} marginBottom={6}>
+              <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
                 <FormInput name="fullname" label="Full Name" placeholder="Enter Full Name" />
                 <FormInput name="username" label="Username" placeholder="Enter Username" />
                 <FormInput name="email" label="Email Address" placeholder="Enter Email Address" />
                 <FormInput name="password" label="Password" type="password" placeholder="Enter Password" />
               </SimpleGrid>
-              <FormControl id="role" marginBottom={6}>
+              <FormControl id="role" marginTop={6}>
                 <FormLabel marginBottom={4} color="gray.700">
                   Account Role
                 </FormLabel>

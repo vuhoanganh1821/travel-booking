@@ -1,6 +1,10 @@
 export function getHeaderList() {
   return [
     {
+      Header: 'CODE',
+      accessor: 'code',
+    },
+    {
       Header: 'NAME',
       accessor: 'name',
     },
@@ -9,16 +13,8 @@ export function getHeaderList() {
       accessor: 'type',
     },
     {
-      Header: 'VALUE',
-      accessor: 'value',
-    },
-    {
-      Header: 'MAX USERS',
-      accessor: 'maxUsers',
-    },
-    {
-      Header: 'USED COUNT',
-      accessor: 'usedCount',
+      Header: 'APPLIES TO',
+      accessor: 'appliesTo',
     },
     {
       Header: 'START DATE',

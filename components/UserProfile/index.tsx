@@ -1,5 +1,6 @@
 'use client'
 import { Flex, HStack, Avatar, Text, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react'
+import Icon from 'components/Icon'
 import { PLATFORM } from 'enums/common'
 import { useStores } from 'hooks/useStores'
 import truncate from 'lodash/truncate'
@@ -22,7 +23,7 @@ const UserProfile = (props: IUserProfileProps) => {
   const isLogin: boolean = !!accessToken
 
   function gotoProfilePage(): void {
-    router.push(routes.myProfile.value)
+    router.push(routes.cms.accountSettings.value)
   }
 
   function handleLogout() {
@@ -60,10 +61,16 @@ const UserProfile = (props: IUserProfileProps) => {
         {isLogin ? (
           <>
             <MenuItem maxH="40px" color="gray.700" onClick={gotoProfilePage}>
-              My Profile
+              <HStack>
+                <Icon iconName="profile.svg" size={20} />
+                <Text fontWeight={500}>My Account</Text>
+              </HStack>
             </MenuItem>
-            <MenuItem maxH="40px" color="red.600" onClick={handleLogout}>
-              Log Out
+            <MenuItem maxH="40px" color="red.500" onClick={handleLogout}>
+              <HStack>
+                <Icon iconName="logout.svg" size={20} />
+                <Text fontWeight={500}>Log Out</Text>
+              </HStack>
             </MenuItem>
           </>
         ) : (

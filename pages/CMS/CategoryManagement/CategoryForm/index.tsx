@@ -10,7 +10,7 @@ import {
   ModalOverlay,
   SimpleGrid
 } from '@chakra-ui/react'
-import { createCategory } from 'API/category'
+import { createCategory, updateCategory } from 'API/category'
 import FormInput from 'components/FormInput'
 import { useStores } from 'hooks/useStores'
 import { ICategory } from 'interfaces/category'
@@ -43,7 +43,7 @@ const CategoryForm = (props: ICategoryFormProps) => {
   async function onSubmit(data: ICategoryForm): Promise<void> {
     try {
       if (category?._id) {
-        // await updateCategory(category?._id, data)
+        await updateCategory(category?._id, data)
       } else {
         await createCategory(data)
       }
@@ -63,6 +63,8 @@ const CategoryForm = (props: ICategoryFormProps) => {
         icon: category?.icon,
         image: category?.image
       })
+    } else {
+      reset({})
     }
   }, [isOpen])
 
@@ -77,7 +79,7 @@ const CategoryForm = (props: ICategoryFormProps) => {
         <FormProvider {...methods}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <ModalBody border="1px solid #E2E8F0" padding={6}>
-              <SimpleGrid columns={{ base: 1, md: 2 }} gap={6} marginBottom={6}>
+              <SimpleGrid columns={{ base: 1, md: 2 }} gap={6}>
                 <FormInput name="name" label="Name" placeholder="Enter Name" />
                 <FormInput name="icon" label="Icon" placeholder="Enter Icon" />
                 <FormInput name="image" label="Image" placeholder="Enter Image" />

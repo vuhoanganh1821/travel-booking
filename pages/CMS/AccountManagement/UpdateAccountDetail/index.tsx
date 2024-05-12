@@ -1,16 +1,18 @@
 'use client'
-import { ChangeEvent, useEffect, useRef, useState } from 'react'
+import { ChangeEvent, createElement, forwardRef, useEffect, useRef, useState } from 'react'
 import { Avatar, Box, Button, FormControl, FormLabel, HStack, Radio, RadioGroup, SimpleGrid, Text, VStack } from '@chakra-ui/react'
 import { uploadUserImage } from 'API/upload'
 import { updateUser } from 'API/user'
+import DateInput from 'components/DateInput'
 import FormInput from 'components/FormInput'
 import dayjs from 'dayjs'
-import { ERole } from 'enums/user'
+import { EGender, ERole } from 'enums/user'
 import { useStores } from 'hooks/useStores'
 import { IUser } from 'interfaces/user'
 import omit from 'lodash/omit'
 import { observer } from 'mobx-react'
 import { usePathname, useRouter } from 'next/navigation'
+import DatePicker from 'react-datepicker'
 import { FormProvider, useForm, useWatch } from 'react-hook-form'
 import { toast } from 'react-toastify'
 import routes from 'routes'
@@ -32,8 +34,12 @@ const UpdateAccountDetail = () => {
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [isImageLoading, setIsImageLoading] = useState<boolean>(false)
   const role: string = useWatch({ control, name: 'role' }) ?? ''
+  const gender: string = useWatch({ control, name: 'gender' }) ?? ''
   const status: string = useWatch({ control, name: 'status' }) ?? ''
   const profilePicture: string = useWatch({ control, name: 'profilePicture' }) ?? ''
+  const dateOfBirth = dayjs(useWatch({ control, name: 'dateOfBirth' }) || new Date()).toDate()
+  const dateOfIssuePassport = dayjs(useWatch({ control, name: 'dateOfIssuePassport' }) || new Date()).toDate()
+  const dateOfExpirationPassport = dayjs(useWatch({ control, name: 'dateOfExpirationPassport' }) || new Date()).toDate()
 
   function backToAccountList() {
     router.push(routes.cms.accountManagement.value)
@@ -61,7 +67,7 @@ const UpdateAccountDetail = () => {
     setIsLoading(true)
     try {
       const userData = {
-        ...omit(data, ['status', 'dateOfIssuePassport', 'dateOfExpirationPassport']),
+        ...omit(data, 'status'),
         isActive: data?.status === 'Active'
       }
       await updateUser(userId, userData)
@@ -88,15 +94,16 @@ const UpdateAccountDetail = () => {
         fullname: userDetail?.fullname,
         username: userDetail?.username,
         role: userDetail?.role,
+        gender: userDetail?.gender,
         nationality: userDetail?.nationality,
         profilePicture: userDetail?.profilePicture,
-        dateOfBirth: userDetail?.dateOfBirth,
+        dateOfBirth: dayjs(userDetail?.dateOfBirth || new Date()).toDate(),
         status: userDetail?.isActive ? 'Active' : 'Disable',
         address: userDetail?.address,
         phone: userDetail?.phone,
         passport: userDetail?.passport,
-        dateOfIssuePassport: userDetail?.dateOfIssuePassport,
-        dateOfExpirationPassport: userDetail?.dateOfExpirationPassport,
+        dateOfIssuePassport: dayjs(userDetail?.dateOfIssuePassport || new Date()).toDate(),
+        dateOfExpirationPassport: dayjs(userDetail?.dateOfExpirationPassport || new Date()).toDate()
       })
     }
   }, [userDetail])
@@ -110,7 +117,7 @@ const UpdateAccountDetail = () => {
               Update Account Detail
             </Text>
             <HStack spacing={4}>
-              <Button background="white" borderWidth={1} isLoading={isLoading} onClick={backToAccountList}>
+              <Button background="white" borderWidth={1} borderColor="gray.300" isLoading={isLoading} onClick={backToAccountList}>
                 Cancel
               </Button>
               <Button type="submit" colorScheme="teal" variant="solid" paddingX={4} isLoading={isLoading}>
@@ -127,10 +134,34 @@ const UpdateAccountDetail = () => {
                 <FormInput name="email" label="Email" />
                 <FormInput name="nationality" label="Nationality" />
                 <FormInput name="address" label="Address" />
-                <FormInput name="dateOfBirth" label="Date Of Birth" isRequired={false} />
+                <FormInput name="dateOfBirth" label="Date Of Birth">
+                  <DatePicker
+                    {...register('dateOfBirth')}
+                    selected={dateOfBirth}
+                    dateFormat="MM/dd/yyyy"
+                    onChange={(date: Date) => setValue('dateOfBirth', dayjs(date).toDate(), { shouldDirty: true })}
+                    customInput={createElement(forwardRef(DateInput))}
+                  />
+                </FormInput>
                 <FormInput name="passport" label="Passport" />
-                <FormInput name="dateOfIssuePassport" label="Date Of Issue Passport" isRequired={false} />
-                <FormInput name="dateOfExpirationPassport" label="Date Of Expiration Passport" isRequired={false} />
+                <FormInput name="dateOfIssuePassport" label="Date Of Issue Passport">
+                  <DatePicker
+                    {...register('dateOfIssuePassport')}
+                    selected={dateOfIssuePassport}
+                    dateFormat="MM/dd/yyyy"
+                    onChange={(date: Date) => setValue('dateOfIssuePassport', dayjs(date).toDate(), { shouldDirty: true })}
+                    customInput={createElement(forwardRef(DateInput))}
+                  />
+                </FormInput>
+                <FormInput name="dateOfExpirationPassport" label="Date Of Expiration Passport">
+                  <DatePicker
+                    {...register('dateOfExpirationPassport')}
+                    selected={dateOfExpirationPassport}
+                    dateFormat="MM/dd/yyyy"
+                    onChange={(date: Date) => setValue('dateOfExpirationPassport', dayjs(date).toDate(), { shouldDirty: true })}
+                    customInput={createElement(forwardRef(DateInput))}
+                  />
+                </FormInput>
                 <FormControl id="role" marginBottom={6}>
                   <FormLabel marginBottom={4} color="gray.700">
                     Account Role
@@ -146,16 +177,16 @@ const UpdateAccountDetail = () => {
                     </HStack>
                   </RadioGroup>
                 </FormControl>
-                <FormControl id="role" marginBottom={6}>
+                <FormControl id="gender" marginBottom={6}>
                   <FormLabel marginBottom={4} color="gray.700">
                     Gender
                   </FormLabel>
-                  <RadioGroup value={role}>
+                  <RadioGroup value={gender}>
                     <HStack spacing={2} flexDirection="row" gap="42px">
-                      <Radio colorScheme="teal" {...register('role')} value={ERole.ADMIN}>
+                      <Radio colorScheme="teal" {...register('gender')} value={EGender.MALE}>
                         Male
                       </Radio>
-                      <Radio colorScheme="teal" {...register('role')} value={ERole.GUIDE}>
+                      <Radio colorScheme="teal" {...register('gender')} value={EGender.FEMALE}>
                         Femail
                       </Radio>
                     </HStack>
@@ -210,7 +241,7 @@ const UpdateAccountDetail = () => {
                   </RadioGroup>
                 </FormControl>
                 <HStack width="full" justify="space-between">
-                  <Text color="gray.700" fontWeight={500}>
+                  <Text color="gray.700">
                     Last Login:
                   </Text>
                   <Text color="gray.800" fontWeight={600}>
@@ -218,7 +249,7 @@ const UpdateAccountDetail = () => {
                   </Text>
                 </HStack>
                 <HStack width="full" justify="space-between">
-                  <Text color="gray.700" fontWeight={500}>
+                  <Text color="gray.700">
                     Last Updated:
                   </Text>
                   <Text color="gray.800" fontWeight={600}>
@@ -226,7 +257,7 @@ const UpdateAccountDetail = () => {
                   </Text>
                 </HStack>
                 <HStack width="full" justify="space-between">
-                  <Text color="gray.700" fontWeight={500}>
+                  <Text color="gray.700">
                     Creation Date:
                   </Text>
                   <Text color="gray.800" fontWeight={600}>

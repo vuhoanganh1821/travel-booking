@@ -17,7 +17,7 @@ api.interceptors.response.use(
   function (error) {
     if (error?.response?.data?.code === 401) {
       handleUnauthorized()
-      toast.error(error?.response?.data?.message)
+      // toast.error(error?.response?.data?.message)
     }
     console.error('API', 'error', error)
   }

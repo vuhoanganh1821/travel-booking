@@ -13,6 +13,14 @@ export function getHeaderList() {
       accessor: 'type',
     },
     {
+      Header: 'LATITUDE',
+      accessor: 'latitude',
+    },
+    {
+      Header: 'LONGITUDE',
+      accessor: 'longitude',
+    },
+    {
       Header: '',
       accessor: 'actions',
     },

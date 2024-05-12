@@ -1,7 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Box, Button, HStack, Input, InputGroup, InputLeftElement, Tag, TagLabel } from '@chakra-ui/react'
+import { Box, Button, HStack, Img, Input, InputGroup, InputLeftElement, Tag, TagLabel, Text } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
+import { deleteTransportation } from 'API/transportation'
+import ConfirmModal from 'components/ConfirmModal'
 import Icon from 'components/Icon'
 import Table from 'components/Table'
 import { useStores } from 'hooks/useStores'
@@ -11,6 +13,7 @@ import { useRouter } from 'next/navigation'
 import { getValidArray } from 'utils/common'
 import TransportationForm from './TransportationForm'
 import { getHeaderList } from './utils'
+import { toast } from 'react-toastify'
 
 const TransportationManagement = () => {
   const { transportationStore } = useStores()
@@ -19,6 +22,7 @@ const TransportationManagement = () => {
   const pageIndex: number = 1
   const [pageSize, setPageSize] = useState<number>(10)
   const [transportation, setTransportation] = useState<ITransportation>()
+  const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [isOpenTransportationForm, setIsOpenTransportationForm] = useState<boolean>(false)
 
   const pagination = { pageIndex, tableLength: 10, gotoPage }
@@ -31,6 +35,11 @@ const TransportationManagement = () => {
       setTransportation(transportation)
     }
 
+    function onClickDeleteTransportation(): void {
+      setIsDeleting(true)
+      setTransportation(transportation)
+    }
+
     return {
       ...transportation,
       status: (
@@ -38,16 +47,29 @@ const TransportationManagement = () => {
           <TagLabel>{transportation?.isActive ? 'Active' : 'Disable'}</TagLabel>
         </Tag>
       ),
+      image: transportation?.image && <Img boxSize={10} src={transportation?.image} borderRadius={8} />,
       actions: (
         <HStack width="86px" cursor="pointer" marginLeft="auto">
           <Icon iconName="edit.svg" size={32} onClick={onClickEditTransportation} />
-          <Icon iconName="trash.svg" size={32} />
+          <Icon iconName="trash.svg" size={32} onClick={onClickDeleteTransportation} />
         </HStack>
       )
     }
   })
 
   function gotoPage(page: number): void {}
+
+  async function handleDeleteTransportation(): Promise<void> {
+    try {
+      if (transportation?._id) {
+        await deleteTransportation(transportation?._id)
+        await transportationStore.fetchAllTransportations()
+        toast.success('Delete transportation successfully')
+      }
+    } catch (error) {
+      toast.error('Delete transportation failed')
+    }
+  }
 
   useEffect(() => {
     transportationStore.fetchAllTransportations()
@@ -88,6 +110,15 @@ const TransportationManagement = () => {
         transportation={transportation}
         isOpen={isOpenTransportationForm}
         onClose={() => setIsOpenTransportationForm(false)}
+      />
+      <ConfirmModal
+        titleText="Delete Transportation"
+        bodyText={<Text>Are you sure to delete this transportation?{<br />}This action can not be undo</Text>}
+        cancelButtonText="No, keep this transportation"
+        confirmButtonText="Yes, delete"
+        isOpen={isDeleting}
+        onClose={() => setIsDeleting(false)}
+        onClickAccept={handleDeleteTransportation}
       />
     </Box>
   )

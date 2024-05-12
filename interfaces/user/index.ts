@@ -12,12 +12,12 @@ export interface IUser {
   profilePicture?: string
   profilePublishId?: string
   gender?: string
-  dateOfBirth?: string
+  dateOfBirth?: Date
   address?: string
   phone?: string
   passport?: string
-  dateOfIssuePassport?: string
-  dateOfExpirationPassport?: string
+  dateOfIssuePassport?: Date
+  dateOfExpirationPassport?: Date
   googleId?: string
   typeAuth?: string
   createdAt?: Date

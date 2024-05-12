@@ -1,7 +1,9 @@
 'use client'
 import { useEffect, useState } from 'react'
-import { Box, Button, HStack, Input, InputGroup, InputLeftElement, Tag, TagLabel } from '@chakra-ui/react'
+import { Box, Button, HStack, Input, InputGroup, InputLeftElement, Text, Tag, TagLabel } from '@chakra-ui/react'
 import { Search2Icon } from '@chakra-ui/icons'
+import { deleteCategory } from 'API/category'
+import ConfirmModal from 'components/ConfirmModal'
 import Icon from 'components/Icon'
 import Table from 'components/Table'
 import { useStores } from 'hooks/useStores'
@@ -10,6 +12,7 @@ import debounce from 'lodash/debounce'
 import { observer } from 'mobx-react'
 import { useRouter } from 'next/navigation'
 import { getValidArray } from 'utils/common'
+import { toast } from 'react-toastify'
 import CategoryForm from './CategoryForm'
 import { getHeaderList } from './utils'
 
@@ -21,6 +24,7 @@ const CategoryManagement = () => {
   const [pageSize, setPageSize] = useState<number>(10)
   const [category, setCategory] = useState<ICategory>()
   const [searchText, setSearchText] = useState<string>('')
+  const [isDeleting, setIsDeleting] = useState<boolean>(false)
   const [isOpenCategoryForm, setIsOpenCategoryForm] = useState<boolean>(false)
 
   const pagination = { pageIndex, tableLength: 10, gotoPage }
@@ -33,6 +37,11 @@ const CategoryManagement = () => {
       setIsOpenCategoryForm(true)
     }
 
+    function onClickDeleteCategory(): void {
+      setIsDeleting(true)
+      setCategory(category)
+    }
+
     return {
       ...category,
       type: (
@@ -43,13 +52,25 @@ const CategoryManagement = () => {
       actions: (
         <HStack width="86px" cursor="pointer" marginLeft="auto">
           <Icon iconName="edit.svg" size={32} onClick={onClickEditCategory} />
-          <Icon iconName="trash.svg" size={32} />
+          <Icon iconName="trash.svg" size={32} onClick={onClickDeleteCategory} />
         </HStack>
       )
     }
   })
 
   function gotoPage(page: number): void {}
+
+  async function handleDeleteCategory(): Promise<void> {
+    try {
+      if (category?._id) {
+        await deleteCategory(category?._id)
+        await categoryStore.fetchAllCategories()
+        toast.success('Delete category successfully')
+      }
+    } catch (error) {
+      toast.error('Delete category failed')
+    }
+  }
 
   useEffect(() => {
     if (searchText) {
@@ -94,6 +115,15 @@ const CategoryManagement = () => {
         isManualSort
       />
       <CategoryForm category={category} isOpen={isOpenCategoryForm} onClose={() => setIsOpenCategoryForm(false)} />
+      <ConfirmModal
+        titleText="Delete Category"
+        bodyText={<Text>Are you sure to delete this category?{<br />}This action can not be undo</Text>}
+        cancelButtonText="No, keep this category"
+        confirmButtonText="Yes, delete"
+        isOpen={isDeleting}
+        onClose={() => setIsDeleting(false)}
+        onClickAccept={handleDeleteCategory}
+      />
     </Box>
   )
 }
