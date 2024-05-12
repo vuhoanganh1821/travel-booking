@@ -7,6 +7,7 @@ import Dropdown, { IOption } from 'components/Dropdown'
 import Icon from 'components/Icon'
 import FormInput from 'components/FormInput'
 import { useStores } from 'hooks/useStores'
+import { IPriceOption } from 'interfaces/common'
 import { ITour } from 'interfaces/tour'
 import get from 'lodash/get'
 import { observer } from 'mobx-react'
@@ -49,6 +50,7 @@ const UpdateTourDetail = () => {
   const [isManageInclusion, setIsManageInclusion] = useState<boolean>(false)
   const [isManageExclusion, setIsManageExclusion] = useState<boolean>(false)
   const [isManagePriceOptions, setIsManagePriceOptions] = useState<boolean>(false)
+  const [existingPriceOptions, setExistingPriceOptions] = useState<IPriceOption[]>([])
   const thumbnail = useWatch({ control, name: 'thumbnail' }) ?? ''
   const images = useWatch({ control, name: 'images' }) ?? []
   const locationOptions = getOptions(locations, 'title', '_id')
@@ -103,7 +105,7 @@ const UpdateTourDetail = () => {
 
   async function onSubmit(formData: IUpdateTourForm) {
     setIsLoading(true)
-    const data: ITour = formatFormData(formData)
+    const data: ITour = formatFormData(formData, existingPriceOptions)
     try {
       if (isEditMode) {
         await updateTourDetail(tourId, data)
@@ -160,6 +162,14 @@ const UpdateTourDetail = () => {
           value: get(tourDetail?.startLocation, '_id') ?? ''
         }
       })
+      const priceOptionsData: IPriceOption[] = getValidArray(tourDetail?.priceOptions).map(option => {
+        return {
+          title: option?.title,
+          value: Number(option?.value),
+          currency: option?.currency
+        }
+      })
+      setExistingPriceOptions(priceOptionsData)
     }
   }, [tourDetail])
 
@@ -307,6 +317,8 @@ const UpdateTourDetail = () => {
             methods={methods}
             isOpen={isManagePriceOptions}
             onClose={() => setIsManagePriceOptions(false)}
+            existingOptions={existingPriceOptions}
+            setExistingOptions={setExistingPriceOptions}
           />
           <ManageInclusions methods={methods} isOpen={isManageInclusion} onClose={() => setIsManageInclusion(false)} />
           <ManageExclusions methods={methods} isOpen={isManageExclusion} onClose={() => setIsManageExclusion(false)} />

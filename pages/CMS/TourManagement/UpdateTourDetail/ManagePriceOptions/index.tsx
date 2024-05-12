@@ -1,12 +1,9 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 import {
   Button,
   Center,
   Divider,
-  Input,
-  InputGroup,
-  InputLeftAddon,
-  InputRightAddon,
+  HStack,
   Modal,
   ModalBody,
   ModalCloseButton,
@@ -14,52 +11,41 @@ import {
   ModalFooter,
   ModalHeader,
   ModalOverlay,
+  Text,
   VStack
 } from '@chakra-ui/react'
 import FormInput from 'components/FormInput'
-import { IUser } from 'interfaces/user'
-import { useWatch } from 'react-hook-form'
+import { tourPriceOptions } from 'constants/common'
 import { getValidArray } from 'utils/common'
 import { IPriceOption } from 'interfaces/common'
 import { toast } from 'react-toastify'
 import { updateTourDetail } from 'API/tour'
 import Icon from 'components/Icon'
+import Dropdown from 'components/Dropdown'
 
 interface IManagePriceOptionsProps {
   isOpen: boolean
   onClose: () => void
   tourId: string
   methods: any
+  existingOptions: IPriceOption[]
+  setExistingOptions: (options: IPriceOption[]) => void
 }
 
 const ManagePriceOptions = (props: IManagePriceOptionsProps) => {
-  const { isOpen, onClose, tourId, methods } = props
-  const {
-    register,
-    control,
-    getValues,
-    reset,
-    setValue
-  } = methods
-  const [isSubmitting, setIsSubmitting] = useState<boolean>(false)
-  const [existingOptions, setExistingOptions] = useState<IPriceOption[]>([])
-  const priceOptions: IPriceOption[] = useWatch({ control, name: 'priceOptions' })
-
-  function handleOnClose(): void {
-    reset()
-    onClose()
-  }
+  const { isOpen, onClose, tourId, methods, existingOptions, setExistingOptions } = props
+  const { getValues, setValue } = methods
   
   function handleAddNewPriceOption(): void {
-    const newTitle = getValues('newPriceOptionTitle')
+    const newTitle = getValues('newPriceOptionTitle.value')
     const newValue = getValues('newPriceOptionValue')
-    const currency = getValues('currency')
+    const currency = getValues('currencyValue.value')
     if (!newTitle || !newValue) {
       toast.error('Please fill in all fields')
       return
     }
-    setExistingOptions([...existingOptions, { title: newTitle, value: Number(newValue), currency }])
-    setValue('priceOptions', [...priceOptions, { title: newTitle, value: Number(newValue), currency }])
+    const newOption = { title: newTitle, value: Number(newValue), currency }
+    setExistingOptions([...existingOptions, newOption])
     setValue('newPriceOptionTitle', '')
     setValue('newPriceOptionValue', '')
   }
@@ -67,11 +53,9 @@ const ManagePriceOptions = (props: IManagePriceOptionsProps) => {
   function handleDeletePriceOption(index: number): void {
     const newOptions = existingOptions.filter((_, i) => i !== index)
     setExistingOptions(newOptions)
-    setValue('priceOptions', newOptions)
   }
 
   async function onSubmit(): Promise<void> {
-    setIsSubmitting(true)
     const data: IPriceOption[] = getValues('priceOptions')
     const priceOptionsData: IPriceOption[] = getValidArray(data).map(option => {
       return {
@@ -82,19 +66,17 @@ const ManagePriceOptions = (props: IManagePriceOptionsProps) => {
     })
     await updateTourDetail(tourId, { priceOptions: priceOptionsData })
     onClose()
-    setIsSubmitting(false)
   }
 
   useEffect(() => {
     if (isOpen) {
-      setExistingOptions(priceOptions)
       setValue('newPriceOptionTitle', '')
       setValue('newPriceOptionValue', '')
     }
   }, [isOpen])
 
   return (
-    <Modal size="md" isOpen={isOpen} onClose={handleOnClose}>
+    <Modal size="md" isOpen={isOpen} onClose={onClose}>
       <ModalOverlay />
       <ModalContent top={10} borderRadius={8} marginTop={0}>
         <ModalHeader color="gray.800"fontSize="18px" fontWeight={500} lineHeight={7}>
@@ -103,7 +85,12 @@ const ManagePriceOptions = (props: IManagePriceOptionsProps) => {
         <ModalCloseButton />
         <ModalBody border="1px solid #E2E8F0" padding={6}>
           <VStack width="full" align="flex-start" spacing={4}>
-            <FormInput name="newPriceOptionTitle" label="Price Option Title" />
+            <Dropdown
+              name="newPriceOptionTitle"
+              label="Price Option Title"
+              options={tourPriceOptions}
+              setValue={setValue}
+            />
             <FormInput name="newPriceOptionValue" label="Price Option Value" type="number" min={0} />
             <Button width="full" colorScheme="teal" onClick={handleAddNewPriceOption}>
               Add New Price Option
@@ -113,42 +100,29 @@ const ManagePriceOptions = (props: IManagePriceOptionsProps) => {
           <FormInput name="priceOptions" label="Existing Price Options">
             <VStack width="full" align="flex-start">
               {getValidArray(existingOptions).map((option, index) => (
-                <InputGroup key={option?._id}>
-                  <InputLeftAddon width="100px">{option?.title}</InputLeftAddon>
-                  <Input {...register(`priceOptions.${index}.value`)} />
-                  <InputRightAddon>{option?.currency}</InputRightAddon>
+                <HStack key={option?._id} width="full">
+                  <HStack width="full" marginLeft={10}>
+                    <Text width="200px" fontWeight={500}>{option?.title}</Text>
+                    <Text width="full" fontWeight={500}>{`${option?.value} ${option?.currency}`}</Text>
+                  </HStack>
                   <Center minWidth={8} cursor="pointer" marginLeft={2}>
                     <Icon iconName="trash.svg" size={32} onClick={() => handleDeletePriceOption(index)} />
                   </Center>
-                </InputGroup>
+                </HStack>
               ))}
             </VStack>
           </FormInput>
         </ModalBody>
         <ModalFooter>
           <Button
-            color="gray.700"
-            background="white"
+            colorScheme="teal"
             lineHeight={6}
             border="1px solid #E2E8F0"
             border-radius="6px"
             paddingY={2}
-            marginRight={4}
-            isLoading={isSubmitting}
-            onClick={handleOnClose}
+            onClick={onClose}
           >
-            Cancel
-          </Button>
-          <Button
-            type="submit"
-            colorScheme="teal"
-            border-radius="6px"
-            lineHeight={6}
-            paddingY={2}
-            isLoading={isSubmitting}
-            onClick={onSubmit}
-          >
-            Save
+            Close
           </Button>
         </ModalFooter>
       </ModalContent>

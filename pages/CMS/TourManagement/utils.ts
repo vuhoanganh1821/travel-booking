@@ -1,4 +1,5 @@
 import { ITableHeader } from 'components/Table'
+import { IPriceOption } from 'interfaces/common'
 import { ITour } from 'interfaces/tour'
 import { getValidArray } from 'utils/common'
 import { IUpdateTourForm } from './UpdateTourDetail'
@@ -32,7 +33,7 @@ export function getHeaderList(): ITableHeader[] {
   ]
 }
 
-export function formatFormData(formData: IUpdateTourForm): ITour {
+export function formatFormData(formData: IUpdateTourForm, priceOptions: IPriceOption[]): ITour {
   return {
     code: formData?.code,
     title: formData?.title,
@@ -46,6 +47,7 @@ export function formatFormData(formData: IUpdateTourForm): ITour {
     discountPrice: Number(formData?.discountPrice ?? 1),
     discountPercentage: Number(formData?.discountPercentage ?? 1),
     duration: Number(formData?.duration ?? 1),
+    priceOptions,
     inclusions: formData?.inclusions,
     exclusions: formData?.exclusions,
     thumbnail: formData?.thumbnail,
