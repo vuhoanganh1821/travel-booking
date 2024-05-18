@@ -54,3 +54,26 @@ export async function deleteReview(reviewId: string): Promise<void> {
     throw new Error(errorMessage)
   }
 }
+
+export async function getReviewInTour(tourId: string): Promise<IReviewPagination> {
+    try{
+        const response = await api.get(`${REVIEW_URL}/tour/${tourId}`)
+        return response.data.metadata
+    } catch (error) {
+        handleError(error as Error, "API/review", "getReviewInTour");
+        const errorMessage: string = get(error, "data.error.message", "");
+        throw new Error(errorMessage);
+    }
+}
+
+export async function createReview(data: ICreateReview): Promise<void> {
+    try{
+        await api.post(`${REVIEW_URL}/`, data, {
+            headers: auth(PLATFORM.WEBSITE)
+        })
+    } catch (error) {
+        handleError(error as Error, "API/review", "createReview");
+        const errorMessage: string = get(error, "data.error.message", "");
+        throw new Error(errorMessage);
+    }
+}

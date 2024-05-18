@@ -4,10 +4,15 @@ import { FormControl, FormLabel, IconButton, Input, InputGroup, InputRightElemen
 import { ViewIcon, ViewOffIcon } from '@chakra-ui/icons'
 import { useFormContext } from 'react-hook-form'
 
-const PasswordField = () => {
-  const { isOpen, onToggle } = useDisclosure()
-  const inputRef = useRef<HTMLInputElement>(null)
-  const { register } = useFormContext()
+interface IPasswordField {
+  label?: string
+}
+
+const PasswordField = (props: IPasswordField) => {
+  const {label} = props
+  const { isOpen, onToggle } = useDisclosure();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const { register } = useFormContext();
 
   function onClickReveal(): void {
     onToggle()
@@ -18,7 +23,7 @@ const PasswordField = () => {
 
   return (
     <FormControl>
-      <FormLabel htmlFor="password">Password</FormLabel>
+      <FormLabel htmlFor="Password">{label ?? 'Password'}</FormLabel>
       <InputGroup>
         <InputRightElement>
           <IconButton
@@ -33,7 +38,7 @@ const PasswordField = () => {
           type={isOpen ? 'text' : 'password'}
           autoComplete="current-password"
           required
-          {...register('password', { required: 'Password is required' })}
+          {...register("password", { required: "Password is required" })} 
         />
       </InputGroup>
     </FormControl>

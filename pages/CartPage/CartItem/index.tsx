@@ -9,9 +9,10 @@ import {
   MenuButton,
   MenuList,
   Checkbox,
+
 } from "@chakra-ui/react";
 import { observer } from "mobx-react";
-
+import { useRouter } from "next/navigation";
 import { TfiTicket } from "react-icons/tfi";
 import { IoPeople, IoTimerOutline } from "react-icons/io5";
 import { MdPeopleAlt } from "react-icons/md";
@@ -24,20 +25,20 @@ import {
   ITourCart,
   IUpdateToCart,
 } from "interfaces/cart";
-import { use, useEffect, useState } from "react";
+import { useEffect, useState } from "react";
 import { LuCalendarDays } from "react-icons/lu";
 import { TriangleDownIcon } from "@chakra-ui/icons";
 import { FaCheckSquare } from "react-icons/fa";
 import { useStores } from "hooks";
 import CustomCalendar from "components/Layout/WebLayout/components/Calendar";
-import MenuItem from "components/Layout/WebLayout/components/MenuItem";
+import MenuItem from "components/Layout/WebLayout/MenuItem";
 import { PLATFORM } from "enums/common";
 import { ISelectedCart } from "interfaces/checkout";
+import { formatCurrency } from "utils/common";
 
 interface ICartItem {
   tour: ITourCart;
   idCart: string;
-  caculateTourPrice: (tourPrice: number) => void;
 }
 
 type ValuePiece = Date | null;
@@ -45,9 +46,11 @@ type ValuePiece = Date | null;
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 const CartItem = (props: ICartItem) => {
-  const { tour, idCart, caculateTourPrice } = props;
+  const { tour, idCart } = props;
+  const route = useRouter()
   const [convertDate, setConvertDate] = useState<string>();
   const [tourPrice, setTourPrice] = useState<number>(0);
+  const [prevPrice, setPrevPrice] = useState<number>(0);
   const [editTour, setEditTour] = useState<boolean>(false);
   const [guestInfo, setGuestInfo] = useState<IParticipants[]>([]);
   const [selectedDate, setSelectedDate] = useState<Value>(null);
@@ -60,8 +63,13 @@ const CartItem = (props: ICartItem) => {
   const [initialMount, setInitialMount] = useState(true);
   const [checked, setChecked] = useState<boolean>(false);
 
-  const { cartStore } = useStores();
+  const { cartStore, tourStore } = useStores();
   const { listCart } = cartStore;
+  const { tourDetail } = tourStore
+
+  useEffect(() => {
+    tourStore.fetchTourDetail(tour.tour._id)
+  }, [tour.tour._id])
 
   useEffect(() => {
     const filteredTours = tour.participants.map((tour) => ({
@@ -87,15 +95,11 @@ const CartItem = (props: ICartItem) => {
     let totalPrice = 0;
 
     tour.participants.forEach((tour) => {
-      totalPrice += tour.price;
+      totalPrice += tour.price * tour.quantity;
     });
-
+    
     setTourPrice(totalPrice);
   }, [tour.participants]);
-
-  useEffect(() => {
-    caculateTourPrice(tourPrice);
-  }, [tourPrice]);
 
   useEffect(() => {
     if (!initialMount) {
@@ -169,12 +173,12 @@ const CartItem = (props: ICartItem) => {
           itemId: idCart,
         };
         cartStore.deleteCart(data);
+        route.refresh()
       }
     }
   }
 
   const setSelected = (): void => {
-    // Function to execute when checkbox is checked
     const data: ISelectedCart = {
       tour: tour.tour._id,
       startDate: tour.startDate,
@@ -184,7 +188,6 @@ const CartItem = (props: ICartItem) => {
   };
 
   const notSetSelected = (): void => {
-    // Function to execute when checkbox is unchecked
     cartStore.unSetSelectedCart(tour._id);
   };
 
@@ -210,19 +213,20 @@ const CartItem = (props: ICartItem) => {
         _before={{
           position: "absolute",
           content: "''",
-          width: "8px",
+          width: "14px",
           borderRadius: "2px",
           top: 3,
           height: "42%",
-          background: "#c4c4c4",
+          background: checked ? "#38A59F" : "#c4c4c4"  ,
         }}
         _after={{
           position: "absolute",
           content: "''",
-          width: "8px",
+          width: "14px",
+          borderRadius: "2px",
           bottom: 3,
           height: "42%",
-          background: "#c4c4c4",
+          background:  checked ? "#38A59F" : "#c4c4c4",
         }}
       >
         <Checkbox
@@ -232,7 +236,7 @@ const CartItem = (props: ICartItem) => {
         />
       </VStack>
       <VStack align="flex-start" minWidth="740px">
-        <Text textAlign="start" fontSize="xl" fontWeight="500" color="#636A80">
+        <Text textAlign="start" fontSize="xl" fontWeight="500" color={checked ? "#38A59F" : "#636A80"}>
           {convertDate}
         </Text>
         <HStack
@@ -243,13 +247,14 @@ const CartItem = (props: ICartItem) => {
           boxShadow="xl"
           padding="18px 20px"
           border="2px solid #ccc"
+          borderColor={checked ? "#38A59F" : "#ccc"}
           borderRadius="8px"
         >
           <VStack alignSelf="flex-start">
             <Image
               borderRadius="8px"
               width="200px"
-              src="https://d1hjkbq40fs2x4.cloudfront.net/2017-08-21/files/landscape-photography_1645.jpg"
+              src={`${tour?.tour?.thumbnail}`}
               alt="img"
             />
           </VStack>
@@ -362,17 +367,21 @@ const CartItem = (props: ICartItem) => {
                     </MenuButton>
                   </VStack>
                   <MenuList minWidth="320px" padding="4px 10px">
-                    {tour.participants.map((participant) => (
-                      <MenuItem
-                        quantity={participant.quantity}
-                        key={participant.title}
-                        type={participant.title}
-                        price={participant.price}
-                        setPrice={setPrice}
-                        setType={setType}
-                        setQuantity={setQuantity}
-                      />
-                    ))}
+                    {tourDetail.priceOptions.map((participant) => {
+                      const foundParticipant = tour.participants.filter(p => p.title === participant.title);
+                      const quantity = foundParticipant[0]?.quantity ?? 0
+                      return (
+                          <MenuItem
+                              quantity={quantity}
+                              key={participant._id}
+                              type={participant.title}
+                              price={participant.value}
+                              setPrice={setPrice}
+                              setType={setType}
+                              setQuantity={setQuantity}
+                          />
+                      );
+                  })}
                   </MenuList>
                 </Menu>
               )}
@@ -402,7 +411,7 @@ const CartItem = (props: ICartItem) => {
                 </Button>
               </HStack>
               <Text fontSize="xl" fontWeight="600">
-                {tourPrice}
+                {formatCurrency(tourPrice)}
               </Text>
             </HStack>
           </VStack>

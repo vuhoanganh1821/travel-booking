@@ -3,6 +3,7 @@ import { PLATFORM } from 'enums/common'
 import { toast } from 'react-toastify'
 import routes from 'routes'
 import { IHeader } from './constants'
+import { toast } from 'react-toastify';
 
 const API_URL = 'http://localhost:4001'
 
@@ -20,6 +21,9 @@ api.interceptors.response.use(
       // toast.error(error?.response?.data?.message)
     }
     console.error('API', 'error', error)
+    const errorMessage = error.response.data.message
+    toast.error(errorMessage)
+    throw new Error(errorMessage)
   }
 )
 

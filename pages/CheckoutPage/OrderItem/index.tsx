@@ -1,9 +1,11 @@
-import { HStack, VStack, Text, Image, Button } from "@chakra-ui/react"
-import { ITourCart } from "interfaces/cart"
-import { IDiscountItem } from "interfaces/checkout"
-import { useState, useEffect } from "react"
-import { IoTimerOutline } from "react-icons/io5"
-import { MdPeopleAlt } from "react-icons/md"
+import { HStack, VStack, Text, Image, Button } from "@chakra-ui/react";
+import TextField from "components/TextField";
+import { ITourCart } from "interfaces/cart";
+import { IDiscountItem } from "interfaces/checkout";
+import { useState, useEffect } from "react";
+import { IoTimerOutline } from "react-icons/io5";
+import { MdPeopleAlt } from "react-icons/md";
+import { formatCurrency } from "utils/common";
 
 interface IOderItem {
   tour: ITourCart
@@ -22,10 +24,10 @@ const OrderItem = (props: IOderItem) => {
     let totalPrice: number = 0
 
     tour.participants.forEach((guest) => {
-      totalPrice += guest.price * guest.quantity
-    })
-    setTotalPrice(totalPrice)
-  }, [tour.participants])
+      totalPrice += guest.price * guest.quantity;
+    });
+    setTotalPrice(totalPrice);
+  }, [tour.participants]);
 
   return (
     <HStack
@@ -51,9 +53,9 @@ const OrderItem = (props: IOderItem) => {
         <HStack>
           <Text color="#396973" fontSize="2xl" fontWeight="500">
             {discountitem && discountitem.length !== 0
-              ? discountitem[0].tour.totalPrice -
-                discountitem[0].tour.discountPrice
-              : totalPrice}
+              ? formatCurrency(discountitem[0].tour.totalPrice -
+                               discountitem[0].tour.discountPrice)
+              : formatCurrency(totalPrice)}
           </Text>
           <Text
             textAlign="inherit"
@@ -63,7 +65,7 @@ const OrderItem = (props: IOderItem) => {
             opacity="0.55"
           >
             {discountitem && discountitem.length !== 0
-              ? discountitem[0].tour.totalPrice
+              ? formatCurrency(discountitem[0].tour.totalPrice)
               : ""}
           </Text>
         </HStack>

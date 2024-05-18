@@ -1,4 +1,4 @@
-import { getAllUsers, getUserById } from 'API/user'
+import { getAllUsers, getUserById, updateUser } from 'API/user'
 import { PLATFORM } from 'enums/common'
 import { IUser } from 'interfaces/user'
 import { makeAutoObservable } from 'mobx'
@@ -28,6 +28,11 @@ class UserStore {
 
   async fetchUserDetail(userId: string, platform: PLATFORM): Promise<void> {
     const user = await getUserById(userId, platform)
+    this.userDetail = user
+  }
+
+  async updateUser(data: IUser, userId: string){
+    const user = await updateUser(data, userId)
     this.userDetail = user
   }
 }

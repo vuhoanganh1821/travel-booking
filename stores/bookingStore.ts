@@ -1,19 +1,31 @@
-import { getAllBookings, getBookingDetail } from 'API/booking'
-import { IBooking } from 'interfaces/booking'
+import { createBooking, getAllBookings, getBookingDetail, createBookNow, deleteBooking } from 'API/booking'
+import { ICreateBooking, ICreateBookingForm, ICreateBookingRespone, IBookingInfoBody, IBookingDetail } from 'interfaces/booking'
+import { IAddToCart } from 'interfaces/cart'
+import { IRequsetCheckoutReview } from 'interfaces/checkout'
 import { makeAutoObservable } from 'mobx'
 import RootStore from 'stores'
 
 class BookingStore {
   rootStore: RootStore
+  bookings: IBookingInfoBody[] = []
+  totalCount: number = 0
+  bookingDetail: IBookingDetail | null = null
+  discountCode: string = ''
+  listBooking: ICreateBooking | null = null
+  bookingId: string = ''
+  responeBookNow: IRequsetCheckoutReview | null = null
   constructor(rootStore: RootStore) {
     this.rootStore = rootStore
     makeAutoObservable(this)
   }
 
-  bookings: IBooking[] = []
-  totalCount: number = 0
+  applyDiscount(discountCode: string){
+    this.discountCode = discountCode
+  }
 
-  bookingDetail: IBooking | null = null
+  setBookingId(bookingId: string) {
+    this.bookingId = bookingId
+  }
 
   async fetchTotalCount(): Promise<void> {
     const { result } = await getAllBookings()
@@ -28,6 +40,20 @@ class BookingStore {
   async fetchBookingDetail(bookingId: string): Promise<void> {
     const booking = await getBookingDetail(bookingId)
     this.bookingDetail = booking
+  }
+
+  async createBooking(data: ICreateBookingForm): Promise<void> {
+    const { booking } = await createBooking(data);
+    this.listBooking = booking
+  }
+
+  async createBookNow(data: IAddToCart): Promise<void> {
+    const bookNow = await createBookNow(data)
+    this.responeBookNow = bookNow
+  }
+
+  async deleteBooking(bookingId: string): Promise<void>{
+    await deleteBooking(bookingId)
   }
 }
 

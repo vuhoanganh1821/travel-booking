@@ -1,7 +1,8 @@
 import BookingPage from "pages/BookingPage";
 
-const BookingTourPage = () => {
+
+const Booking = () => {
   return <BookingPage />;
 };
 
-export default BookingTourPage;
+export default Booking;

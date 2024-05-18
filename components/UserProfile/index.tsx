@@ -10,54 +10,100 @@ import routes from 'routes'
 import { getAccessToken } from 'utils/common'
 
 interface IUserProfileProps {
-  platform: PLATFORM
-  openLoginModal?: () => void
+  openLoginModal: () => void;
+  color?: string;
+  underLineHoverColor?: string;
+  hoverColor?: string;
 }
 
 const UserProfile = (props: IUserProfileProps) => {
-  const { platform, openLoginModal } = props
-  const { authStore } = useStores()
-  const { user } = authStore
-  const router = useRouter()
-  const accessToken: string = getAccessToken(platform)
-  const isLogin: boolean = !!accessToken
+  const { openLoginModal, color, underLineHoverColor, hoverColor } = props;
+  const { authStore } = useStores();
+  const { user, isLogin } = authStore;
+  const router = useRouter();
+
+  useEffect(() => {
+    authStore.FetchUserInfo();
+  }, []);
 
   function gotoProfilePage(): void {
     router.push(routes.cms.accountSettings.value)
   }
 
   function handleLogout() {
-    authStore.logout(platform)
-    if (platform === PLATFORM.CMS) {
-      router.push(routes.cms.login.value)
-    }
+    authStore.logout(PLATFORM.WEBSITE);
   }
 
   return (
     <Menu autoSelect={false} computePositionOnMount placement="bottom-end">
-      <MenuButton
-        padding="4px 12px"
-        borderRadius="6px"
-        _hover={{ background: 'gray.200' }}
-        _active={{ background: 'gray.200' }}
+      <VStack
+        _after={{
+          content: '""',
+          backgroundColor: "#transparent",
+          height: "2px",
+          width: "0px",
+          mt: "-8px",
+          transition: "width .1s ease-in",
+        }}
+        _hover={{
+          "&::after": {
+            width: "100%",
+            backgroundColor: underLineHoverColor ? underLineHoverColor : "#fff",
+          },
+          color: hoverColor ? hoverColor : "#fff",
+        }}
       >
-        {isLogin ? (
-          <HStack spacing={3} order={{ base: 1, md: 2 }} flex="1">
-            <Avatar size="sm" name={user?.fullname} src={user?.profilePicture} background="gray.400" />
-            <Flex flexDirection="column" display={{ base: 'none', md: 'flex' }} alignItems="flex-start">
-              <Text fontSize="sm" fontWeight="500" lineHeight="5" marginBottom={1}>
-                {truncate(user?.fullname)}
-              </Text>
-              <Text fontSize="xs" lineHeight="4" color="text.grey.500">
-                {user?.email}
-              </Text>
-            </Flex>
-          </HStack>
-        ) : (
-          <Avatar size="sm" background="gray.400" />
-        )}
-      </MenuButton>
-      <MenuList minWidth="160px">
+        <MenuButton padding="0px">
+          {isLogin ? (
+            <HStack
+              spacing={3}
+              order={{ base: 1, md: 2 }}
+              flex="1"
+              ml="8px"
+              mb="4px"
+            >
+              <Avatar size="md" name={user?.fullname} src={user?.profilePicture} />
+              <Flex
+                color='#fff'
+                flexDirection="column"
+                display={{ base: "none", md: "flex" }}
+                alignItems="flex-start"
+              >
+                <Text
+                  fontSize="md"
+                  fontWeight="500"
+                  lineHeight="5"
+                  marginBottom={1}
+                  color={color}
+                >
+                  {user?.fullname}
+                </Text>
+                <Text fontSize="md" lineHeight="4" color={color}>
+                  {user?.email}
+                </Text>
+              </Flex>
+            </HStack>
+          ) : (
+            <VStack>
+              <ActionItem
+                underLineHoverColor={underLineHoverColor}
+                hoverColor={hoverColor}
+                color={color}
+                actionIcon={<FaRegUser />}
+                title="Login"
+                to={() => {}}
+              />
+            </VStack>
+          )}
+        </MenuButton>
+      </VStack>
+
+      <MenuList
+        fontSize="md"
+        minWidth="210px"
+        padding="16px 0px"
+        borderRadius="16px"
+      >
         {isLogin ? (
           <>
             <MenuItem maxH="40px" color="gray.700" onClick={gotoProfilePage}>
@@ -74,13 +120,21 @@ const UserProfile = (props: IUserProfileProps) => {
             </MenuItem>
           </>
         ) : (
-          <MenuItem maxH="40px" color="gray.700" onClick={openLoginModal}>
-            Log In
+          <MenuItem
+            fontWeight="600"
+            maxH="40px"
+            color="gray.700"
+            onClick={openLoginModal}
+          >
+            <HStack spacing={3}>
+              <IoMdLogIn fontSize="1.8rem" />
+              <Text>Log in or sign up</Text>
+            </HStack>
           </MenuItem>
         )}
       </MenuList>
     </Menu>
-  )
-}
+  );
+};
 
-export default observer(UserProfile)
+export default observer(UserProfile);

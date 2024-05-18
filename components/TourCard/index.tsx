@@ -1,10 +1,11 @@
-import { Box, Img, Text, VStack, HStack, Link } from '@chakra-ui/react'
-import Icon from 'components/Icon'
-import { ITour } from 'interfaces/tour'
-import { border } from 'themes/globalStyles'
-
-interface ITourCardProps {
-  tour: ITour
+import { Box, Img, Text, VStack, HStack, Link } from "@chakra-ui/react";
+import Icon from "components/Icon";
+import { border } from "themes/globalStyles";
+import { ITour } from "interfaces/tour";
+import { formatCurrency } from "utils/common";
+import RatingStart from "components/RatingStart";
+interface ITourCard {
+  tour: ITour;
 }
 
 const TourCard = (props: ITourCardProps) => {
@@ -51,21 +52,9 @@ const TourCard = (props: ITourCardProps) => {
           <Text fontSize="md" mb="4px" fontWeight="500">
             2 hours
           </Text>
-          <HStack spacing={4}>
-            <HStack marginBottom={1}>
-              <Icon iconName="yellow-star.svg" size={18} />
-              <Icon iconName="yellow-star.svg" size={18} />
-              <Icon iconName="yellow-star.svg" size={18} />
-              <Icon iconName="yellow-star.svg" size={18} />
-              <Icon iconName="yellow-star.svg" size={18} />
-            </HStack>
-            <Text>4.9/5</Text>
-            <Text fontSize="sm" textDecoration="underline">
-              3456
-            </Text>
-          </HStack>
+          <RatingStart sizeStar={24} sizeText="sm" ratingAverate={tour.ratingAverage} numOfrating={tour.numOfRating}/>
           <Text bottom="0" fontSize="lg" fontWeight="600">
-            From {tour.regularPrice} VND
+            From {formatCurrency(tour.regularPrice)}
           </Text>
         </VStack>
       </Box>

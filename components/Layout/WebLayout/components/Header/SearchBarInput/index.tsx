@@ -10,11 +10,12 @@ import {
   Button,
   VStack,
   Input,
-} from '@chakra-ui/react'
-import SearchItem from './SearchItem'
-import { useDebounce } from 'hooks'
-import { useStores } from 'hooks'
-import { observer } from 'mobx-react'
+} from "@chakra-ui/react";
+import SearchItem from "./SearchItem";
+import { useDebounce } from "hooks";
+import { useStores } from "hooks";
+import { observer } from "mobx-react";
+import { ISearch, ITour } from "interfaces/tour";
 
 interface ISearchInputProps {
   name?: string
@@ -98,8 +99,7 @@ const SearchBarInput = (props: ISearchInputProps) => {
             fontSize="xl"
             fontWeight="700"
             onChange={(e) => {
-              setInputValue(e.target.value)
-              console.log(inputValue)
+              setInputValue(e.target.value);
             }}
             onFocus={() => {
               setIsShow(true)

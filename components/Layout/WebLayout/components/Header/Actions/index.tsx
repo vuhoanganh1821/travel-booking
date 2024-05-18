@@ -3,7 +3,7 @@ import { PiTicketBold } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import { LuShoppingCart } from "react-icons/lu";
 import routes from "routes";
-import UserProfile from "components/Layout/WebLayout/components/Header/UserProfile";
+import UserProfile from "components/UserProfile";
 import ActionItem from "./ActionItem";
 import { useStores } from "hooks";
 import { useEffect } from "react";
@@ -37,8 +37,8 @@ const Action = (props: IHeaderProps) => {
     route.push(routes.cart.value);
   }
 
-  function gotoBookingPage() {
-    route.push(routes.booking.activity);
+  function gotoBookingViewPage() {
+    route.push(routes.booking.view);
   }
 
   const { openLoginModal, color, underLineHoverColor, hoverColor } = props;
@@ -55,7 +55,7 @@ const Action = (props: IHeaderProps) => {
         hoverColor={hoverColor}
         actionIcon={<PiTicketBold />}
         title="Booking"
-        to={gotoBookingPage}
+        to={gotoBookingViewPage}
       />
       <Box
         {...(cartStore.cartCount !== 0 &&

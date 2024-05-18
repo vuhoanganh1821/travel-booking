@@ -33,18 +33,20 @@ export interface IDeleteCart {
 }
 
 export interface ITourCart {
-  isPrivate: boolean;
-  transports: [];
-  hotels: [];
   tour: {
     _id: string;
     code: string;
     title: string;
     thumbnail: string;
+    numOfRating: number,
+    ratingAverage: number
   };
+  isPrivate: boolean;
   startDate: string;
   startTime: string;
   participants: IParticipants[];
+  transports: [];
+  hotels: [];
   _id: string;
 }
 
@@ -52,8 +54,8 @@ export interface IParticipants {
   title: string;
   quantity: number;
   price: number;
-  // currency?: string;
-  // _id?: string;
+  currency?: string;
+  _id?: string;
 }
 
 export interface ICart {

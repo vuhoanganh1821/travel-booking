@@ -62,18 +62,14 @@ const FormItem = (props: IFormItemProps) => {
     autoComplete,
     hideErrorMessage
   } = props
-  const {
-    register,
-    formState: { errors },
-    control
-  } = useFormContext()
+  const {register, formState: { errors }, control} = useFormContext()
   let pattern: { value: RegExp; message: string } | undefined
   switch (name) {
     case 'firstName':
     case 'lastName':
-    case 'email':
-      pattern = { value: EMAIL_PATTERN, message: 'Please enter a valid email' }
-      break
+    // case 'email':
+    //   pattern = { value: EMAIL_PATTERN, message: 'Please enter a valid email' }
+    //   break
     case 'dateOfBirth':
       //INFO: validate (DD/MM/YYYY), with a year between 1900 and 2099
       pattern = {
@@ -157,7 +153,7 @@ const FormItem = (props: IFormItemProps) => {
         />
       )}
       {!hideErrorMessage && (
-        <FormErrorMessage className={errorClassName}>{get(errors, `${name}.message`, '')}</FormErrorMessage>
+      <FormErrorMessage className={errorClassName}>{/*get(errors, `${name}.message`, '')}*/}</FormErrorMessage>
       )}
     </FormControl>
   )

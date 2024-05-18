@@ -4,10 +4,11 @@ import { GoChevronRight } from "react-icons/go";
 
 interface IHeaderProps {
   openLoginModal: () => void;
+  openSignUpModal: () => void;
 }
 
 const HeaderHome = (props: IHeaderProps) => {
-  const { openLoginModal } = props;
+  const { openLoginModal, openSignUpModal } = props;
   return (
     <Box
       width="full"

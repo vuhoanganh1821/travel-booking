@@ -1,7 +1,7 @@
-import BookingPage from "pages/BookingPage";
+import CheckoutPage from "pages/CheckoutPage";
 
 const BookingTourPage = () => {
-  return <BookingPage />;
+  return <CheckoutPage />;
 };
 
 export default BookingTourPage;

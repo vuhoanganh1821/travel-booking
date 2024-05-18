@@ -1,8 +1,8 @@
 import { ITourCart } from "interfaces/cart";
 
 export interface IRequsetCheckoutReview {
-  cart: string;
-  tours: IRequestTour[];
+  cart?: string;
+  tours?: IRequestTour[];
   discountCode?: string;
 }
 
@@ -37,3 +37,7 @@ export interface ISelectedCart {
   tour: string;
   startDate: string;
 }
+
+export interface IPaymentURL {
+  paymentURL: string
+} 

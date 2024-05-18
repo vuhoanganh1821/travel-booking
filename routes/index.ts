@@ -20,9 +20,11 @@ const routes = {
     value: '/cart'
   },
   booking: {
-    activity: '/booking/activity',
-    contact: '/booking/contact',
-    payment: '/booking/payment'
+    activity: "/booking/activity",
+    contact: "/booking/contact",
+    payment: "/booking/payment",
+    view:  "/booking/view",
+    detail: (bookingId: string) => `/booking/${bookingId}`
   },
   ...cmsRoutes
 }

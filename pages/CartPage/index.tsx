@@ -1,38 +1,61 @@
 "use client";
-import { HStack, VStack, Text, Button } from "@chakra-ui/react";
-import { useRouter } from "next/navigation";
+import { HStack, VStack, Text, Button, Box } from "@chakra-ui/react";
+import { useRouter } from "next/navigation"; 
 import PageLayout from "components/Layout/WebLayout/PageLayout";
 import routes from "routes";
 import CartItem from "./CartItem";
 import { useStores } from "hooks";
 import { useEffect, useState } from "react";
 import { observer } from "mobx-react";
+import Title from "components/Title";
+import { formatCurrency } from "utils/common";
+import { FaShoppingCart } from "react-icons/fa";
+
+interface IPriceList {
+  id: string;
+  price: number;
+}
 
 const CartPage = () => {
-  const { cartStore } = useStores();
-  const { authStore } = useStores();
+  const { cartStore, authStore } = useStores(); 
   const { listCart } = cartStore;
   const { isLogin } = authStore;
   const [totalPrice, setTotalPrice] = useState(0);
-  const route = useRouter();
+
+  const router = useRouter();
 
   useEffect(() => {
-    if (!isLogin) return;
-    const fetchData = async () => {
-      await cartStore.getListCart();
-    };
-    fetchData();
-  }, []);
-
-  function caculateTourPrice(tourPrice: number): void {
-    if (tourPrice) {
-      setTotalPrice((prev) => prev + tourPrice);
+    if (!isLogin) {
+      router.push(routes.home.value);
+    } else {
+      fetchData();
     }
-  }
+  }, []); 
 
-  function gotoCheckout() {
-    route.push(routes.booking.activity);
-  }
+  const fetchData = async () => {
+    await cartStore.getListCart();
+  };
+
+
+  const calculateTotalPrice = () => {
+    let total = 0;
+    if (listCart && listCart.tours) {
+      listCart.tours.forEach((tour) => {
+        tour.participants.map((participant) => {
+          total += participant.price * participant.quantity
+        })
+      });
+    }
+    setTotalPrice(total);
+  };
+
+  useEffect(() => {
+    calculateTotalPrice();
+  }, [listCart]);
+
+  const gotoCheckout = () => {
+    router.push(routes.booking.activity);
+  };
 
   return (
     <PageLayout>
@@ -45,40 +68,31 @@ const CartPage = () => {
         align="flex-start"
         justifyContent="space-between"
         padding="8px 20px"
+        spacing={10}
       >
-        <VStack width="full" height="full" align="flex-start">
-          <Text
-            textAlign="start"
-            fontSize="2xl"
-            color="#5ab6b3"
-            paddingLeft="20px"
-            fontWeight="bold"
-            _before={{
-              position: "absolute",
-              marginLeft: "-20px",
-              borderRadius: "2px",
-              content: "''",
-              width: "10px",
-              height: "30px",
-              bg: "#5ab6b3",
-            }}
-          >
-            Shopping Cart
-          </Text>
-          {listCart &&
-            listCart.tours &&
-            listCart.tours.map((tour) => (
+         {listCart?.tours?.length !== 0 ? (
+          <VStack width="full" height="full" align="flex-start">
+            <Title text='Shopping cart'/>
+            {listCart?.tours?.map((tour) => (
               <CartItem
                 key={tour._id}
-                tour={tour}
                 idCart={tour._id}
-                caculateTourPrice={caculateTourPrice}
+                tour={tour}
               />
             ))}
-        </VStack>
+          </VStack>
+        ) : (
+          <VStack width="full" height="full" align="center">
+            <Box color="teal.500" fontSize="9xl">
+              <FaShoppingCart />
+            </Box>
+            <Text fontSize='4xl' fontWeight='bold' color='teal.700'>Your cart is empty</Text>
+          </VStack>
+        )}
 
-        {listCart && listCart.tours && listCart.tours.length && (
-          <VStack position="relative" width="full">
+        {listCart?.tours?.length !== 0 && (
+          <VStack position="relative" width="full" align='flex-start' >
+            <Title text='Total'/>
             <VStack
               width="full"
               maxWidth="400px"
@@ -88,39 +102,31 @@ const CartPage = () => {
               padding="12px 20px"
               border="2px solid #ccc"
               borderRadius="8px"
-              position="fixed"
             >
               <HStack
                 width="full"
                 justifyContent="space-between"
-                spacing={50}
-                fontSize="xl"
+                fontSize="lg"
                 fontWeight="bold"
               >
-                <Text>Subtotal ({listCart.tours.length} items): </Text>
-                <Text>{totalPrice}</Text>
+                <Text>Subtotal ({listCart?.tours?.length} items): </Text>
+                <Text>{formatCurrency(totalPrice)}</Text>
               </HStack>
               <Button
                 width="full"
                 marginTop="12px"
                 padding="23px 18px"
                 borderRadius="full"
-                background="#38A59F"
+                colorScheme="teal"
                 color="white"
                 onClick={gotoCheckout}
               >
-                Go to check out
+                Checkout
               </Button>
-              <VStack align="self-start"></VStack>
             </VStack>
           </VStack>
         )}
       </HStack>
-      {(!isLogin || !listCart.tours) && (
-        <Text fontSize="2xl" fontWeight="bold">
-          Your cart is empty{" "}
-        </Text>
-      )}
     </PageLayout>
   );
 };

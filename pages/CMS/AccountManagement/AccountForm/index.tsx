@@ -46,7 +46,6 @@ const CreateAccount = (props: ICreateAccountProps) => {
   }
 
   async function onSubmit(data: ICreateAccount): Promise<void> {
-    console.log(data)
   }
 
   useEffect(() => {

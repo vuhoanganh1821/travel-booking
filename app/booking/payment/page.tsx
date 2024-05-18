@@ -1,7 +1,6 @@
-import PaymentPage from "pages/PaymentPage";
+import PaymentPage from "pages/PaymentPage"
 
 const Payment = () => {
-  return <PaymentPage />;
-};
-
-export default Payment;
+    return <PaymentPage/>
+}
+export default Payment

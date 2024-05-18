@@ -101,7 +101,7 @@ const BookingStatus = (props: IBookingStatus) => {
             2
           </Text>
         </Box>
-        <Text>Contact</Text>
+        <Text color={`${color["2a"]}`} >Contact</Text>
       </VStack>
       <VStack flex="1" width="full">
         <Box
@@ -129,7 +129,7 @@ const BookingStatus = (props: IBookingStatus) => {
             3
           </Text>
         </Box>
-        <Text>Payment</Text>
+        <Text color={`${color["3"]}`} >Payment</Text>
       </VStack>
     </HStack>
   );

@@ -20,3 +20,19 @@ export function getOptions<T>(array: T[], labelKey: string, valueKey: string): I
     value: get(option, valueKey ?? '')
   }))
 }
+
+export function formatCurrency(amount: number): string {
+  const amountString = amount.toString();
+  const amountArray = amountString.split('');
+  const reversedArray = amountArray.reverse();
+  let resultArray: string[] = [];
+  for (let i = 0; i < reversedArray.length; i++) {
+      if (i > 0 && i % 3 === 0) {
+          resultArray.push('.');
+      }
+      resultArray.push(reversedArray[i]);
+  }
+
+  const formattedAmount = resultArray.reverse().join('');
+  return formattedAmount + ' VNĐ';
+}

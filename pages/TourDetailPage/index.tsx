@@ -1,19 +1,28 @@
 "use client";
 import { useEffect, useState } from "react";
 import {
+  Avatar,
   Box,
   Button,
+  Divider,
   Heading,
   HStack,
-  Img,
+  IconButton,
+  Image,
   Menu,
   MenuButton,
   MenuList,
   Text,
+  useBreakpointValue,
   VStack,
 } from "@chakra-ui/react";
-import { useStores } from "hooks";
+import { toast } from 'react-toastify'
+import Slider from "react-slick";
+import "slick-carousel/slick/slick.css";
+import "slick-carousel/slick/slick-theme.css";
 import { observer } from "mobx-react";
+import { useRouter } from "next/navigation";
+import { useStores } from "hooks";
 import Icon from "components/Icon";
 import "react-calendar/dist/Calendar.css";
 import { FaRegCalendarCheck } from "react-icons/fa";
@@ -25,20 +34,29 @@ import { IoPeople } from "react-icons/io5";
 import PageLayout from "components/Layout/WebLayout/PageLayout";
 import { TriangleDownIcon } from "@chakra-ui/icons";
 import { FaLocationDot } from "react-icons/fa6";
-import MenuItem from "./MenuItem";
+import MenuItem from "../../components/Layout/WebLayout/MenuItem";
 import CustomCalendar from "./Calendar";
 import { IAddToCart, IParticipants } from "interfaces/cart";
 import { PLATFORM } from "enums/common";
 import Maps from "./Maps";
+import RatingStart from "components/RatingStart";
+import { formatCurrency } from "utils/common";
+import routes from "routes";
+import { BiLeftArrowAlt, BiRightArrowAlt } from "react-icons/bi";
+import Title from "components/Title";
+import TourReviews from "./TourReviews";
 
 type ValuePiece = Date | null;
 
 type Value = ValuePiece | [ValuePiece, ValuePiece];
 
+
+
 const TourDetailPage = () => {
   const currentUrl = window.location.href;
   const urlParts = currentUrl.split("/");
   const tourId = urlParts[urlParts.length - 1];
+  const route = useRouter()
   const [type, setType] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(0);
   const [price, setPrice] = useState<number>(0);
@@ -51,11 +69,22 @@ const TourDetailPage = () => {
   const [availability, setAvailability] = useState<boolean>(false);
   const [isMenuParticipant, setIsMenuParticipant] = useState<boolean>(true);
   const [isMenuDatePick, setIsMenuDatePick] = useState<boolean>(true);
-  const { authStore } = useStores();
-  const { tourStore } = useStores();
-  const { cartStore } = useStores();
+  const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [slider, setSlider] = useState<Slider | null>(null)
+  const { authStore, tourStore, cartStore, bookingStore } = useStores();
   const { tourDetail, priceOptions, startLocation } = tourStore;
+  const settings = {
+    dots: true,
+    infinite: true,
+    slidesToShow: 1,
+    slidesToScroll: 1,
+    autoplay: true,
+    autoplaySpeed: 2000,
+    pauseOnHover: true
+  };
   const userId = localStorage.getItem(`${PLATFORM.WEBSITE}UserId`);
+  const top = useBreakpointValue({ base: '90%', md: '50%' })
+  const side = useBreakpointValue({ base: '30%', md: '10px' })
 
   useEffect(() => {
     tourStore.fetchTourDetail(tourId);
@@ -101,7 +130,6 @@ const TourDetailPage = () => {
     let totalPrice: number = 0;
 
     guestInfo.forEach((guest) => {
-      console.log(guest.price);
       totalPrice += guest.price;
     });
     setTotalPrice(totalPrice);
@@ -109,7 +137,6 @@ const TourDetailPage = () => {
 
   useEffect(() => {
     if (!selectedDate) return;
-    console.log(selectedDate);
     var date = new Date(selectedDate.toString());
 
     var formattedDate =
@@ -119,39 +146,86 @@ const TourDetailPage = () => {
       "-" +
       ("0" + date.getDate()).slice(-2);
 
-    console.log(formattedDate);
-
     const showDate = selectedDate.toString().split(" ").slice(0, 3);
     setShowDate(showDate);
     setConvertedDate(formattedDate.toString());
   }, [selectedDate]);
 
-  let src = "";
-  if (tourDetail.images && tourDetail.images.length > 0) {
-    src = tourDetail.images.slice(0, 1).toString();
+
+  async function handleAddToCart(): Promise<void> {
+    try{
+      if(guestInfo.length === 0){
+        toast.error("Please select participants")
+        return
+      }
+      if (userId){
+        const participant: IParticipants[] = guestInfo;
+        const data: IAddToCart = {
+          user: userId,
+          tour: {
+            tour: tourId,
+            startDate: convertedDate,
+            startTime: "7:00AM",
+            participants: participant,
+          },
+        };
+        setIsLoading(true)
+        await cartStore.addToCart(data)
+        setIsLoading(false)
+        toast.success('Add to cart successfully')
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        route.refresh()
+      }else{
+        toast.warning("Please login first")
+        setIsLoading(false)
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return
+      }
+    }catch{
+      setIsLoading(false)
+      toast.error('Add to cart failed!')
+    }
   }
 
-  function handleAddToCart() {
-    if (!userId) return;
-    console.log("userID: ", userId);
-    const participant: IParticipants[] = guestInfo;
-    const data: IAddToCart = {
-      user: userId,
-      tour: {
-        tour: tourId,
-        startDate: convertedDate,
-        startTime: "7:00AM",
-        participants: participant,
-      },
-    };
-    cartStore.addToCart(data);
+  async function handleBookNow(): Promise<void> {
+    try{
+      if(guestInfo.length === 0){
+        toast.error("Please select participants")
+        return
+      }
+      setIsLoading(true)
+      if (userId){
+        const participant: IParticipants[] = guestInfo;
+        const data: IAddToCart = {
+          user: userId,
+          tour: {
+            tour: tourId,
+            startDate: convertedDate,
+            startTime: "7:00AM",
+            participants: participant,
+          },
+        };
+        await bookingStore.createBookNow(data)
+        setIsLoading(false)
+        route.push(routes.booking.activity)
+      } else{
+        toast.warning("Please login first")
+        setIsLoading(false)
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+        return
+      }
+    }catch{
+      setIsLoading(false)
+      toast.error('Book now failed!')
+    }
   }
-
+  
   function handleCheckAvailability() {
     guestInfo.length ? setIsMenuParticipant(true) : setIsMenuParticipant(false);
     showDate.length ? setIsMenuDatePick(true) : setIsMenuDatePick(false);
     setAvailability(!!guestInfo.length && !!showDate.length);
   }
+
   return (
     <PageLayout>
       <VStack
@@ -164,20 +238,52 @@ const TourDetailPage = () => {
         <Heading color="gray.800" fontWeight={700} lineHeight={10}>
           {tourDetail.title}
         </Heading>
-        <HStack spacing={4}>
-          <HStack marginBottom={1}>
-            <Icon iconName="yellow-star.svg" size={20} />
-            <Icon iconName="yellow-star.svg" size={20} />
-            <Icon iconName="yellow-star.svg" size={20} />
-            <Icon iconName="yellow-star.svg" size={20} />
-            <Icon iconName="yellow-star.svg" size={20} />
-          </HStack>
-          <Text>4.9 / 5</Text>
-          <Text fontSize="sm" textDecoration="underline">
-            3456 reviews
-          </Text>
-        </HStack>
-        <Img width="full" height="500px" src={src} borderRadius={8} />
+        <RatingStart sizeStar={24} sizeText="md" ratingAverate={tourDetail.ratingAverage} numOfrating={tourDetail.numOfRating}/>
+        <Box position={'relative'} height={'600px'} width={'full'} overflow={'hidden'}>
+          <IconButton
+            aria-label="left-arrow"
+            colorScheme="messenger"
+            borderRadius="full"
+            position="absolute"
+            left={side}
+            top={top}
+            transform={'translate(0%, -50%)'}
+            zIndex={2}
+            onClick={() => slider?.slickPrev()}
+          >
+          <BiLeftArrowAlt />
+          </IconButton>
+          {/* Right Icon */}
+          <IconButton
+            aria-label="right-arrow"
+            colorScheme="messenger"
+            borderRadius="full"
+            position="absolute"
+            right={side}
+            top={top}
+            transform={'translate(0%, -50%)'}
+            zIndex={2}
+            onClick={() => slider?.slickNext()}
+          >
+            <BiRightArrowAlt />
+          </IconButton>
+          <Slider {...settings} ref={(slider) => setSlider(slider)}>
+          {tourDetail.images?.map((url, index) => (
+            <Image
+              key={index}
+              height={'xl'}
+              position="relative"
+              backgroundPosition="center"
+              backgroundRepeat="no-repeat"
+              backgroundSize="cover"
+              borderRadius='12px'
+              backgroundImage={`url(${url})`}
+            />
+          ))}
+          </Slider>
+        </Box>
+
+        
         <HStack width="full" justify="space-between" paddingTop="32px">
           <VStack
             alignSelf="flex-start"
@@ -186,16 +292,12 @@ const TourDetailPage = () => {
             align="flex-start"
           >
             <Text fontSize="lg" paddingRight="30px">
-              Enchanting by the ethereal beauty and tranquility of the sand
-              dunes in Mui Ne. Join us on a surreal journey through nature,
-              where destinations beckon you to explore their captivating allure
+              {tourDetail.summary}
             </Text>
             <Box width="full">
               <Maps coordinates={startLocation.coordinates} />
             </Box>
-            <Text fontSize="2xl" fontWeight="bold" alignSelf="flex-start">
-              About this activity
-            </Text>
+            <Title text='About this activity'/> 
             <HStack align="flex-start" padding="16px">
               <Text fontSize="3xl">
                 <FaRegCalendarCheck />
@@ -351,7 +453,7 @@ const TourDetailPage = () => {
                 </Box>
 
                 <Button
-                  colorScheme="blue"
+                  colorScheme="teal"
                   borderRadius="80px"
                   flex={1}
                   onClick={handleCheckAvailability}
@@ -363,12 +465,13 @@ const TourDetailPage = () => {
             <Box
               width="full"
               height="fit-content"
-              border="2px solid #0071EB"
+              border="2px solid teal"
               borderRadius="15px"
               display={availability ? "block" : "none"}
             >
               <VStack align="flex-start">
                 <VStack
+                  fontWeight='500'
                   align="flex-start"
                   width="full"
                   padding="24px 24px 0px"
@@ -405,11 +508,11 @@ const TourDetailPage = () => {
                       width="100%"
                       justifyContent="space-between"
                     >
-                      <Text fontSize="lg">
+                      <Text fontWeight='500' fontSize="lg">
                         {guest.title} {guest.quantity} x{" "}
-                        {guest.price / guest.quantity}
+                        {formatCurrency(guest.price / guest.quantity)}
                       </Text>
-                      <Text fontSize="lg">{guest.price}</Text>
+                      <Text fontWeight='500' fontSize="lg">{guest.price && formatCurrency(guest.price)}</Text>
                     </HStack>
                   ))}
                 </VStack>
@@ -426,14 +529,16 @@ const TourDetailPage = () => {
                         Total price
                       </Text>
                       <Text fontSize="2xl" fontWeight="bold">
-                        {totalPrice !== 0 ? `${totalPrice} VND` : ""}
+                        {totalPrice !== 0 ? `${totalPrice && formatCurrency(totalPrice)}` : ""}
                       </Text>
                     </VStack>
                     <HStack>
-                      <Button background="#B2F5EA" onClick={handleAddToCart}>
+                      <Button color='#fff' colorScheme="teal" onClick={handleAddToCart} isLoading={isLoading}>
                         Add to cart
                       </Button>
-                      <Button background="#B2F5EA">Book now</Button>
+                      <Button color='#fff' colorScheme="teal" onClick={handleBookNow} isLoading={isLoading}>
+                        Book now
+                      </Button>
                     </HStack>
                   </HStack>
                 </Box>
@@ -446,17 +551,17 @@ const TourDetailPage = () => {
               align="flex-start"
               padding={4}
               border="3px solid #DCDFE4"
-              borderTopColor="#0071EB"
+              borderTopColor="teal"
               borderRadius={2}
               spacing={0}
             >
               <Text>From</Text>
               <HStack width="full" justify="space-between">
-                <Text fontSize="2xl" fontWeight={700}>
-                  {tourDetail.regularPrice}
+                <Text fontSize="2xl" fontWeight={700} flex={2}>
+                  {tourDetail.regularPrice && formatCurrency(tourDetail.regularPrice)}
                 </Text>
-                <Button colorScheme="blue" borderRadius="80px" width="60%">
-                  Check availability
+                <Button colorScheme="teal" borderRadius="80px" paddingX={8} width="60%" flex={1}>
+                 Check availability
                 </Button>
               </HStack>
               <Text>per person</Text>
@@ -470,6 +575,10 @@ const TourDetailPage = () => {
             </VStack>
           </VStack>
         </HStack>
+        <Divider borderColor="#888"/>
+        //customer reviews
+        <Title text='Customer reviews'/>
+        <TourReviews tourId={`${tourId}`} ratingAverage={tourDetail.ratingAverage} numOfRating={tourDetail.numOfRating}/>
       </VStack>
     </PageLayout>
   );

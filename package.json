@@ -35,13 +35,16 @@
     "react-loading-skeleton": "^3.4.0",
     "react-number-format": "^5.3.4",
     "react-table": "^7.8.0",
+    "react-slick": "^0.30.2",
     "react-toastify": "^10.0.5",
-    "sass": "^1.72.0"
+    "sass": "^1.72.0",
+    "slick-carousel": "^1.8.1"
   },
   "devDependencies": {
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",
+    "@types/react-slick": "^0.23.13",
     "eslint": "^8",
     "eslint-config-next": "14.0.4",
     "typescript": "^5"

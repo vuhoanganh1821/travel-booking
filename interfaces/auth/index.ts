@@ -6,6 +6,13 @@ export interface ILoginForm {
   isRemember: boolean
 }
 
+export interface ISignUpForm {
+  username:string,
+  email:string,
+  password:string,
+  passwordConfirm:string
+}
+
 export interface ILoginRequest {
   email: string
   password: string

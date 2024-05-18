@@ -14,9 +14,9 @@ const Maps = (props: IMaps) => {
   const startLocation =
     coordinates && coordinates.length >= 2
       ? { lat: coordinates[1], lng: coordinates[0] }
-      : { lat: 0, lng: 0 }
-  const [zoom] = useState(14)
-  maptilersdk.config.apiKey = 'PAckuW1Q20LwrRJCIs0n'
+      : { lat: 0, lng: 0 };
+  const [zoom] = useState(14);
+  maptilersdk.config.apiKey = "PAckuW1Q20LwrRJCIs0n";
 
   useEffect(() => {
     if (
@@ -28,8 +28,8 @@ const Maps = (props: IMaps) => {
 
     map.current = new maptilersdk.Map({
       container: mapContainer.current,
-      style: maptilersdk.MapStyle.SATELLITE,
-      center: [startLocation.lng, startLocation.lat],
+      style: maptilersdk.MapStyle.STREETS,
+      center: [ThuDuc.lng, ThuDuc.lat],
       zoom: zoom,
     })
     new maptilersdk.Marker({ color: '#FF0000' })
