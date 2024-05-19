@@ -34,7 +34,7 @@ export async function getReviewDetail(reviewId: string): Promise<IReview> {
 
 export async function approveReview(reviewId: string): Promise<void> {
   try {
-    await api.patch(`${REVIEW_URL}/approve/${reviewId}`, {
+    await api.get(`${REVIEW_URL}/approve/${reviewId}`, {
       headers: auth(PLATFORM.CMS)
     })
   } catch (error) {

@@ -27,6 +27,7 @@ export interface IUser {
 export interface IUserPagination {
   users: IUser[]
   result: number
+  total: number
 }
 
 export interface IUploadUserImage {

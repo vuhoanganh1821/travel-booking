@@ -48,7 +48,6 @@ const BookingManagement = () => {
   })
 
   useEffect(() => {
-    bookingStore.fetchTotalCount()
     bookingStore.fetchAllBookings(pageIndex)
   }, [pageIndex])
 

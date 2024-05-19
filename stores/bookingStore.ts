@@ -28,14 +28,10 @@ class BookingStore {
     this.bookingId = bookingId
   }
 
-  async fetchTotalCount(): Promise<void> {
-    const { result } = await getAllBookings()
-    this.totalCount = result
-  }
-
   async fetchAllBookings(page = 1): Promise<void> {
-    const { bookings } = await getAllBookings(`?page=${page}&limit=10`)
+    const { bookings, total } = await getAllBookings(`?page=${page}&limit=10`)
     this.bookings = bookings
+    this.totalCount = total
   }
 
   async fetchListBooking(page = 1): Promise<void> {

@@ -100,7 +100,6 @@ const AccountManagement = () => {
   }
 
   useEffect(() => {
-    userStore.fetchTotalCount()
     userStore.fetchAllUsers('', pageIndex)
   }, [pageIndex])
 

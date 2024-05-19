@@ -91,6 +91,7 @@ export interface IBookingInfoPagination {
 export interface IBookingPagination {
   bookings: IBooking[];
   result: number;
+  total: number;
 }
 
 export interface ITourBookingInfo {

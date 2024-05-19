@@ -16,14 +16,10 @@ class UserStore {
 
   userDetail: IUser | null = null
 
-  async fetchTotalCount(): Promise<void> {
-    const { result } = await getAllUsers()
-    this.totalCount = result
-  }
-
   async fetchAllUsers(query = '', page = 1): Promise<void> {
-    const { users } = await getAllUsers(`?sort=-lastSignInAt${query}&page=${page}&limit=10`)
+    const { users, total } = await getAllUsers(`?sort=-lastSignInAt${query}&page=${page}&limit=10`)
     this.users = users
+    this.totalCount = total
   }
 
   async fetchUserDetail(userId: string, platform: PLATFORM): Promise<void> {
@@ -32,7 +28,7 @@ class UserStore {
   }
 
   async updateUser(data: IUser, userId: string){
-    const user = await updateUser(data, userId)
+    const user = await updateUser(userId, data)
     this.userDetail = user
   }
 }
