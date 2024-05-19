@@ -1,11 +1,11 @@
 import api, { auth, handleError } from 'API'
 import { PLATFORM } from 'enums/common'
-import { ITourPagination, ISearch, ITour } from 'interfaces/tour'
+import { ITourPagination, ISearch, ITour, IAllTourPagination } from 'interfaces/tour'
 import get from 'lodash/get'
 
 const TOUR_URL = '/api/v1/tours'
 
-export async function getAllTours(filter = ''): Promise<ITourPagination> {
+export async function getAllTours(filter = ''): Promise<IAllTourPagination> {
   try {
     const response = await api.get(`${TOUR_URL}/all${filter}`)
     return response.data.metadata

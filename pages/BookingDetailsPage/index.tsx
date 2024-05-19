@@ -1,4 +1,4 @@
-import { HStack, VStack, Text, TableContainer, Table, Thead, Tr, Th, Tbody, Td } from "@chakra-ui/react"
+import { HStack, VStack, Text, TableContainer, Table, Thead, Tr, Th, Tbody, Td, Image    } from "@chakra-ui/react"
 import PageLayout from "components/Layout/WebLayout/PageLayout"
 import Title from "components/Title"
 
@@ -28,6 +28,13 @@ const BookingDetailsPage = () => {
                         </VStack>
                     </HStack>
                     <Text fontSize='xl' fontWeight='bold'>Booking details</Text>
+                    <HStack>
+                        <Image width={200} borderRadius="10px" src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgtQDT0RpKmDbKSjgnggaZaf2iRHFtG7SzEGvO3_RFFQ&s' alt='tourimg'/>
+                        <VStack>
+                            <Text>Mui Ne: Private Sand Dunes Jeep Tour at Sunrise or Sunset</Text>
+                            
+                        </VStack>
+                    </HStack>
                     <TableContainer width='full'>
                     <Table variant='striped' colorScheme='teal'>
                     <Thead>

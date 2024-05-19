@@ -39,6 +39,11 @@ export interface ITourPagination {
   docs: ITour[]
 }
 
+export interface IAllTourPagination {
+  total: number
+  tours: ITour[]
+}
+
 export interface IStartLocation {
   type?: string
   coordinates: number[]
