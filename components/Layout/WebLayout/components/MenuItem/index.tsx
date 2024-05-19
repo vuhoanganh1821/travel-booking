@@ -5,8 +5,8 @@ import { formatCurrency } from "utils/common";
 
 interface IMenuItem {
   quantity?: number;
-  type: string;
-  price: number;
+  type?: string;
+  price?: number;
   setType: React.Dispatch<React.SetStateAction<string>>;
   setQuantity: React.Dispatch<React.SetStateAction<number>>;
   setPrice: React.Dispatch<React.SetStateAction<number>>;
@@ -26,10 +26,10 @@ const MenuItem = (props: IMenuItem) => {
   }
   useEffect(() => {
     if (!start) {
-      setType(type);
+      setType(type ?? '');
       setQuantity(count);
-      setPrice(price);
-    } else {
+      setPrice(price ?? 0);
+    } else { 
       setStart(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -44,7 +44,7 @@ const MenuItem = (props: IMenuItem) => {
     >
       <VStack align="flex-start" fontWeight="bold">
         <Text>{type}</Text>
-        <Text>price: {formatCurrency(price)}</Text>
+        <Text>price: {formatCurrency(price ?? 0)}</Text>
       </VStack>
       <HStack spacing={2} fontSize="xl">
         <Button

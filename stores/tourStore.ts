@@ -18,8 +18,8 @@ class TourStore {
   totalSreachResult: number = 0
 
   tourDetail: ITour = {} as ITour
-  priceOptions: IPriceOption[] = []
-  startLocation: IStartLocation = {} as IStartLocation
+  priceOptions: IPriceOption[] | null = null
+  startLocation: IStartLocation | null = null
 
   async fetchTotalCount(): Promise<void> {
     const { total } = await getAllTours()
@@ -46,8 +46,8 @@ class TourStore {
   async fetchTourDetail(tourId: string): Promise<void> {
     const tour = await getTourDetail(tourId)
     this.tourDetail = tour
-    this.priceOptions = tour.priceOptions
-    this.startLocation = tour.startLocation
+    this.priceOptions = tour.priceOptions ?? []
+    this.startLocation = tour.startLocation ?? null
   }
 }
 

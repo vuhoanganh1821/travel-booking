@@ -238,7 +238,7 @@ const TourDetailPage = () => {
         <Heading color="gray.800" fontWeight={700} lineHeight={10}>
           {tourDetail.title}
         </Heading>
-        <RatingStart sizeStar={24} sizeText="md" ratingAverate={tourDetail.ratingAverage} numOfrating={tourDetail.numOfRating}/>
+        <RatingStart sizeStar={24} sizeText="md" ratingAverage={tourDetail.ratingAverage} numOfRating={tourDetail.numOfRating}/>
         <Box position={'relative'} height={'600px'} width={'full'} overflow={'hidden'}>
           <IconButton
             aria-label="left-arrow"
@@ -295,7 +295,7 @@ const TourDetailPage = () => {
               {tourDetail.summary}
             </Text>
             <Box width="full">
-              <Maps coordinates={startLocation.coordinates} />
+              <Maps coordinates={startLocation?.coordinates} />
             </Box>
             <Title text='About this activity'/> 
             <HStack align="flex-start" padding="16px">
@@ -394,7 +394,7 @@ const TourDetailPage = () => {
                       </MenuButton>
                     </VStack>
                     <MenuList minWidth="320px" padding="4px 10px">
-                      {priceOptions.map((participant) => (
+                      {priceOptions && priceOptions.map((participant) => (
                         <MenuItem
                           key={participant._id}
                           type={participant.title}
@@ -495,7 +495,7 @@ const TourDetailPage = () => {
                   </HStack>
                   <HStack>
                     <FaLocationDot size="1.5rem" />
-                    <Text fontSize="md">Meet at {startLocation.address} </Text>
+                    <Text fontSize="md">Meet at {startLocation?.address} </Text>
                   </HStack>
                 </VStack>
                 <VStack width="50%" align="flex-start" margin="16px 24px 24px">
@@ -578,7 +578,7 @@ const TourDetailPage = () => {
         <Divider borderColor="#888"/>
         //customer reviews
         <Title text='Customer reviews'/>
-        <TourReviews tourId={`${tourId}`} ratingAverage={tourDetail.ratingAverage} numOfRating={tourDetail.numOfRating}/>
+        <TourReviews tourId={`${tourId}`} ratingAverage={tourDetail.ratingAverage ?? 0} numOfRating={tourDetail.numOfRating ?? 0}/>
       </VStack>
     </PageLayout>
   );

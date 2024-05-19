@@ -1,5 +1,6 @@
 import { createReview, getReviewInTour, getAllReviewsByAdmin, getReviewDetail } from 'API/review'
-import { ICreateReview, IReview } from 'interfaces/review'
+import { IReview } from 'interfaces/review'
+import { ICreateReview, IReviewTour } from 'interfaces/reviewTour'
 import { makeAutoObservable } from 'mobx'
 import RootStore from 'stores'
 
@@ -15,7 +16,7 @@ class ReviewStore {
 
   reviewDetail: IReview | null = null
 
-  tourReviews: IReview[] | null = null
+  tourReviews: IReviewTour[] | null = null
   totalReview: number = 0
   resultReview: number = 0
 

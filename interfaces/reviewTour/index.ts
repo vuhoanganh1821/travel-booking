@@ -1,4 +1,4 @@
-export interface IReview {
+export interface IReviewTour {
     _id: string
     user: {
         _id: string
@@ -15,10 +15,10 @@ export interface IReview {
     approve: boolean
 }
 
-export interface IReviewPagination {    
+export interface IReviewTourPagination {    
     total: number
     result: number
-    reviews: IReview[]
+    reviews: IReviewTour[]
 }
 
 export interface ICreateReview{

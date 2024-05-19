@@ -1,6 +1,7 @@
 import api, { auth, handleError } from 'API'
 import { PLATFORM } from 'enums/common'
 import { IReview, IReviewPagination } from 'interfaces/review'
+import { IReviewTour, IReviewTourPagination,ICreateReview } from 'interfaces/reviewTour'
 import get from 'lodash/get'
 
 const REVIEW_URL = '/api/v1/reviews'
@@ -33,7 +34,7 @@ export async function getReviewDetail(reviewId: string): Promise<IReview> {
 
 export async function approveReview(reviewId: string): Promise<void> {
   try {
-    await api.get(`${REVIEW_URL}/approve/${reviewId}`, {
+    await api.patch(`${REVIEW_URL}/approve/${reviewId}`, {
       headers: auth(PLATFORM.CMS)
     })
   } catch (error) {
@@ -55,7 +56,7 @@ export async function deleteReview(reviewId: string): Promise<void> {
   }
 }
 
-export async function getReviewInTour(tourId: string): Promise<IReviewPagination> {
+export async function getReviewInTour(tourId: string): Promise<IReviewTourPagination> {
     try{
         const response = await api.get(`${REVIEW_URL}/tour/${tourId}`)
         return response.data.metadata

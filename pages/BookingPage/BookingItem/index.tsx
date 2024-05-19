@@ -13,10 +13,10 @@ interface IBookingItem {
 }
 
 const BookingItem = (props: IBookingItem) => {
+    const {booking} = props
     const route = useRouter();
     const {bookingStore} = useStores();
     const [isLoading, setIsLoading] = useState<boolean>(false)
-    const {booking} = props
     
     function handleGoToPayment() {
         bookingStore.setBookingId(booking._id)
@@ -47,11 +47,23 @@ const BookingItem = (props: IBookingItem) => {
             borderRadius="4px"
             p={4}
             justify="space-between"
-            onClick={handleViewBookingDetail}
         >
             <Stack flex={2} spacing={2} fontSize="md">
                 <Text fontWeight="bold">{booking.personalInfo.name}</Text>
                 <Text fontSize="sm">{booking.personalInfo.phone}</Text>
+                <Text  
+                    color='teal'
+                    fontWeight='bold'
+                    textUnderlineOffset={2}
+                    userSelect="none"
+                    onClick={handleViewBookingDetail}
+                    _hover={{
+                        textDecoration: "underline",
+                        color: "##026b6b",
+                        transition: "color 0.2s ease-in-out, text-decoration 0.2s ease-in-out"
+                }}>
+                    {`View details ->`}        
+                </Text>
             </Stack>
             <Box
                 bg={booking.status == 'pending' ? "#f15c36": "#4fd14a"}

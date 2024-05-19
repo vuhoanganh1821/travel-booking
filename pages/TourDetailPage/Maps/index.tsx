@@ -4,7 +4,7 @@ import '@maptiler/sdk/dist/maptiler-sdk.css'
 import './map.css'
 
 interface IMaps {
-  coordinates: number[]
+  coordinates?: number[]
 }
 
 const Maps = (props: IMaps) => {

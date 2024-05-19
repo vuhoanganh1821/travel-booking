@@ -53,9 +53,9 @@ const TourCard = (props: ITourCard) => {
           <Text fontSize="md" mb="4px" fontWeight="500">
             2 hours
           </Text>
-          <RatingStart sizeStar={24} sizeText="sm" ratingAverate={tour.ratingAverage} numOfrating={tour.numOfRating}/>
+          <RatingStart sizeStar={24} sizeText="sm" ratingAverage={tour.ratingAverage} numOfRating={tour.numOfRating}/>
           <Text bottom="0" fontSize="lg" fontWeight="600">
-            From {formatCurrency(tour?.regularPrice)}
+            From {formatCurrency(tour?.regularPrice ?? 0)}
           </Text>
         </VStack>
       </Box>

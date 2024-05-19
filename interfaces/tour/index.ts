@@ -1,37 +1,37 @@
 import { IPriceOption } from 'interfaces/common'
 
 export interface ITour {
-  _id: string
-  code: string
-  title: string
-  highlights: string[]
-  type: string
-  summary: string
-  description: string
-  thumbnail: string
-  images: string[]
-  category: string
-  interest: string
-  startLocation: IStartLocation
-  details: {
-    title: string
-    description: string
+  _id?: string
+  code?: string
+  title?: string
+  highlights?: string[]
+  type?: string
+  summary?: string
+  description?: string
+  thumbnail?: string
+  images?: string[]
+  category?: string
+  interest?: string
+  startLocation?: IStartLocation
+  details?: {
+    title?: string
+    description?: string
   }[]
-  inclusions: string[]
-  exclusions: string[]
-  itinerary: ITourItinerary
-  duration: number
-  discountPrice: number
-  discountPercentage: number
-  ratingAverage: number
-  numOfRating: number
-  priceOptions: IPriceOption[]
-  regularPrice: number
-  currency: string
-  isActive: boolean
-  hotels: string[]
-  locations: string[]
-  transports: string[]
+  inclusions?: string[]
+  exclusions?: string[]
+  itinerary?: ITourItinerary
+  duration?: number
+  discountPrice?: number
+  discountPercentage?: number
+  ratingAverage?: number
+  numOfRating?: number
+  priceOptions?: IPriceOption[]
+  regularPrice?: number
+  currency?: string
+  isActive?: boolean
+  hotels?: string[]
+  locations?: string[]
+  transports?: string[]
 }
 
 export interface ITourPagination {

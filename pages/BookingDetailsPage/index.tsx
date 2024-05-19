@@ -1,9 +1,39 @@
-import { HStack, VStack, Text, TableContainer, Table, Thead, Tr, Th, Tbody, Td, Image    } from "@chakra-ui/react"
+"use client";
+import { HStack, VStack, Text, TableContainer, Table, Thead, Tr, Th, Tbody, Td, Image, Divider, Box } from "@chakra-ui/react"
 import PageLayout from "components/Layout/WebLayout/PageLayout"
+import RatingStart from "components/RatingStart"
 import Title from "components/Title"
+import dayjs from "dayjs"
+import { useStores } from "hooks"
+import { IBookingDetail } from "interfaces/booking"
+import { observer } from "mobx-react";
+import { useEffect, useState } from "react"
+import { formatCurrency } from "utils/common";
+import RatingModal from "./RatingModal";
+import InvoiceItem from "./InvoiceItem";
+import { ITour } from "interfaces/tour";
+
 
 const BookingDetailsPage = () => {
-    return(
+    const {bookingStore} = useStores()
+    const {bookingDetail} = bookingStore
+
+    const [isOpenRatingModal, setIsOpenRatingModal] = useState<boolean>(false)
+    const [tour, setTour] = useState<ITour>()
+
+    function handleOpenRatingModal(tour: ITour) {
+        setTour(tour)
+        setIsOpenRatingModal(true)
+  }
+
+    useEffect(() => {
+        const currentUrl = window.location.href;
+        const urlParts = currentUrl.split("/");
+        const bookingId = urlParts[urlParts.length - 1];
+        bookingStore.fetchBookingDetail(bookingId)
+    }, [])
+
+    return (
         <PageLayout>
             <VStack
                 minHeight="700px"
@@ -11,64 +41,54 @@ const BookingDetailsPage = () => {
                 maxWidth="1300px"
                 width="full"
                 padding="24px"
+                spacing={8}
             >
-                <Title alignSelf='flex-start' text='Your booking invoice'/>
-                <VStack width='60%' align='flex-start'>
-                    <Text fontSize='xl' fontWeight='bold'>Personal infomation</Text>
-                    <HStack width='full' justify='space-between'>
-                        <VStack align='flex-start'>
-                            <Text>Tran Dinh Duy</Text>
-                            <Text>Ho Chi Minh</Text>
-                            <Text>dinhduytran123@gmail.com</Text>
-                        </VStack>
-                        <VStack align='flex-start'>
-                            <Text>Date: 2024-5-11</Text>
-                            <Text>Invoice Id: 123456</Text>
-                            <Text>Payment method: Vnpay</Text>
+                <Title alignSelf='flex-start' text='Your Booking Invoice' />
+                <VStack width='100%' align='flex-start' spacing={6}>
+                    <Box width='100%'>
+                        <Text fontSize='2xl' fontWeight='bold' mb={2}>Personal Information</Text>
+                        <HStack fontSize='lg' fontWeight={500} width='full' justify='space-between' spacing={12}>
+                            <VStack align='flex-start' spacing={1}>
+                                <Text>{bookingDetail?.personalInfo.name}</Text>
+                                <Text>{bookingDetail?.personalInfo.phone}</Text>
+                            </VStack>
+                            <VStack align='flex-start' spacing={1}>
+                                <Text>Date: {dayjs(bookingDetail?.bookingItems[0].startDate).format('YYYY-MM-DD')}</Text>
+                                <Text>Invoice ID: {bookingDetail?.payment?.transactionNo}</Text>
+                                <Text>Payment Method: {bookingDetail?.payment?.method}</Text>
+                            </VStack>
+                        </HStack>
+                    </Box>
+                    <Divider />
+                    <Text fontSize='2xl' fontWeight='bold' mb={2}>Booking Details</Text>
+                    {bookingDetail?.bookingItems && bookingDetail?.bookingItems.map((bookingItem, index) => 
+                        <InvoiceItem key={bookingItem._id} numOfItem={index} bookingItems={bookingItem} openRatingModal={handleOpenRatingModal}/>)}
+                   
+                    <Divider />
+                    <HStack width='full' justify='space-between' align='flex-start' paddingRight={6}>
+                        <Image width={250} src='https://upload.wikimedia.org/wikipedia/commons/d/d0/QR_code_for_mobile_English_Wikipedia.svg' alt='qrcode' />
+                        <VStack align='flex-start' spacing={5}>
+                            <HStack width='full' justify='space-between' spacing={4}>
+                                <Text fontSize='lg' fontWeight='bold'>Subtotal: </Text>
+                                <Text fontSize='lg' fontWeight={500}>{formatCurrency(bookingDetail?.checkoutOrder.totalOrder ?? 0)}</Text>
+                            </HStack>
+                            <Divider/>
+                            <HStack width='full' justify='space-between' spacing={4}>
+                                <Text fontSize='lg' fontWeight='bold'>Discount: </Text>
+                                <Text fontSize='lg' fontWeight={500}>{formatCurrency(bookingDetail?.checkoutOrder.discount ?? 0)}</Text>
+                            </HStack>
+                            <Divider/>
+                            <HStack width='full' justify='space-between' spacing={4}>
+                                <Text fontSize='lg' fontWeight='bold'>Total price: </Text>
+                                <Text fontSize='lg' fontWeight={500}>{formatCurrency(bookingDetail?.checkoutOrder.totalPrice ?? 0)}</Text> 
+                            </HStack>
                         </VStack>
                     </HStack>
-                    <Text fontSize='xl' fontWeight='bold'>Booking details</Text>
-                    <HStack>
-                        <Image width={200} borderRadius="10px" src='https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSgtQDT0RpKmDbKSjgnggaZaf2iRHFtG7SzEGvO3_RFFQ&s' alt='tourimg'/>
-                        <VStack>
-                            <Text>Mui Ne: Private Sand Dunes Jeep Tour at Sunrise or Sunset</Text>
-                            
-                        </VStack>
-                    </HStack>
-                    <TableContainer width='full'>
-                    <Table variant='striped' colorScheme='teal'>
-                    <Thead>
-                        <Tr>
-                            <Th>To convert</Th>
-                            <Th>into</Th>
-                            <Th isNumeric>multiply by</Th>
-                        </Tr>
-                        </Thead>
-                        <Tbody>
-                            <Tr>
-                                <Td>inches</Td>
-                                <Td>millimetres (mm)</Td>
-                                <Td isNumeric>25.4</Td>
-                            </Tr>
-                            <Tr>
-                                <Td>feet</Td>
-                                <Td>centimetres (cm)</Td>
-                                <Td isNumeric>30.48</Td>
-                            </Tr>
-                            <Tr>
-                                <Td>yards</Td>
-                                <Td>metres (m)</Td>
-                                <Td isNumeric>0.91444</Td>
-                            </Tr>
-                        </Tbody>
-                    </Table>
-                </TableContainer>
                 </VStack>
-
-               
+                <RatingModal tour={tour} isOpen={isOpenRatingModal} onClose={() => setIsOpenRatingModal(false)}/> 
             </VStack>
         </PageLayout>
     )
 }
 
-export default BookingDetailsPage
+export default observer(BookingDetailsPage)

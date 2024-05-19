@@ -10,7 +10,6 @@ interface ITourReviews {
     numOfRating: number
 }
 
-
 const TourReviews = (props: ITourReviews) => {
     const{ratingAverage, numOfRating, tourId} = props
     const {reviewStore} = useStores()
@@ -26,15 +25,15 @@ const TourReviews = (props: ITourReviews) => {
     <VStack height='fit-content' align='flex-start' spacing={10}>
         <Box >
             <Text fontWeight='bold'>Overal rating</Text>
-            <RatingStart sizeStar={24} sizeText="xl" ratingAverate={ratingAverage} numOfrating={numOfRating}/>
+            <RatingStart sizeStar={24} sizeText="xl" ratingAverage={ratingAverage} numOfRating={numOfRating}/>
         </Box>
         <Divider borderColor="#888" orientation='vertical'/>
         {tourReviews && tourReviews.map((review) => (
             <CustomnerReview 
                 key={review._id} 
                 ratingStar={review.rating} 
-                avatarImg={review.user.profilePicture} 
-                username={review.user.username}
+                avatarImg={review?.user?.profilePicture} 
+                username={review?.user?.username}
                 createDate={review.reviewAt}
                 comment={review.content}
             />
