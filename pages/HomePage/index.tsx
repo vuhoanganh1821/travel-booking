@@ -35,14 +35,16 @@ const HomePage = () => {
 
 
   useEffect(() => {
-    tourStore.fetchAllTour();
+    tourStore.fetchActiveTours();
   }, []);
+
+  console.log('HomePage', tours);
+
   return (
     <HomeLayout>
       <Box
         margin="0px 253px"
         padding="0px 98px"
-       
         alignSelf="flex-start"
         mt="32px"
       >

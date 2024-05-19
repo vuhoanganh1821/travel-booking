@@ -1,5 +1,5 @@
-import { createBooking, getAllBookings, getBookingDetail, createBookNow, deleteBooking } from 'API/booking'
-import { ICreateBooking, ICreateBookingForm, ICreateBookingRespone, IBookingInfoBody, IBookingDetail } from 'interfaces/booking'
+import { createBooking, getAllBookings, getBookingDetail, createBookNow, deleteBooking, getListBooking } from 'API/booking'
+import { ICreateBooking, ICreateBookingForm, ICreateBookingRespone, IBookingInfoBody, IBookingDetail, IBooking } from 'interfaces/booking'
 import { IAddToCart } from 'interfaces/cart'
 import { IRequsetCheckoutReview } from 'interfaces/checkout'
 import { makeAutoObservable } from 'mobx'
@@ -7,7 +7,8 @@ import RootStore from 'stores'
 
 class BookingStore {
   rootStore: RootStore
-  bookings: IBookingInfoBody[] = []
+  bookings: IBooking[] = []
+  bookingList: IBookingInfoBody[] = []
   totalCount: number = 0
   bookingDetail: IBookingDetail | null = null
   discountCode: string = ''
@@ -36,6 +37,12 @@ class BookingStore {
     const { bookings } = await getAllBookings(`?page=${page}&limit=10`)
     this.bookings = bookings
   }
+
+  async fetchListBooking(page = 1): Promise<void> {
+    const { bookings } = await getListBooking(`list?page=${page}&limit=10`)
+    this.bookingList = bookings  
+  }
+
 
   async fetchBookingDetail(bookingId: string): Promise<void> {
     const booking = await getBookingDetail(bookingId)

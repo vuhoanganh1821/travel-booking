@@ -19,7 +19,7 @@ export async function getAllTours(filter = ''): Promise<ITourPagination> {
 export async function getActiveTours(): Promise<ITourPagination> {
   try {
     const response = await api.get(`${TOUR_URL}/active-tours/all`)
-    return response.data.metadata
+    return response.data.metadata.tours
   } catch (error) {
     handleError(error as Error, 'API/tour', 'getActiveTours')
     const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)

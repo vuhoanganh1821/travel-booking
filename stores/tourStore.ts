@@ -17,24 +17,24 @@ class TourStore {
   suggestions: ISuggesttion[] = []
   totalSreachResult: number = 0
 
-  tourDetail: ITour | null = null
-  priceOptions?: IPriceOption[] = []
-  startLocation?: IStartLocation
+  tourDetail: ITour = {} as ITour
+  priceOptions: IPriceOption[] = []
+  startLocation: IStartLocation = {} as IStartLocation
 
   async fetchTotalCount(): Promise<void> {
-    const { result } = await getAllTours()
-    this.totalCount = result
+    const { total } = await getAllTours()
+    this.totalCount = total
   }
 
   async fetchAllTours(page = 1): Promise<void> {
-    const { tours } = await getAllTours(`?page=${page}&limit=10`)
-    this.tours = tours
+    const { docs } = await getAllTours(`?page=${page}&limit=10`)
+    this.tours = docs
   }
 
   async fetchActiveTours(): Promise<void> {
-    const { tours, result } = await getActiveTours()
-    this.tours = tours
-    this.totalCount = result
+    const { total, docs } = await getActiveTours()
+    this.tours = docs
+    this.totalCount = total
   }
 
   async fetchSearchTour(inputValue: string): Promise<void> {

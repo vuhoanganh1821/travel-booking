@@ -78,8 +78,9 @@ const UserProfile = (props: IUserProfileProps) => {
               ml="8px"
               mb="4px"
             >
-              <Avatar size="md" name={username} src={""} />
+              <Avatar size="md" name={username} src={user.profilePicture} />
               <Flex
+                color='#fff'
                 flexDirection="column"
                 display={{ base: "none", md: "flex" }}
                 alignItems="flex-start"

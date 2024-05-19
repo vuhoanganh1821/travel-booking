@@ -31,7 +31,7 @@ import { TriangleDownIcon } from "@chakra-ui/icons";
 import { FaCheckSquare } from "react-icons/fa";
 import { useStores } from "hooks";
 import CustomCalendar from "components/Layout/WebLayout/components/Calendar";
-import MenuItem from "components/Layout/WebLayout/MenuItem";
+import MenuItem from "components/Layout/WebLayout/components/MenuItem";
 import { PLATFORM } from "enums/common";
 import { ISelectedCart } from "interfaces/checkout";
 import { formatCurrency } from "utils/common";

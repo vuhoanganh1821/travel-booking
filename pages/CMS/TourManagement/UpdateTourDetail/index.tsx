@@ -164,6 +164,7 @@ const UpdateTourDetail = () => {
       })
       const priceOptionsData: IPriceOption[] = getValidArray(tourDetail?.priceOptions).map(option => {
         return {
+          _id: option?._id,
           title: option?.title,
           value: Number(option?.value),
           currency: option?.currency

@@ -3,7 +3,7 @@ import { PiTicketBold } from "react-icons/pi";
 import { useRouter } from "next/navigation";
 import { LuShoppingCart } from "react-icons/lu";
 import routes from "routes";
-import UserProfile from "components/UserProfile";
+import UserProfile from "../UserProfile";
 import ActionItem from "./ActionItem";
 import { useStores } from "hooks";
 import { useEffect } from "react";

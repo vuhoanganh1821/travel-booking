@@ -4,7 +4,7 @@ import '@maptiler/sdk/dist/maptiler-sdk.css'
 import './map.css'
 
 interface IMaps {
-  coordinates: [number, number]
+  coordinates: number[]
 }
 
 const Maps = (props: IMaps) => {
@@ -29,7 +29,7 @@ const Maps = (props: IMaps) => {
     map.current = new maptilersdk.Map({
       container: mapContainer.current,
       style: maptilersdk.MapStyle.STREETS,
-      center: [ThuDuc.lng, ThuDuc.lat],
+      center: [startLocation.lng, startLocation.lat],
       zoom: zoom,
     })
     new maptilersdk.Marker({ color: '#FF0000' })

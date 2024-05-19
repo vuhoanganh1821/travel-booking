@@ -1,6 +1,6 @@
 import api, { auth, handleError } from 'API'
 import { PLATFORM } from 'enums/common'
-import { IBookingDetail, IBookingInfoBody, IBookingInfoPagination, ICreateBookingForm, ICreateBookingRespone } from 'interfaces/booking'
+import { IBookingDetail, IBookingInfoPagination, IBookingPagination, ICreateBookingForm, ICreateBookingRespone } from 'interfaces/booking'
 import { IAddToCart } from 'interfaces/cart'
 import { IRequsetCheckoutReview } from 'interfaces/checkout'
 import get from 'lodash/get'
@@ -18,11 +18,23 @@ export async function createBooking(data: ICreateBookingForm): Promise<ICreateBo
   }
 }
 
-export async function getAllBookings(): Promise<IBookingInfoPagination> {
 export async function getAllBookings(filter = ''): Promise<IBookingPagination> {
   try {
     const response = await api.get(`${BOOKING_URL}${filter}`, {
       headers: auth(PLATFORM.CMS)
+    })
+    return response.data.metadata
+  } catch (error) {
+    handleError(error as Error, 'API/booking', 'getAllBookings')
+    const errorMessage: string = get(error, 'data.error.message', '') || JSON.stringify(error)
+    throw new Error(errorMessage)
+  }
+}
+
+export async function getListBooking(filter = ''): Promise<IBookingInfoPagination> {
+  try {
+    const response = await api.get(`${BOOKING_URL}/${filter}`, {
+      headers: auth(PLATFORM.WEBSITE)
     })
     return response.data.metadata
   } catch (error) {

@@ -34,7 +34,7 @@ import { IoPeople } from "react-icons/io5";
 import PageLayout from "components/Layout/WebLayout/PageLayout";
 import { TriangleDownIcon } from "@chakra-ui/icons";
 import { FaLocationDot } from "react-icons/fa6";
-import MenuItem from "../../components/Layout/WebLayout/MenuItem";
+import MenuItem from "components/Layout/WebLayout/components/MenuItem";
 import CustomCalendar from "./Calendar";
 import { IAddToCart, IParticipants } from "interfaces/cart";
 import { PLATFORM } from "enums/common";

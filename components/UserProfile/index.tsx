@@ -1,11 +1,15 @@
 'use client'
-import { Flex, HStack, Avatar, Text, Menu, MenuButton, MenuItem, MenuList } from '@chakra-ui/react'
+import { Flex, HStack, Avatar, Text, Menu, MenuButton, MenuItem, MenuList, VStack } from '@chakra-ui/react'
 import Icon from 'components/Icon'
+import ActionItem from 'components/Layout/WebLayout/components/Header/Actions/ActionItem'
 import { PLATFORM } from 'enums/common'
 import { useStores } from 'hooks/useStores'
 import truncate from 'lodash/truncate'
 import { observer } from 'mobx-react'
 import { useRouter } from 'next/navigation'
+import { useEffect } from 'react'
+import { FaRegUser } from 'react-icons/fa'
+import { IoMdLogIn } from 'react-icons/io'
 import routes from 'routes'
 import { getAccessToken } from 'utils/common'
 
@@ -23,7 +27,7 @@ const UserProfile = (props: IUserProfileProps) => {
   const router = useRouter();
 
   useEffect(() => {
-    authStore.FetchUserInfo();
+    authStore.getMyUser(PLATFORM.WEBSITE);
   }, []);
 
   function gotoProfilePage(): void {
@@ -50,7 +54,6 @@ const UserProfile = (props: IUserProfileProps) => {
             width: "100%",
             backgroundColor: underLineHoverColor ? underLineHoverColor : "#fff",
           },
-          color: hoverColor ? hoverColor : "#fff",
         }}
       >
         <MenuButton padding="0px">
@@ -64,7 +67,6 @@ const UserProfile = (props: IUserProfileProps) => {
             >
               <Avatar size="md" name={user?.fullname} src={user?.profilePicture} />
               <Flex
-                color='#fff'
                 flexDirection="column"
                 display={{ base: "none", md: "flex" }}
                 alignItems="flex-start"

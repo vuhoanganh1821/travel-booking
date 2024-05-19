@@ -8,8 +8,9 @@ interface ITourCard {
   tour: ITour;
 }
 
-const TourCard = (props: ITourCardProps) => {
+const TourCard = (props: ITourCard) => {
   const { tour } = props
+  
   const src = `${tour?.thumbnail}`
 
   return (
@@ -54,7 +55,7 @@ const TourCard = (props: ITourCardProps) => {
           </Text>
           <RatingStart sizeStar={24} sizeText="sm" ratingAverate={tour.ratingAverage} numOfrating={tour.numOfRating}/>
           <Text bottom="0" fontSize="lg" fontWeight="600">
-            From {formatCurrency(tour.regularPrice)}
+            From {formatCurrency(tour?.regularPrice)}
           </Text>
         </VStack>
       </Box>

@@ -9,10 +9,10 @@ import { useEffect } from "react";
 
 const BookingPage = () => {
   const {bookingStore} = useStores()
-  const {bookings} = bookingStore
+  const {bookingList} = bookingStore
 
   useEffect(() => {
-    bookingStore.fetchAllBookings()
+    bookingStore.fetchListBooking()
   }, [])
 
   return (
@@ -28,7 +28,7 @@ const BookingPage = () => {
         <Title text='Your booking'/>
         <HStack width='full' justify='space-between' marginTop='20px' spacing={10} align='flex-start'> 
           <VStack width='full' flex={2} align='flex-start' spacing={8}>
-            {bookings.length > 0 && (bookings.map((booking) => <BookingItem key={booking._id} booking={booking}/>))}
+            {bookingList.length > 0 && (bookingList.map((booking) => <BookingItem key={booking._id} booking={booking}/>))}
           </VStack>
         </HStack> 
       </VStack>

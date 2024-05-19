@@ -27,7 +27,7 @@ const ProfilePage = () => {
 
   useEffect(() => {
     const fetchData = async () => {
-      await authStore.FetchUserInfo();
+      await authStore.getMyUser(PLATFORM.WEBSITE);
     };
     fetchData();
   }, []);
