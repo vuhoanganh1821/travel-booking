@@ -1,8 +1,10 @@
+"use client";
 import { Box, Divider, VStack, Text } from "@chakra-ui/react"
 import RatingStart from "components/RatingStart"
 import CustomnerReview from "./CustomerReview"
 import { useStores } from "hooks"
 import { useEffect } from "react"
+import { observer } from "mobx-react";
 
 interface ITourReviews {
     tourId: string
@@ -16,11 +18,10 @@ const TourReviews = (props: ITourReviews) => {
     const {tourReviews} = reviewStore
 
     useEffect(() => {
-        if(tourId){
-            reviewStore.getReviewInTour(tourId)
+        if (tourId !== 'undefined') { 
+            reviewStore.getReviewInTour(tourId);
         }
-    },[tourId])
-
+    }, [tourId]);       
     return(
     <VStack height='fit-content' align='flex-start' spacing={10}>
         <Box >
@@ -43,4 +44,4 @@ const TourReviews = (props: ITourReviews) => {
     )
 }
 
-export default TourReviews
+export default observer(TourReviews)

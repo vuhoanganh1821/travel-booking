@@ -61,13 +61,22 @@ export interface ITourItinerary {
 }
 
 export interface ISuggesttion {
-  _id: string
-  title: string
-  type: string
-  thumbnail: string
-  loc: {
-    type: string
-    coordinates: [number, number]
+  _id?: string
+  title?: string
+  type?: string
+  thumbnail?: string 
+  loc?: {
+    type?: string
+    coordinates?: [number, number]
+  }
+  startLocation?: {
+    type?: string,
+    coordinates?: [
+        number,
+        number
+    ],
+    description?: string
+    address?: string
   }
 }
 

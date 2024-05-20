@@ -1,6 +1,6 @@
 import { HStack, Img, Link, StackProps } from "@chakra-ui/react";
-import Action from "./Actions";
-import SearchBarInput from "./SearchBarInput";
+import Action from "../Actions";
+import SearchBarInput from "../SearchBarInput";
 import logo from "../../../../public/assets/images/logo.jpg";
 
 interface IHeader extends StackProps {
@@ -43,7 +43,7 @@ const Header = (props: IHeader) => {
           <Link href="/">
             <Img
               src="/assets/images/logo.jpg"
-              boxSize="50px"
+              boxSize="90px"
               cursor="pointer"
             />
           </Link>

@@ -22,12 +22,14 @@ interface ISearchInputProps {
   value?: string
   placeholder?: string
   defaultValue?: string
+  minHeight?: string
+  minWidth?: string
 }
 
 const SearchBarInput = (props: ISearchInputProps) => {
+  const { value, placeholder, name, defaultValue, minHeight = '56px' } = props
   const { tourStore } = useStores()
   const { suggestions } = tourStore
-  const { value, placeholder, name, defaultValue } = props
   const [isShow, setIsShow] = useState<boolean>(true)
   const [searchResult, setSearchResult] = useState(false)
   const [inputValue, setInputValue] = useState<string>("")
@@ -55,9 +57,10 @@ const SearchBarInput = (props: ISearchInputProps) => {
         <VStack
           alignItems="center"
           justifyContent="center"
-          width="515px"
+          minWidth="515px"
+          width='full'
           minHeight="100px"
-          maxHeight="min(-156px + 100vh, 734px)"
+          height='full'
           borderRadius="8px"
           padding="8px 16px 16px 16px"
           background="#fff"
@@ -66,6 +69,8 @@ const SearchBarInput = (props: ISearchInputProps) => {
           {suggestions.map((tours) => (
             <SearchItem
               key={tours?._id}
+              _id={tours?._id}
+              type={tours?.type}
               imgsrc={tours?.thumbnail}
               title={tours?.title}
             />
@@ -75,8 +80,10 @@ const SearchBarInput = (props: ISearchInputProps) => {
       onClickOutside={handleClickOutSide}
     >
       <HStack
-        width="515px"
-        height="56px"
+        minWidth="515px"
+        minHeight={`${minHeight}`}
+        width="full"
+        height="full"
         background="#fff"
         borderRadius="44px"
         border="2px solid #dcdfe4"

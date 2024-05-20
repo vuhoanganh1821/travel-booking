@@ -31,7 +31,7 @@ const RatingStart = (props: IRatingStart) => {
           })}
         </HStack>
         <HStack fontSize={`${sizeText}`} display={isShowDetail ? 'block' : 'none'}>
-          <Text>{ratingAverage} / 5   </Text>
+          <Text>{ratingAverage.toFixed(1)} / 5   </Text>
           <Text color='#888'>{numOfRating} reviews</Text>
         </HStack>
       </HStack>

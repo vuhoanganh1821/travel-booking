@@ -33,9 +33,7 @@ export async function getAllLocations(): Promise<ILocationPagination> {
 
 export async function getLocationDetail(locationId: string): Promise<ILocation> {
   try {
-    const response = await api.get(`${LOCATION_URL}/${locationId}`, {
-      headers: auth(PLATFORM.CMS)
-    })
+    const response = await api.get(`${LOCATION_URL}/${locationId}`)
     return response.data.metadata
   } catch (error) {
     handleError(error as Error, 'API/location', 'getLocationDetail')

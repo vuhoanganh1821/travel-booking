@@ -53,9 +53,7 @@ type Value = ValuePiece | [ValuePiece, ValuePiece];
 
 
 const TourDetailPage = () => {
-  const currentUrl = window.location.href;
-  const urlParts = currentUrl.split("/");
-  const tourId = urlParts[urlParts.length - 1];
+  
   const route = useRouter()
   const [type, setType] = useState<string>("");
   const [quantity, setQuantity] = useState<number>(0);
@@ -70,8 +68,9 @@ const TourDetailPage = () => {
   const [isMenuParticipant, setIsMenuParticipant] = useState<boolean>(true);
   const [isMenuDatePick, setIsMenuDatePick] = useState<boolean>(true);
   const [isLoading, setIsLoading] = useState<boolean>(false);
+  const [tourId, setTourId] = useState<string>()
   const [slider, setSlider] = useState<Slider | null>(null)
-  const { authStore, tourStore, cartStore, bookingStore } = useStores();
+  const { tourStore, cartStore, bookingStore } = useStores();
   const { tourDetail, priceOptions, startLocation } = tourStore;
   const settings = {
     dots: true,
@@ -87,8 +86,15 @@ const TourDetailPage = () => {
   const side = useBreakpointValue({ base: '30%', md: '10px' })
 
   useEffect(() => {
-    tourStore.fetchTourDetail(tourId);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    const currentUrl = window.location.href;
+    const urlParts = currentUrl.split("/");
+    setTourId(urlParts[urlParts.length - 1])
+  }, [])
+
+  useEffect(() => {
+    if(tourId){
+      tourStore.fetchTourDetail(tourId);
+    }
   }, [tourId]);
 
   useEffect(() => {
@@ -163,7 +169,7 @@ const TourDetailPage = () => {
         const data: IAddToCart = {
           user: userId,
           tour: {
-            tour: tourId,
+            tour: tourId ?? '',
             startDate: convertedDate,
             startTime: "7:00AM",
             participants: participant,
@@ -199,7 +205,7 @@ const TourDetailPage = () => {
         const data: IAddToCart = {
           user: userId,
           tour: {
-            tour: tourId,
+            tour: tourId ?? '',
             startDate: convertedDate,
             startTime: "7:00AM",
             participants: participant,
@@ -236,9 +242,9 @@ const TourDetailPage = () => {
         padding={8}
       >
         <Heading color="gray.800" fontWeight={700} lineHeight={10}>
-          {tourDetail.title}
+          {tourDetail?.title}
         </Heading>
-        <RatingStart sizeStar={24} sizeText="md" ratingAverage={tourDetail.ratingAverage} numOfRating={tourDetail.numOfRating}/>
+        <RatingStart sizeStar={24} sizeText="md" ratingAverage={tourDetail?.ratingAverage} numOfRating={tourDetail?.numOfRating}/>
         <Box position={'relative'} height={'600px'} width={'full'} overflow={'hidden'}>
           <IconButton
             aria-label="left-arrow"
@@ -268,7 +274,7 @@ const TourDetailPage = () => {
             <BiRightArrowAlt />
           </IconButton>
           <Slider {...settings} ref={(slider) => setSlider(slider)}>
-          {tourDetail.images?.map((url, index) => (
+          {tourDetail?.images?.map((url, index) => (
             <Image
               key={index}
               height={'xl'}
@@ -292,7 +298,7 @@ const TourDetailPage = () => {
             align="flex-start"
           >
             <Text fontSize="lg" paddingRight="30px">
-              {tourDetail.summary}
+              {tourDetail?.summary}
             </Text>
             <Box width="full">
               <Maps coordinates={startLocation?.coordinates} />
@@ -331,7 +337,7 @@ const TourDetailPage = () => {
                 <Text fontSize="lg" fontWeight="bold">
                   Duration
                 </Text>
-                <Text>{tourDetail.duration} hours</Text>
+                <Text>{tourDetail?.duration} hours</Text>
               </VStack>
             </HStack>
             <HStack align="flex-start" padding="16px">
@@ -485,12 +491,12 @@ const TourDetailPage = () => {
                   }}
                 >
                   <Text fontSize="2xl" fontWeight="bold">
-                    {tourDetail.title}
+                    {tourDetail?.title}
                   </Text>
                   <HStack>
                     <PiClockCountdownBold size="1.5rem" />
                     <Text fontSize="md">
-                      Duration: {tourDetail.duration} hours
+                      Duration: {tourDetail?.duration} hours
                     </Text>
                   </HStack>
                   <HStack>
@@ -558,7 +564,7 @@ const TourDetailPage = () => {
               <Text>From</Text>
               <HStack width="full" justify="space-between">
                 <Text fontSize="2xl" fontWeight={700} flex={2}>
-                  {tourDetail.regularPrice && formatCurrency(tourDetail.regularPrice)}
+                  {tourDetail?.regularPrice && formatCurrency(tourDetail?.regularPrice)}
                 </Text>
                 <Button colorScheme="teal" borderRadius="80px" paddingX={8} width="60%" flex={1}>
                  Check availability
@@ -578,7 +584,7 @@ const TourDetailPage = () => {
         <Divider borderColor="#888"/>
         //customer reviews
         <Title text='Customer reviews'/>
-        <TourReviews tourId={`${tourId}`} ratingAverage={tourDetail.ratingAverage ?? 0} numOfRating={tourDetail.numOfRating ?? 0}/>
+        <TourReviews tourId={`${tourDetail?._id}`} ratingAverage={tourDetail?.ratingAverage ?? 0} numOfRating={tourDetail?.numOfRating ?? 0}/>
       </VStack>
     </PageLayout>
   );

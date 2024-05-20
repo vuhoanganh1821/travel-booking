@@ -17,7 +17,7 @@ class TourStore {
   suggestions: ISuggesttion[] = []
   totalSreachResult: number = 0
 
-  tourDetail: ITour = {} as ITour
+  tourDetail: ITour | null = null
   priceOptions: IPriceOption[] | null = null
   startLocation: IStartLocation | null = null
 

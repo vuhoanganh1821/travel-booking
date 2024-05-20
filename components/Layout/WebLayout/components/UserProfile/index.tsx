@@ -21,7 +21,7 @@ import { FaRegUser } from "react-icons/fa"
 import { IoMdLogIn } from "react-icons/io"
 import { FaUserCircle } from "react-icons/fa"
 import { BiLogOutCircle } from "react-icons/bi"
-import ActionItem from "components/Layout/WebLayout/components/Header/Actions/ActionItem"
+import ActionItem from "components/Layout/WebLayout/components/Actions/ActionItem"
 import { PLATFORM } from "enums/common"
 
 interface IUserProfileProps {

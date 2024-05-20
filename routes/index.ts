@@ -26,6 +26,9 @@ const routes = {
     view:  "/booking/view",
     detail: (bookingId: string) => `/booking/${bookingId}`
   },
+  listtour: {
+    value: (locId: string) => `/list-tour/${locId}`,
+  },
   ...cmsRoutes
 }
 

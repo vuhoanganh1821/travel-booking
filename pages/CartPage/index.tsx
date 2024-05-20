@@ -24,18 +24,9 @@ const CartPage = () => {
 
   const router = useRouter();
 
-  useEffect(() => {
-    if (!isLogin) {
-      router.push(routes.home.value);
-    } else {
-      fetchData();
-    }
+  useEffect(() => { 
+    cartStore.getListCart();
   }, []); 
-
-  const fetchData = async () => {
-    await cartStore.getListCart();
-  };
-
 
   const calculateTotalPrice = () => {
     let total = 0;
