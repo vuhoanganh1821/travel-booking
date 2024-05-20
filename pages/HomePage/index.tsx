@@ -43,18 +43,21 @@ const HomePage = () => {
   return (
     <HomeLayout>
       <Box
-        margin="0px 253px"
-        padding="0px 98px"
-        alignSelf="flex-start"
+        width='full'
+        display='flex'
+        justifyContent="center"
+        alignItems="center"
         mt="32px"
       >
-        <Title  
+        <Title 
+          maxWidth="1300px"
+          width='full' 
           fontSize="3xl"
           fontWeight="600" 
           text='Unforgettable tours experiences'/>
       </Box>
       <SimpleGrid
-        maxWidth="1200px"
+        maxWidth="1300px"
         columns={{ base: 1, sm: 2, md: 4 }}
         gap={8}
         padding={1}

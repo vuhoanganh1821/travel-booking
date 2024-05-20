@@ -52,7 +52,7 @@ const Header = (props: IHeader) => {
               cursor="pointer"
             />
           </Link>
-          <SearchBarInput placeholder="Search tours by name" />
+          <SearchBarInput minHeight="65px" placeholder="Search tours by name" />
         </HStack>
         <Action
           openLoginModal={openLoginModal}

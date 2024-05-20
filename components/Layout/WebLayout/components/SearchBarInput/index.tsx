@@ -103,7 +103,7 @@ const SearchBarInput = (props: ISearchInputProps) => {
             paddingLeft={10}
             border="none"
             focusBorderColor="transparent"
-            fontSize="xl"
+            fontSize="2xl"
             fontWeight="700"
             onChange={(e) => {
               setInputValue(e.target.value);
@@ -114,8 +114,8 @@ const SearchBarInput = (props: ISearchInputProps) => {
           />
         </InputGroup>
         <Button
-          width="115px"
-          height="42px"
+          width="125px"
+          height="48px"
           backgroundColor="#64CCC5"
           color="#fff"
           fontSize="xl"
