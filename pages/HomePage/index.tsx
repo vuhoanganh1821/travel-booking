@@ -63,12 +63,7 @@ const HomePage = () => {
         {tours?.map((tour) => (
           <TourCard key={tour?._id} tour={tour} />
         ))}
-        {tours?.map((tour) => (
-          <TourCard key={tour?._id} tour={tour} />
-        ))}
-        {tours?.map((tour) => (
-          <TourCard key={tour?._id} tour={tour} />
-        ))}
+        
       </SimpleGrid>
     </HomeLayout>
   )

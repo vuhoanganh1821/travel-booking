@@ -7,7 +7,7 @@ import { ReactNode } from "react";
 interface IActionItemProps {
   actionIcon: ReactNode
   title: string
-  to?: () => void
+  to: () => void
   color?: string
   underLineHoverColor?: string
   hoverColor?: string
@@ -51,8 +51,8 @@ const ActionItem = (props: IActionItemProps) => {
       }}
       onClick={handleIsLogin}
     >
-      <Text fontSize="2xl">{actionIcon}</Text>
-      <Text>{title}</Text>
+      <Text userSelect="none" fontSize="2xl">{actionIcon}</Text>
+      <Text userSelect="none">{title}</Text>
     </VStack>
   )
 }

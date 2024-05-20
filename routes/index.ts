@@ -29,6 +29,9 @@ const routes = {
   listtour: {
     value: (locId: string) => `/list-tour/${locId}`,
   },
+  allActivities: {
+    value: "/all-activities"
+  },
   ...cmsRoutes
 }
 

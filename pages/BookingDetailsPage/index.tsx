@@ -1,12 +1,12 @@
 "use client";
-import { HStack, VStack, Text, TableContainer, Table, Thead, Tr, Th, Tbody, Td, Image, Divider, Box } from "@chakra-ui/react"
+import { HStack, VStack, Text, Image, Divider, Box, Button } from "@chakra-ui/react"
 import PageLayout from "components/Layout/WebLayout/PageLayout"
-import RatingStart from "components/RatingStart"
 import Title from "components/Title"
 import dayjs from "dayjs"
 import { useStores } from "hooks"
-import { IBookingDetail } from "interfaces/booking"
+import routes from "routes";
 import { observer } from "mobx-react";
+import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react"
 import { formatCurrency } from "utils/common";
 import RatingModal from "./RatingModal";
@@ -17,14 +17,21 @@ import { ITour } from "interfaces/tour";
 const BookingDetailsPage = () => {
     const {bookingStore} = useStores()
     const {bookingDetail} = bookingStore
-
+    const route = useRouter();
     const [isOpenRatingModal, setIsOpenRatingModal] = useState<boolean>(false)
     const [tour, setTour] = useState<ITour>()
 
     function handleOpenRatingModal(tour: ITour) {
         setTour(tour)
         setIsOpenRatingModal(true)
-  }
+    }
+
+    function handleGoToPayment() {
+        if(bookingDetail?._id){
+            bookingStore.setBookingId(bookingDetail?._id)
+            route.push(routes.booking.payment)
+        }
+    }
 
     useEffect(() => {
         const currentUrl = window.location.href;
@@ -82,6 +89,20 @@ const BookingDetailsPage = () => {
                                 <Text fontSize='lg' fontWeight='bold'>Total price: </Text>
                                 <Text fontSize='lg' fontWeight={500}>{formatCurrency(bookingDetail?.checkoutOrder.totalPrice ?? 0)}</Text> 
                             </HStack>
+                            {bookingDetail?.status === 'pending' ? 
+                                <Button width='full' colorScheme="teal" onClick={handleGoToPayment}>Go to payment</Button>
+                                : <Text 
+                                    textAlign='center' 
+                                    paddingY={5} 
+                                    borderRadius={10}
+                                    fontSize='lg'
+                                    fontWeight={500} 
+                                    width='full' 
+                                    bg='#4dbb4d' 
+                                    color='#fff' >
+                                        Your booking has been Paid
+                                    </Text>
+                            }
                         </VStack>
                     </HStack>
                 </VStack>

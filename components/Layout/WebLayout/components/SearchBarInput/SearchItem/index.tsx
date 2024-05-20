@@ -44,7 +44,7 @@ const SearchItem = (props: ISearchItem) => {
         src={imgsrc}
         alt="img"
       />
-      <Text fontWeight="700">{title}</Text>
+      <Text userSelect="none" fontWeight="700">{title}</Text>
     </HStack>
   );
 };
