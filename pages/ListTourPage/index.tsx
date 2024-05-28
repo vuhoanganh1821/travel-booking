@@ -3,7 +3,7 @@ import { SimpleGrid, VStack, Text, Box } from "@chakra-ui/react"
 import ListTourLayout from "components/Layout/WebLayout/ListTourLayout"
 import Title from "components/Title"
 import TourCard from "components/TourCard";
-import { useStores } from "hooks";
+import { useStores } from "hooks";  
 import { observer } from "mobx-react";
 import Maps from "pages/TourDetailPage/Maps";
 import { useEffect, useState } from "react";
@@ -71,7 +71,7 @@ const ListTourPage = () => {
                     ))}
                 </SimpleGrid>
             </VStack>
-        </ListTourLayout>
+        </ListTourLayout>   
     )
 }
 

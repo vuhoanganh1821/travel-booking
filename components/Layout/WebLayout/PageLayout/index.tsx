@@ -27,17 +27,23 @@ const PageLayout = (props: IPageLayoutProps) => {
       position="relative"
       background="#F5F5F5"
     >
-      <Header
-        openLoginModal={() => setIsOpenLoginModal(true)}
-        height="90px"
-        background="#fff"
-        color="#63687a"
-        boxShadow="md"
-        paddingBottom="14px"
-        underLineHoverColor="#ff5533"
-        hoverColor="#1a2b49"
-      />
+      <Box width="full" position="relative" zIndex={1}>
+        <Header
+          position="sticky"
+          top="0"
+          openLoginModal={() => setIsOpenLoginModal(true)}
+          height="90px"
+          background="#fff"
+          color="#63687a"
+          boxShadow="md"
+          paddingBottom="14px"
+          underLineHoverColor="#ff5533"
+          hoverColor="#1a2b49"
+        />
+      </Box>
+  
         {children}
+   
         
         <LoginModal
         openForgotPasswordModal={() => setIsOpenForgotPasswordModal(true)}

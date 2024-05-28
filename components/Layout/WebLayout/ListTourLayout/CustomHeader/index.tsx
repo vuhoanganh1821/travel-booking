@@ -134,7 +134,7 @@ const CustomHeader = (props: IHeader) => {
                     <Text textAlign="center" color="red">
                         {!isMenuDatePick && "Please select date"}
                     </Text>
-                    </Box>
+                </Box>
             </HStack>
         </VStack>
     </VStack>

@@ -11,6 +11,8 @@ import {
   VStack,
   Input,
 } from "@chakra-ui/react";
+import { useRouter } from 'next/navigation'
+import routes from 'routes'
 import SearchItem from "./SearchItem";
 import { useDebounce } from "hooks";
 import { useStores } from "hooks";
@@ -29,6 +31,7 @@ interface ISearchInputProps {
 const SearchBarInput = (props: ISearchInputProps) => {
   const { value, placeholder, name, defaultValue, minHeight = '56px' } = props
   const { tourStore } = useStores()
+  const route = useRouter()
   const { suggestions } = tourStore
   const [isShow, setIsShow] = useState<boolean>(true)
   const [searchResult, setSearchResult] = useState(false)
@@ -48,6 +51,11 @@ const SearchBarInput = (props: ISearchInputProps) => {
     setSearchResult(true)
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [debounceVal])
+
+  function handleGoToAllActivities() {
+    if(debounceVal !== "")
+      route.push(routes.allActivities.value + `?search=${debounceVal}`)
+    }
 
   return (
     <Tippy
@@ -120,6 +128,7 @@ const SearchBarInput = (props: ISearchInputProps) => {
           color="#fff"
           fontSize="xl"
           borderRadius="99px"
+          onClick={handleGoToAllActivities}
           transition="background .2s ease-out"
           _hover={{
             background: "#176B87",

@@ -62,7 +62,6 @@ const HeaderHome = (props: IHeaderProps) => {
           </Link>
         </VStack>
       </Box>
-     
     </Box>
   );
 };

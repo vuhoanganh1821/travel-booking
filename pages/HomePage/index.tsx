@@ -1,8 +1,9 @@
 "use client";
 import { useEffect } from "react";
-import { SimpleGrid, Box } from "@chakra-ui/react";
+import { SimpleGrid, Box, Button } from "@chakra-ui/react";
 import { usePathname, useSearchParams } from 'next/navigation'
 import { useRouter } from "next/navigation";
+import routes from "routes";
 import TourCard from "components/TourCard";
 import HomeLayout from "components/Layout/WebLayout/HomeLayout";
 import { useStores } from "hooks";
@@ -38,7 +39,9 @@ const HomePage = () => {
     tourStore.fetchActiveTours();
   }, []);
 
-  console.log('HomePage', tours);
+  function handleGoToAllActivities() {
+    route.push(routes.allActivities.value)
+  }
 
   return (
     <HomeLayout>
@@ -68,6 +71,43 @@ const HomePage = () => {
         ))}
         
       </SimpleGrid>
+      <Box 
+        marginY={4}
+        _before={{
+          position: "absolute",
+          content: "''",
+          maxWidth: "600px",
+          minWidth: "100px",
+          marginLeft: "-600px",
+          marginTop: "18px",
+          width: "full",
+          height: "2px",
+          bg: `teal`,
+          zIndex: -1,
+        }}
+        _after={{
+          position: "absolute",
+          content: "''",
+          maxWidth: "600px",
+          minWidth: "100px",
+          marginTop: "18px",
+          marginright: '-120px',
+          width: "full",
+          height: "2px",
+          bg: `teal`,
+          zIndex: -1,
+        }}>
+        <Button 
+          color='teal' 
+          border='2px solid teal' 
+          borderRadius='full' 
+          bg='transparent' 
+          onClick={handleGoToAllActivities}
+        >
+          Show more
+        </Button>
+         
+      </Box>
     </HomeLayout>
   )
 }

@@ -16,9 +16,9 @@ export async function getAllTours(filter = ''): Promise<IAllTourPagination> {
   }
 }
 
-export async function getActiveTours(): Promise<ITourPagination> {
+export async function getActiveTours(filter = ''): Promise<ITourPagination> {
   try {
-    const response = await api.get(`${TOUR_URL}/active-tours/all`)
+    const response = await api.get(`${TOUR_URL}/active-tours/all${filter}`)
     return response.data.metadata.tours
   } catch (error) {
     handleError(error as Error, 'API/tour', 'getActiveTours')
