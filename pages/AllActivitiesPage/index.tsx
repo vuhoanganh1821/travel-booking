@@ -1,5 +1,5 @@
 "use client"
-import { Button, HStack, SimpleGrid, VStack } from "@chakra-ui/react"
+import { border, Button, HStack, SimpleGrid, VStack } from "@chakra-ui/react"
 import { usePathname, useSearchParams } from 'next/navigation'
 import ListTourLayout from "components/Layout/WebLayout/ListTourLayout"
 import Title from "components/Title"
@@ -14,6 +14,7 @@ import { observer } from "mobx-react"
 import FilterStar from "./FilterStar"
 import Pagination from "components/Table/components/Pagination"
 import { IPagination } from "components/Table"
+import FilterModal from "./FilterModal"
 
 export interface IApplyFilter {
     priceMin: number
@@ -31,7 +32,9 @@ const AllActivitiesPage = () => {
     const [searchResult, setSearchResult] = useState<string>("");
     const [pageIndex, setPageIndex] = useState<number>(1)
     const [pageSize, setPageSize] = useState<number>(10)
+    const [isOpenFilterModal, setIsOpenFilterModal] = useState<boolean>(false)
     const [filterOptions, setFliterOptions] = useState<IApplyFilter>({} as IApplyFilter)
+    const [countFilter, setCountFilter] = useState<number>(0)
     const pagination: IPagination = { pageIndex, tableLength: totalCount, gotoPage: setPageIndex }
 
     useEffect(() => {
@@ -47,10 +50,20 @@ const AllActivitiesPage = () => {
 
     useEffect(() => {   
         let filter = ""
-        filter += filterOptions.priceMax ? `regularPrice[lt]=${filterOptions.priceMax}&` : ''
-        filter += filterOptions.priceMin ? `regularPrice[gt]=${filterOptions.priceMin}&` : ''
-        filter += filterOptions.star ? `ratingAverage[gt]=${filterOptions.star}&` : ''
-        filter += filterOptions.duration ? `duration[gt]=${filterOptions.duration}&` : ''
+        setCountFilter(0)
+        if(filterOptions.priceMax && filterOptions.priceMin){
+            filter += `regularPrice[lt]=${filterOptions.priceMax}&`
+            filter += `regularPrice[gt]=${filterOptions.priceMin}&`
+            setCountFilter(prevCount => prevCount + 1)
+        }
+        if(filterOptions.star){
+            filter += `ratingAverage[gt]=${filterOptions.star}&`
+            setCountFilter(prevCount => prevCount + 1)
+        }
+        if(filterOptions.duration){
+            filter += `duration[gt]=${filterOptions.duration}&`
+            setCountFilter(prevCount => prevCount + 1)
+        }
 
         tourStore.fetchActiveTours(pageIndex, filter)
     }, [filterOptions])
@@ -67,12 +80,20 @@ const AllActivitiesPage = () => {
                 <Title text={searchResult === "" ? "All activities" : `Result for "${searchResult}"`} fontSize='3xl'/>
                 <HStack width='full' justify='space-between'>
                     <HStack spacing={5}>
-                        <FilterPrice setFliterOptions={setFliterOptions}/>
-                        <FilterDuration setFliterOptions={setFliterOptions}/>
+                        <FilterPrice setFliterOptions={setFliterOptions} isAppliedfilter={!!filterOptions.priceMax && !!filterOptions.priceMin}/>
+                        <FilterDuration setFliterOptions={setFliterOptions} isAppliedfilter={!!filterOptions.duration}/>
+                        <FilterStar setFliterOptions={setFliterOptions} isAppliedfilter={!!filterOptions.star}/> 
                         {/* <FilterTime setFliterOptions={setFliterOptions}/> */}
-                        <FilterStar setFliterOptions={setFliterOptions}/> 
                     </HStack>
-                    {/* <Button height={50} border='2px solid #dcdfe4' bg='transparent'>{<TbAdjustmentsHorizontal size={24}/>} Filters</Button> */}
+                    <Button 
+                        height={50} 
+                        border='2px solid #dcdfe4'
+                        {...(countFilter !== 0 && {borderColor: 'teal'})}
+                        bg='transparent'
+                        onClick={() => setIsOpenFilterModal(true)}
+                    >
+                        {<TbAdjustmentsHorizontal size={24}/>} Filters {countFilter !== 0 ? `applied: ${countFilter}` : ''}
+                    </Button>
                 </HStack>
                 <SimpleGrid
                     maxWidth="1300px"
@@ -87,6 +108,12 @@ const AllActivitiesPage = () => {
                 </SimpleGrid>
                 <Pagination pagination={pagination} pageSize={4} setPageSize={setPageSize}/>
             </VStack>
+            <FilterModal 
+                isOpen={isOpenFilterModal} 
+                onClose={() => setIsOpenFilterModal(false)} 
+                setFliterOptions={setFliterOptions}
+                filterOptions={filterOptions}
+            />
         </ListTourLayout>
     )
 }

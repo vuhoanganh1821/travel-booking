@@ -10,6 +10,7 @@ class BookingStore {
   bookings: IBooking[] = []
   bookingList: IBookingInfoBody[] = []
   totalCount: number = 0
+  totalResult: number = 0
   bookingDetail: IBookingDetail | null = null
   discountCode: string = ''
   listBooking: ICreateBooking | null = null
@@ -35,8 +36,9 @@ class BookingStore {
   }
 
   async fetchListBooking(page = 1): Promise<void> {
-    const { bookings } = await getListBooking(`list?page=${page}&limit=10`)
-    this.bookingList = bookings  
+    const { bookings, total } = await getListBooking(`list?page=${page}&limit=4`)
+    this.bookingList = bookings 
+    this.totalResult = total 
   }
 
 

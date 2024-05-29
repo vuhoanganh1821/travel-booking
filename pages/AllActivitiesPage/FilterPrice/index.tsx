@@ -2,13 +2,15 @@ import { Box, HStack, Menu, MenuButton, MenuList, Text, FormControl, FormLabel, 
 import { TriangleDownIcon } from "@chakra-ui/icons"
 import { useForm } from "react-hook-form";
 import { IApplyFilter } from "..";
+import CustomMenuButton from "../CustomMenuButton";
 
 interface IFilterPrice {
     setFliterOptions: React.Dispatch<React.SetStateAction<IApplyFilter>>
+    isAppliedfilter?: boolean
 }
 
 const FilterPrice = (props: IFilterPrice) => {
-    const { setFliterOptions } = props;
+    const { setFliterOptions, isAppliedfilter = false } = props;
     const { handleSubmit, register, reset, formState: { errors, isSubmitting } } = useForm<IApplyFilter>();
 
     const onSubmit = (data: IApplyFilter) => {
@@ -26,20 +28,23 @@ const FilterPrice = (props: IFilterPrice) => {
                 computePositionOnMount
                 placement="bottom-start"
             >
-                <MenuButton
-                    width="full"
-                    height="50px"
-                    background="#fff"
-                    border="2px solid #dcdfe4"
-                    borderRadius="10px"
-                    padding="8px 12px"
-                    fontWeight="bold"
-                >
-                    <HStack justifyContent="space-between">
-                        <Text>Price</Text>
-                        <TriangleDownIcon />
-                    </HStack>
-                </MenuButton>
+                <CustomMenuButton 
+                    text='Price'
+                    {...(isAppliedfilter && {
+                        _after: {
+                        position: 'absolute',
+                        content: '"1"',
+                        top: '0',
+                        right: '0',
+                        fontSize: 'xs',
+                        background: 'teal',
+                        width: '20px',
+                        borderRadius: '6px',
+                        color: '#fff'},
+                        
+                        borderColor: 'teal'
+                    })} 
+                />
 
                 <MenuList padding="12px 18px">
                     <form onSubmit={handleSubmit(onSubmit)}>

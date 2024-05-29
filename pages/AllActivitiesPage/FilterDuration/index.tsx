@@ -2,6 +2,7 @@ import { Box, RadioGroup, Radio, FormControl, FormLabel, Stack, Text, HStack, Me
 import { TriangleDownIcon } from "@chakra-ui/icons"
 import { useState } from "react";
 import { IApplyFilter } from "..";
+import CustomMenuButton from "../CustomMenuButton";
 
 interface WorkHours {
     hours: number | null;
@@ -10,10 +11,11 @@ interface WorkHours {
 
 interface IFilterDuration {
     setFliterOptions: React.Dispatch<React.SetStateAction<IApplyFilter>>
+    isAppliedfilter?: boolean
 }
 
 const FilterDuration = (props: IFilterDuration) => {
-    const {setFliterOptions} = props
+    const {setFliterOptions, isAppliedfilter = false} = props
 
     const handleChange = (value: string) => {
         const numericValue = parseFloat(value)
@@ -30,20 +32,23 @@ const FilterDuration = (props: IFilterDuration) => {
             computePositionOnMount
             placement="bottom-start"
         >
-            <MenuButton
-            width="full"
-            height="50px"
-            background="#fff"
-            border="2px solid #dcdfe4"
-            borderRadius="10px"
-            padding="8px 12px"
-            fontWeight="bold"
-            >
-            <HStack justifyContent="space-between">
-                <Text>Duration</Text>
-                <TriangleDownIcon />
-            </HStack>
-            </MenuButton>
+            <CustomMenuButton 
+                text='Duration'
+                {...(isAppliedfilter && {
+                    _after: {
+                    position: 'absolute',
+                    content: '"1"',
+                    top: '0',
+                    right: '0',
+                    fontSize: 'xs',
+                    background: 'teal',
+                    width: '20px',
+                    borderRadius: '6px',
+                    color: '#fff'},
+                    
+                    borderColor: 'teal'
+                })} 
+            />
 
             <MenuList>
                 <FormControl as="fieldset" borderColor="gray.300" p={6} rounded="md">
